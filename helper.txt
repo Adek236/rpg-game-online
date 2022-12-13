@@ -1,0 +1,38 @@
+https://firebase.google.com/docs/database/web/read-and-write?authuser=0&hl=en#web-version-9_1
+
+https://dev.to/gbudjeakp/how-to-connect-your-client-side-to-your-server-side-using-node-and-express-2i71 
+https://medium.com/@savinihemachandra/creating-rest-api-using-express-on-cloud-functions-for-firebase-53f33f22979c
+
+https://fireship.io/snippets/express-middleware-auth-token-firebase/
+
+
+
+OnClick canvas:
+https://stackoverflow.com/questions/57650818/add-onclick-and-onmouseover-to-a-canvas-element
+https://stackoverflow.com/questions/12625766/javascript-canvas-detect-click-on-shape
+https://blog.devgenius.io/how-to-get-the-coordinates-of-a-mouse-click-on-a-canvas-element-d5dc288c19e8
+
+Sprites:
+
+Maps:
+https://stealthix.itch.io/
+https://ansimuz.itch.io/patreons-top-down-collection
+https://pipoya.itch.io/pipoya-rpg-tileset-32x32
+
+Characters:
+https://pipoya.itch.io/pipoya-free-rpg-character-sprites-32x32
+https://opengameart.org/content/alternate-lpc-character-sprites-george
+https://www.deviantart.com/chirpycharlotte/art/Free-Resource-32x32-Character-1-698317242
+
+Items:
+https://thewisehedgehog.itch.io/hs2020
+https://limezu.itch.io/rpg-arsenal
+https://vectorpixelstar.itch.io/mega-pixel-art-32x32-px-icons-sprite-sheet
+https://admurin.itch.io/admurins-fishing-items?download -- fishing
+https://kazzter-k.itch.io/kazzter-rpg-icon-pack -- 2 dollars
+
+Others:
+https://elv-games.itch.io/free-inventory-for-rpg-or-farming-games -- inventory
+https://pixelplant.itch.io/chicken-sprite-sheet -- chicken
+https://www.gameart2d.com/sprites.html
+https://craftpix.net/freebies/free-2d-monster-sprites/?num=2&count=33&sq=top%20down&pos=2

@@ -1,0 +1,114 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+// Colors
+$mainBgColor: #0cbaba;
+$secondBgColor: #380036;
+$mainFontColor: black;
+$mainContainerColor: rgba(206, 214, 224, 0.2);
+$mainBtnColor: rgba(132, 146, 163, 0.3);
+$mainShadowColor: black;
+$lighterShadowColor: rgba(0, 0, 0, 0.75);
+$halfShadowColor: rgba(0, 0, 0, 0.5);
+
+// Fonts
+$mainFont: "Press Start 2P", cursive;
+
+:root {
+  font-family: $mainFont;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient($mainBgColor, $secondBgColor);
+  h1 {
+    padding-bottom: 5rem;
+  }
+}
+
+.container {
+  position: relative;
+  min-height: 250px;
+  height: 50vh;
+  padding: 1rem;
+  background-color: $mainContainerColor;
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px 1px $halfShadowColor;
+  > * {
+    padding: 0.5rem;
+  }
+  form {
+    input {
+      padding: 0.3rem;
+      margin-top: 0.5rem;
+      height: 2rem;
+      max-width: 100%;
+      width: 100%;
+      border: none;
+      border-radius: 2px;
+      box-shadow: 1px 1px 3px 1px $halfShadowColor;
+    }
+    button {
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border: none;
+      background-color: $mainBtnColor;
+      border-radius: 2px;
+      box-shadow: 1px 1px 3px 1px $lighterShadowColor;
+      color: $lighterShadowColor;
+
+      &:hover {
+        color: $mainFontColor;
+        box-shadow: 1px 1px 3px 1px $mainShadowColor;
+      }
+    }
+  }
+  a {
+    position: absolute;
+    bottom: 5px;
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    &:hover {
+      color:rgba(132, 146, 163, 1)
+    }
+  }
+}
+
+.f-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f-col {
+  flex-direction: column;
+}
+
+button {
+  font-family: $mainFont;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: $mainFontColor;
+}
+
+// .login {
+//   display: flex;
+// }
+
+.register {
+  display: none;
+}

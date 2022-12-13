@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+:root {
+  font-family: "Press Start 2P", cursive;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(#0cbaba, #380036);
+}
+body h1 {
+  padding-bottom: 5rem;
+}
+
+.container {
+  position: relative;
+  min-height: 250px;
+  height: 50vh;
+  padding: 1rem;
+  background-color: rgba(206, 214, 224, 0.2);
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.5);
+}
+.container > * {
+  padding: 0.5rem;
+}
+.container form input {
+  padding: 0.3rem;
+  margin-top: 0.5rem;
+  height: 2rem;
+  max-width: 100%;
+  width: 100%;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.5);
+}
+.container form button {
+  padding: 1rem;
+  margin-top: 1.5rem;
+  border: none;
+  background-color: rgba(132, 146, 163, 0.3);
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.75);
+  color: rgba(0, 0, 0, 0.75);
+}
+.container form button:hover {
+  color: black;
+  box-shadow: 1px 1px 3px 1px black;
+}
+.container a {
+  position: absolute;
+  bottom: 5px;
+  font-size: 0.5rem;
+  text-transform: uppercase;
+}
+.container a:hover {
+  color: rgb(132, 146, 163);
+}
+
+.f-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f-col {
+  flex-direction: column;
+}
+
+button {
+  font-family: "Press Start 2P", cursive;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.register {
+  display: none;
+}/*# sourceMappingURL=global.css.map */
