@@ -11,14 +11,14 @@
   <body class="f-center f-col">
     <h1>RPG Game Online</h1>
     
-    <!-- LOGIN -->
-    <div class="container f-center f-col login">
+    <!-- LOGIN page -->
+    <div class="container f-center f-col login-page">
       <h3>Login</h3>
-      <form class="f-center f-col" method="POST" action="/">
+      <form class="f-center f-col">
         <div>
           <input
             type="email"
-            id="email"
+            id="loginEmail"
             name="email"
             placeholder="Email"
             required
@@ -27,25 +27,25 @@
         <div>
           <input
             type="password"
-            id="password"
+            id="loginPassword"
             name="password"
             placeholder="Password"
             required
           />
         </div>
-        <button type="submit">Play</button>
+        <button type="submit" id="loginSubmitBtn">Play</button>
       </form>
-      <a id="create-acc-link">Create Account</a>
+      <a id="createAccLink">Create Account</a>
     </div>
 
-    <!-- REGISTER -->
-    <div class="container f-center f-col register">
+    <!-- REGISTER page -->
+    <div class="container f-center f-col register-page">
       <h3>Sign Up</h3>
-      <form class="f-center f-col" method="POST" action="/register">
+      <form class="f-center f-col">
         <div>
           <input
             type="text"
-            id="text"
+            id="registerNickname"
             name="text"
             placeholder="Nickname"
             required
@@ -54,7 +54,7 @@
         <div>
           <input
             type="email"
-            id="email2"
+            id="registerEmail"
             name="email"
             placeholder="Email"
             required
@@ -63,22 +63,31 @@
         <div>
           <input
             type="password"
-            id="password2"
+            id="registerPassword"
             name="password"
             placeholder="Password"
             required
           />
         </div>
-        <button type="submit">Join</button>
+        <button type="submit" id="registerSubmitBtn">Join</button>
       </form>
       <a href="/">Back to login</a>
     </div>
 
-    <!-- GAME  -->
+    <!-- GAME page -->
     
+    <div class="container game-page">
+      <canvas></canvas>
+      <a id="logoutBtn" href="/">Logout</a>
+    </div>
 
 
 
+    
+    <script type="module" src="./src/services/register.js"></script>
+    <script type="module" src="./src/services/logout.js"></script>
+    <script type="module" src="./src/services/login.js"></script>
+    <script type="module" src="./src/app-ui.js"></script>
     <script type="module" src="./src/app.js"></script>
   </body>
 </html>
