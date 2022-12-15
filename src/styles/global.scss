@@ -78,10 +78,9 @@ body {
     position: absolute;
     bottom: 5px;
     font-size: 0.5rem;
-    text-transform: uppercase;
-    &:hover {
-      color:rgba(132, 146, 163, 1)
-    }
+  }
+  p {
+    font-size: 0.5rem;
   }
 }
 
@@ -103,6 +102,11 @@ button {
 a {
   text-decoration: none;
   color: $mainFontColor;
+  text-transform: uppercase;
+  cursor: pointer;
+    &:hover {
+      color:rgba(132, 146, 163, 1)
+    }
 }
 
 // .login-page {

@@ -21,5 +21,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 const dbRef = ref(db);
+const playersRef = ref(db, "players");
 
-export { auth, db, dbRef };
+export { auth, db, dbRef, playersRef };

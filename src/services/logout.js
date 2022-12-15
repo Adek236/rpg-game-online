@@ -3,12 +3,12 @@ import { auth } from "../config/firebase.js";
 
 export function logout() {
   signOut(auth)
-    .then(() => {
-      // Sign-out successful.
-      console.log("logout");
-    })
-    .catch((error) => {
-      // An error happened.
-      console.log("error logout");
-    });
+    // .then(() => {
+    //   // Sign-out successful.
+    //   console.log("logout");
+    // })
+    // .catch((error) => {
+    //   // An error happened.
+    //   console.log("error logout");
+    // });
 }
