@@ -79,17 +79,20 @@
     <!-- GAME page -->
     
     <div class="container f-center f-col game-page">
-      <canvas></canvas>
+      <canvas class="game-canvas" width="352" height="198"></canvas>
       <a id="logoutBtn" href="/">Logout</a>
     </div>
 
 
-
+    <!-- Game -->
+    <script src="./src/game/Overworld.js"></script>
+    <script type="module" src="./src/game/game.js"></script>
     
+    <!-- App -->
     <script type="module" src="./src/services/register.js"></script>
     <script type="module" src="./src/services/logout.js"></script>
     <script type="module" src="./src/services/login.js"></script>
-    <script type="module" src="./src/app-ui.js"></script>
     <script type="module" src="./src/app.js"></script>
+  
   </body>
 </html>

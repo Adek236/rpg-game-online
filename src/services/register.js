@@ -6,7 +6,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 import { auth, db, dbRef } from "../config/firebase.js";
-import { getGamePage, registerAuthErr } from "../app-ui.js";
+import { getGamePage, registerAuthErr } from "../app.js";
 
 export async function registerUser() {
   const nickname = document.getElementById("registerNickname").value;

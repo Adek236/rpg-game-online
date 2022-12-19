@@ -98,4 +98,15 @@ a:hover {
 
 .game-page {
   display: none;
+}
+.game-page canvas {
+  -ms-interpolation-mode: nearest-neighbor;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: pixelated;
+}
+
+.game-canvas {
+  width: 352px;
+  height: 198px;
+  scale: 2;
 }/*# sourceMappingURL=global.css.map */

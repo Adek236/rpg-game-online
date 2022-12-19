@@ -104,9 +104,9 @@ a {
   color: $mainFontColor;
   text-transform: uppercase;
   cursor: pointer;
-    &:hover {
-      color:rgba(132, 146, 163, 1)
-    }
+  &:hover {
+    color: rgba(132, 146, 163, 1);
+  }
 }
 
 // .login-page {
@@ -119,4 +119,14 @@ a {
 
 .game-page {
   display: none;
+  canvas {
+    image-rendering: pixelated;
+  }
+}
+
+.game-canvas {
+  width: 352px;
+  height: 198px;
+
+  scale: 2;
 }
