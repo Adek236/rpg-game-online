@@ -4,6 +4,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 import { auth } from "../config/firebase.js"
 import { getGamePage } from "../app.js";
+import { Overworld } from "./Overworld.js";
 
 (function () {
 

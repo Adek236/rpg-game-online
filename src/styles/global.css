@@ -97,9 +97,22 @@ a:hover {
 }
 
 .game-page {
+  position: relative;
   display: none;
+  width: 90%;
+  height: 90vh;
+  background-color: rgba(206, 214, 224, 0.2);
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.5);
+}
+.game-page a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5rem;
 }
 .game-page canvas {
+  outline: 1px solid wheat;
   -ms-interpolation-mode: nearest-neighbor;
       image-rendering: -moz-crisp-edges;
       image-rendering: pixelated;

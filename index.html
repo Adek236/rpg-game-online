@@ -9,7 +9,7 @@
     <script type="module" src="./src/config/firebase.js"></script>
   </head>
   <body class="f-center f-col">
-    <h1>RPG Game Online</h1>
+    <h1 class="title">RPG Game Online</h1>
     
     <!-- LOGIN page -->
     <div class="container f-center f-col login-page">
@@ -78,15 +78,17 @@
 
     <!-- GAME page -->
     
-    <div class="container f-center f-col game-page">
+    <div class="game-page f-center">
       <canvas class="game-canvas" width="352" height="198"></canvas>
       <a id="logoutBtn" href="/">Logout</a>
     </div>
 
 
     <!-- Game -->
-    <script src="./src/game/Overworld.js"></script>
-    <script type="module" src="./src/game/game.js"></script>
+    <script type="module" src="./src/game/Overworld.js"></script>
+    <script type="module" src="./src/game/GameObject.js"></script>
+    <script type="module" src="./src/game/Sprite.js"></script>
+    <script type="module" src="./src/game/gameInit.js"></script>
     
     <!-- App -->
     <script type="module" src="./src/services/register.js"></script>

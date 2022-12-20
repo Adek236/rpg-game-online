@@ -118,8 +118,21 @@ a {
 }
 
 .game-page {
+  position: relative;
   display: none;
+  width: 90%;
+  height: 90vh;
+  background-color: $mainContainerColor;
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px 1px $halfShadowColor;
+  a {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.5rem;
+  }
   canvas {
+    outline: 1px solid wheat;
     image-rendering: pixelated;
   }
 }

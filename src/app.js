@@ -3,6 +3,7 @@ import { login } from "./services/login.js";
 import { logout } from "./services/logout.js";
 
 export function getGamePage() {
+  document.querySelector(".title").style.display = "none";
   document.querySelector(".login-page").style.display = "none";
   document.querySelector(".register-page").style.display = "none";
   document.querySelector(".game-page").style.display = "flex";
