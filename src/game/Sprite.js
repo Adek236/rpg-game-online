@@ -32,8 +32,8 @@ export class Sprite {
     }
 
     draw(ctx) {
-        const x = this.gameObject.x * 16 - this.gameObject.offsetX;
-        const y = this.gameObject.y * 16 - this.gameObject.offsetY;
+        const x = this.gameObject.x - this.gameObject.offsetX;
+        const y = this.gameObject.y - this.gameObject.offsetY;
 
         this.isShadowLoaded && ctx.drawImage(this.shadow,
             0,0,

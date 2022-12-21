@@ -8,11 +8,15 @@ export class GameObject {
         this.offsetY = config.offsetY || 18;
         this.shadowOffsetX = config.shadowOffsetX || 0;
         this.shadowOffsetY = config.shadowOffsetY || 0;
+        this.direction = config.direction || "down";
 
         this.sprite = new Sprite({
             gameObject: this,
             src: config.src || 'src/game/assets/characters/hero.png',
         });
+    }
+
+    update() {
 
     }
 }
