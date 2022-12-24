@@ -1,3 +1,6 @@
+import { utils } from "./utils/utils.js";
+
+
 export class Sprite {
   constructor(config) {
     // Set up the image
@@ -86,9 +89,9 @@ export class Sprite {
     }
   }
 
-  draw(ctx) {
-    const x = this.gameObject.x - this.gameObject.offsetX;
-    const y = this.gameObject.y - this.gameObject.offsetY;
+  draw(ctx, cameraPerson) {
+    const x = this.gameObject.x - this.gameObject.offsetX + utils.withGrid(10.5) - cameraPerson.x;
+    const y = this.gameObject.y - this.gameObject.offsetY + utils.withGrid(6) - cameraPerson.y;
 
     this.isShadowLoaded &&
       ctx.drawImage(
