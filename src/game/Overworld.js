@@ -12,46 +12,44 @@ export class Overworld {
 
   startGameLoop() {
     const step = () => {
+      // Clear off the canvas
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Clear off the canvas
-    this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);  
-
-    // Establish the camera person
-   const cameraPerson = this.map.gameObjects.hero2;
+      // Establish the camera person
+      const cameraPerson = this.map.gameObjects.hero;
 
       // Update all objects
-   Object.values(this.map.gameObjects).forEach(object => {
-    object.update({
-      arrow: this.directionInput.direction
-    });
-   }) 
+      Object.values(this.map.gameObjects).forEach((object) => {
+        object.update({
+          arrow: this.directionInput.direction,
+          map: this.map
+        });
+      });
 
-    // Draw Lower layer
-    this.map.drawLowerImage(this.ctx, cameraPerson);
-    
-    // Draw Game Objects
-    Object.values(this.map.gameObjects).forEach(object => {
-      
-      object.sprite.draw(this.ctx, cameraPerson);
-    })
+      // Draw Lower layer
+      this.map.drawLowerImage(this.ctx, cameraPerson);
 
-    // Draw Upper layer
-    this.map.drawUpperImage(this.ctx, cameraPerson);
+      // Draw Game Objects
+      Object.values(this.map.gameObjects).forEach((object) => {
+        object.sprite.draw(this.ctx, cameraPerson);
+      });
 
-      requestAnimationFrame(()=> {
-        step();
-      })
-    }
+      // Draw Upper layer
+      this.map.drawUpperImage(this.ctx, cameraPerson);
+
+      // console.log(OverworldMaps.outsideMap.walls)
+
+      requestAnimationFrame(step);
+    };
     step();
   }
 
   init() {
     this.map = new OverworldMap(OverworldMaps.outsideMap);
-
+    this.map.mountObjects();
 
     this.directionInput = new DirectionInput();
     this.directionInput.init();
-
 
     this.startGameLoop();
   }
