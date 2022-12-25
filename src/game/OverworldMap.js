@@ -53,15 +53,16 @@ export const OverworldMaps = {
     lowerSrc: "src/game/assets/maps/testMap.png",
     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
     gameObjects: {
-      hero: new GameObject({
-        x: 7,
-        y: 4,
+      hero: new Person({
+        x: utils.withGrid(7),
+        y: utils.withGrid(4),
         offsetX: 9,
         shadowOffsetX: 1,
       }),
-      hero2: new GameObject({
-        x: 6,
-        y: 4,
+      hero2: new Person({
+        isPlayerControlled: true,
+        x: utils.withGrid(9),
+        y: utils.withGrid(4),
         offsetX: 9,
         shadowOffsetX: 1,
       }),
