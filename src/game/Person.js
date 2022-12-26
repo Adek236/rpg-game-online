@@ -1,4 +1,5 @@
 import { GameObject } from "./GameObject.js";
+import { utils } from "./utils/utils.js";
 
 export class Person extends GameObject {
   constructor(config) {
@@ -47,6 +48,15 @@ export class Person extends GameObject {
       state.map.moveWall(this.x, this.y, this.direction);
 
       this.movingProgressReaming = 16;
+      this.updateSprite(state);
+    }
+    
+    if (behavior.type === "stand") {
+      setTimeout(() => {
+        utils.emitEvent("PersonStandComplete", {
+          whoId: this.id,
+        });
+      }, behavior.time);
     }
   }
 
@@ -54,6 +64,13 @@ export class Person extends GameObject {
     const [property, change] = this.directionUpdate[this.direction];
     this[property] += change;
     this.movingProgressReaming -= 1;
+
+    if (this.movingProgressReaming === 0) {
+      // We finished the walk
+      utils.emitEvent("PersonWalkingComplete", {
+        whoId: this.id,
+      });
+    }
   }
 
   updateSprite() {

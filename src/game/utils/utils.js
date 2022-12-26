@@ -18,6 +18,12 @@ export const utils = {
     } else if (direction === "down") {
       y += size;
     }
-    return {x,y};
+    return { x, y };
+  },
+  emitEvent(name, detail) {
+    const event = new CustomEvent(name, {
+      detail,
+    });
+    document.dispatchEvent(event);
   },
 };

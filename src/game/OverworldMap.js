@@ -12,6 +12,8 @@ export class OverworldMap {
 
     this.upperImage = new Image();
     this.upperImage.src = config.upperSrc;
+
+    this.isCutescenePlaying = false;
   }
 
   drawLowerImage(ctx, cameraPerson) {
@@ -35,9 +37,13 @@ export class OverworldMap {
   }
 
   mountObjects(){
-    Object.values(this.gameObjects).forEach(o => {
+    Object.keys(this.gameObjects).forEach(key => {
+
+      let object = this.gameObjects[key];
+      object.id = key;
+
       // TODO: determine if this object should acctually mount
-      o.mount(this);
+      object.mount(this);
     })
   }
 
@@ -64,6 +70,10 @@ export const OverworldMaps = {
         y: utils.withGrid(4),
         offsetX: 9,
         shadowOffsetX: 1,
+        behaviorLoop: [
+          {type: "stand", direction: "down", time: 800},
+          {type: "stand", direction: "right", time: 1200},
+        ]
       }),
       hero: new Person({
         isPlayerControlled: true,
@@ -71,6 +81,19 @@ export const OverworldMaps = {
         y: utils.withGrid(4),
         src: "src/game/assets/characters/hero2.png",
       }),
+      hero3: new Person({
+        x: utils.withGrid(12),
+        y: utils.withGrid(7),
+        offsetX: 8,
+        src: 'src/game/assets/characters/hero3.png',
+        behaviorLoop: [
+          {type: "walk", direction: "right"},
+          {type: "stand", direction: "down", time: 800},
+          {type: "walk", direction: "down"},
+          {type: "walk", direction: "left"},
+          {type: "walk", direction: "up"}
+        ]
+      })
     },
     walls: {
       [utils.asGridCoords(7, 4)]: true,
@@ -92,6 +115,13 @@ export const OverworldMaps = {
         y: utils.withGrid(4),
         offsetX: 9,
         shadowOffsetX: 1,
+      }),
+      hero3: new Person({
+        x: utils.withGrid(12),
+        y: utils.withGrid(7),
+        offsetX: 9,
+        shadowOffsetX: 1,
+        src: 'src/game/assets/characters/hero3.png'
       }),
     },
   },
