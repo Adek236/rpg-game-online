@@ -1,6 +1,7 @@
 import { GameObject } from "./GameObject.js";
 import { utils } from "./utils/utils.js";
 import { Person } from "./Person.js";
+import { convertedOutisdeMapWalls } from "./data/testMapOutsideCollision.js";
 
 export class OverworldMap {
   constructor(config) {
@@ -95,9 +96,7 @@ export const OverworldMaps = {
         ]
       })
     },
-    walls: {
-      [utils.asGridCoords(7, 4)]: true,
-    },
+    walls: convertedOutisdeMapWalls,
   },
   insideMap: {
     lowerSrc: "src/game/assets/maps/testMap.png",

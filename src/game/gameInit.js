@@ -5,6 +5,7 @@ import {
 import { auth } from "../config/firebase.js"
 import { getGamePage } from "../app.js";
 import { Overworld } from "./Overworld.js";
+import { convertCollision } from "./utils/convertCollision.js";
 
 (function () {
 
@@ -39,5 +40,6 @@ import { Overworld } from "./Overworld.js";
   })
 
   overworld.init();
+  // convertCollision(); // convert map collision
 
 })();
