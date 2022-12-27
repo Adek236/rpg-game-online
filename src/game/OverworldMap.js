@@ -2,6 +2,7 @@ import { GameObject } from "./GameObject.js";
 import { utils } from "./utils/utils.js";
 import { Person } from "./Person.js";
 import { convertedOutisdeMapWalls } from "./data/testMapOutsideCollision.js";
+import { OverworldEvent } from "./OverworldEvent.js";
 
 export class OverworldMap {
   constructor(config) {
@@ -14,7 +15,7 @@ export class OverworldMap {
     this.upperImage = new Image();
     this.upperImage.src = config.upperSrc;
 
-    this.isCutescenePlaying = false;
+    this.isCutscenePlaying = false;
   }
 
   drawLowerImage(ctx, cameraPerson) {
@@ -46,6 +47,21 @@ export class OverworldMap {
       // TODO: determine if this object should acctually mount
       object.mount(this);
     })
+  }
+
+  async startCutscene(events) {
+    this.isCutscenePlaying = true;
+
+    // Start a loop of async events
+    for (let i = 0; i < events.length; i++) {
+      const eventHandler = new OverworldEvent({
+        event: events[i],
+        map: this
+      })
+      await eventHandler.init();
+    }
+
+    this.isCutscenePlaying = false;
   }
 
   addWall(x, y) {
@@ -89,8 +105,12 @@ export const OverworldMaps = {
         src: 'src/game/assets/characters/hero3.png',
         behaviorLoop: [
           {type: "walk", direction: "right"},
-          {type: "stand", direction: "down", time: 800},
+          {type: "walk", direction: "right"},
+          {type: "walk", direction: "right"},
+          {type: "stand", direction: "down", time: 2800},
           {type: "walk", direction: "down"},
+          {type: "walk", direction: "left"},
+          {type: "walk", direction: "left"},
           {type: "walk", direction: "left"},
           {type: "walk", direction: "up"}
         ]

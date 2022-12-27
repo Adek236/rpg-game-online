@@ -23,7 +23,7 @@ export class Person extends GameObject {
       // More cases for starting to walk will here
 
       // Case: We're keyboard ready and have an arrow pressed
-      if (this.isPlayerControlled && state.arrow) {
+      if (!state.map.isCutscenePlaying && this.isPlayerControlled && state.arrow) {
         this.startBehavior(state, {
           type: "walk",
           direction: state.arrow,
@@ -39,6 +39,9 @@ export class Person extends GameObject {
     if (behavior.type === "walk") {
       // Stop here if space is not free
       if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
+        behavior.retry && setTimeout(()=> {
+          this.startBehavior(state, behavior);
+        }, 1000)
         return;
       }
 
