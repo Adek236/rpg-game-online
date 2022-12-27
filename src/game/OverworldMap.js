@@ -1,4 +1,4 @@
-import { GameObject } from "./GameObject.js";
+// import { GameObject } from "./GameObject.js";
 import { utils } from "./utils/utils.js";
 import { Person } from "./Person.js";
 import { convertedOutisdeMapWalls } from "./data/testMapOutsideCollision.js";
@@ -6,7 +6,9 @@ import { OverworldEvent } from "./OverworldEvent.js";
 
 export class OverworldMap {
   constructor(config) {
+    this.overworld = null;
     this.gameObjects = config.gameObjects;
+    this.cutsceneSpaces = config.cutsceneSpaces || {};
     this.walls = config.walls || {};
 
     this.lowerImage = new Image();
@@ -16,6 +18,7 @@ export class OverworldMap {
     this.upperImage.src = config.upperSrc;
 
     this.isCutscenePlaying = false;
+    
   }
 
   drawLowerImage(ctx, cameraPerson) {
@@ -62,6 +65,30 @@ export class OverworldMap {
     }
 
     this.isCutscenePlaying = false;
+
+    // Reset NPC to do their idle behavior
+
+    Object.values(this.gameObjects).forEach(object => object.doBehaviorEvent(this));
+  }
+
+  checkForActionCutscene() {
+    const hero = this.gameObjects["hero"]
+    const nextCoords = utils.nextPosition(hero.x, hero.y, hero.direction)
+    const match = Object.values(this.gameObjects).find(object => {
+      return `${object.x},${object.y}` === `${nextCoords.x},${nextCoords.y}`
+    })
+    console.log({match})
+    if (!this.isCutscenePlaying && match && match.talking.length) {
+      this.startCutscene(match.talking[0].events)
+    }
+  }
+  
+  checkForFootstepCutscene(){
+    const hero = this.gameObjects["hero"]
+    const match = this.cutsceneSpaces[`${hero.x},${hero.y}`];
+    if(!this.isCutscenePlaying && match){
+      this.startCutscene(match[0].events)
+    }
   }
 
   addWall(x, y) {
@@ -90,6 +117,14 @@ export const OverworldMaps = {
         behaviorLoop: [
           {type: "stand", direction: "down", time: 800},
           {type: "stand", direction: "right", time: 1200},
+        ],
+        talking: [
+          {
+            events: [
+              { type: "textMessage", text: "hella", faceHero: "hero2"},
+              { type: "textMessage", text: "emalla"}
+            ]
+          }
         ]
       }),
       hero: new Person({
@@ -117,12 +152,31 @@ export const OverworldMaps = {
       })
     },
     walls: convertedOutisdeMapWalls,
+    cutsceneSpaces: {
+      [utils.asGridCoords(7,4)]: [
+        {
+          events: [
+            { who: "hero", type: "walk", direction: "down" },
+            { who: "hero", type: "walk", direction: "down" },
+            {type: "textMessage", text: "You cant go there"}
+          ]
+        }
+      ],
+      [utils.asGridCoords(6,4)]: [
+        {
+          events: [
+            { type: "changeMap", map: "insideMap" }
+          ]
+        }
+      ]
+    }
   },
   insideMap: {
     lowerSrc: "src/game/assets/maps/testMap.png",
     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
     gameObjects: {
       hero: new Person({
+        isPlayerControlled: true,
         x: utils.withGrid(7),
         y: utils.withGrid(4),
         offsetX: 9,

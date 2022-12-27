@@ -1,5 +1,6 @@
 import { DirectionInput } from "./DirectonInput.js";
 import { GameObject } from "./GameObject.js";
+import { KeyPressListener } from "./KeyPressListener.js";
 import { OverworldMap, OverworldMaps } from "./OverworldMap.js";
 
 export class Overworld {
@@ -22,7 +23,7 @@ export class Overworld {
       Object.values(this.map.gameObjects).forEach((object) => {
         object.update({
           arrow: this.directionInput.direction,
-          map: this.map
+          map: this.map,
         });
       });
 
@@ -30,11 +31,13 @@ export class Overworld {
       this.map.drawLowerImage(this.ctx, cameraPerson);
 
       // Draw Game Objects
-      Object.values(this.map.gameObjects).sort((a,b)=>{
-        return a.y - b.y;
-      }).forEach((object) => {
-        object.sprite.draw(this.ctx, cameraPerson);
-      });
+      Object.values(this.map.gameObjects)
+        .sort((a, b) => {
+          return a.y - b.y;
+        })
+        .forEach((object) => {
+          object.sprite.draw(this.ctx, cameraPerson);
+        });
 
       // Draw Upper layer
       this.map.drawUpperImage(this.ctx, cameraPerson);
@@ -46,9 +49,31 @@ export class Overworld {
     step();
   }
 
-  init() {
-    this.map = new OverworldMap(OverworldMaps.outsideMap);
+  bindActionInput() {
+    new KeyPressListener("Enter", () => {
+      // Is there a person here to talk to
+      this.map.checkForActionCutscene();
+    });
+  }
+  bindHeroPositionCheck() {
+    document.addEventListener("PersonWalkingComplete", (e) => {
+      if (e.detail.whoId === "hero") {
+        this.map.checkForFootstepCutscene();
+      }
+    });
+  }
+
+  startMap(mapConfig) {
+    this.map = new OverworldMap(mapConfig);
+    this.map.overworld = this;
     this.map.mountObjects();
+  }
+
+  init() {
+    this.startMap(OverworldMaps.outsideMap);
+
+    this.bindActionInput();
+    this.bindHeroPositionCheck();
 
     this.directionInput = new DirectionInput();
     this.directionInput.init();
@@ -56,11 +81,13 @@ export class Overworld {
     this.startGameLoop();
 
     // this.map.startCutscene([
-    //   {who: "hero2", type: "walk", direction: "down"},
-    //   {who: "hero2", type: "walk", direction: "right"},
-    //   {who: "hero2", type: "walk", direction: "right"},
-    //   {who: "hero2", type: "stand", direction: "up", time: 2800},
-    //   {who: "hero", type: "walk", direction: "down"},
+    //   { type: "textMessage", text: "hello"}
+
+    //   // {who: "hero2", type: "walk", direction: "down"},
+    //   // {who: "hero2", type: "walk", direction: "right"},
+    //   // {who: "hero2", type: "walk", direction: "right"},
+    //   // {who: "hero2", type: "stand", direction: "up", time: 2800},
+    //   // {who: "hero", type: "walk", direction: "down"},
     // ]
     // )
   }
