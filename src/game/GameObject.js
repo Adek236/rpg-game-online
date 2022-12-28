@@ -22,11 +22,13 @@ export class GameObject {
     this.behaviorLoopIndex = 0;
 
     this.talking = config.talking || [];
+
+    this.retryTimeout = null;
   }
 
   mount(map) {
     this.isMounted = true;
-    map.addWall(this.x, this.y);
+    // map.addWall(this.x, this.y);
 
     // If wwe have a behavior, kick off after short delay
     setTimeout(() => {
@@ -38,7 +40,18 @@ export class GameObject {
 
   async doBehaviorEvent(map) {
     // Dont do anything if there is a more important cutscene or i dont have config to do anything
-    if (map.isCutscenePlaying || this.behaviorLoop.length === 0 || this.isStanding) {
+    if (this.behaviorLoop.length === 0) {
+      return;
+    }
+
+    if (map.isCutscenePlaying) {
+      if (this.retryTimeout) {
+        clearTimeout(this.retryTimeout);
+      }
+
+      this.retryTimeout = setTimeout(() => {
+        this.doBehaviorEvent(map);
+      }, 1000);
       return;
     }
 

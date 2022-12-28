@@ -7,7 +7,9 @@ import { OverworldEvent } from "./OverworldEvent.js";
 export class OverworldMap {
   constructor(config) {
     this.overworld = null;
-    this.gameObjects = config.gameObjects;
+    this.gameObjects = {}; // Live objects are in here
+    this.configObjects = config.configObjects; // Configuration content
+
     this.cutsceneSpaces = config.cutsceneSpaces || {};
     this.walls = config.walls || {};
 
@@ -18,7 +20,6 @@ export class OverworldMap {
     this.upperImage.src = config.upperSrc;
 
     this.isCutscenePlaying = false;
-    
   }
 
   drawLowerImage(ctx, cameraPerson) {
@@ -38,18 +39,35 @@ export class OverworldMap {
 
   isSpaceTaken(currentX, currentY, direction) {
     const { x, y } = utils.nextPosition(currentX, currentY, direction);
-    return this.walls[`${x},${y}`] || false;
+   if (this.walls[`${x},${y}`]) {
+    return true;
+   }
+   // Check for game objecs at this position
+   return Object.values(this.gameObjects).find(obj => {
+    if (obj.x === x && obj.y === y) {return true;}
+    if (obj.intentPos && obj.intentPos[0] === x && obj. intentPos[1] === y){
+      return true;
+    }
+    return false;
+   })
   }
 
-  mountObjects(){
-    Object.keys(this.gameObjects).forEach(key => {
-
-      let object = this.gameObjects[key];
+  mountObjects() {
+    Object.keys(this.configObjects).forEach((key) => {
+      let object = this.configObjects[key];
       object.id = key;
 
-      // TODO: determine if this object should acctually mount
-      object.mount(this);
-    })
+      let instace;
+
+      if (object.type === "Person") {
+        instace = new Person(object);
+      }
+      // object.type === monster np
+
+      this.gameObjects[key] = instace;
+      this.gameObjects[key].id = key;
+      instace.mount(this);
+    });
   }
 
   async startCutscene(events) {
@@ -59,143 +77,161 @@ export class OverworldMap {
     for (let i = 0; i < events.length; i++) {
       const eventHandler = new OverworldEvent({
         event: events[i],
-        map: this
-      })
+        map: this,
+      });
       await eventHandler.init();
     }
 
     this.isCutscenePlaying = false;
 
     // Reset NPC to do their idle behavior
-
-    Object.values(this.gameObjects).forEach(object => object.doBehaviorEvent(this));
+    // Object.values(this.gameObjects).forEach(object => object.doBehaviorEvent(this));
   }
 
   checkForActionCutscene() {
-    const hero = this.gameObjects["hero"]
-    const nextCoords = utils.nextPosition(hero.x, hero.y, hero.direction)
-    const match = Object.values(this.gameObjects).find(object => {
-      return `${object.x},${object.y}` === `${nextCoords.x},${nextCoords.y}`
-    })
-    console.log({match})
+    const hero = this.gameObjects["hero"];
+    const nextCoords = utils.nextPosition(hero.x, hero.y, hero.direction);
+    const match = Object.values(this.gameObjects).find((object) => {
+      return `${object.x},${object.y}` === `${nextCoords.x},${nextCoords.y}`;
+    });
+    console.log({ match });
     if (!this.isCutscenePlaying && match && match.talking.length) {
-      this.startCutscene(match.talking[0].events)
-    }
-  }
-  
-  checkForFootstepCutscene(){
-    const hero = this.gameObjects["hero"]
-    const match = this.cutsceneSpaces[`${hero.x},${hero.y}`];
-    if(!this.isCutscenePlaying && match){
-      this.startCutscene(match[0].events)
+      const relevantScenario = match.talking.find((scenario) => {
+        return (scenario.required || []).every((sf) => {
+          console.log(window.playerState);
+          return window.playerState.storyFlags[sf];
+        });
+      });
+
+      relevantScenario && this.startCutscene(relevantScenario.events);
     }
   }
 
-  addWall(x, y) {
-    this.walls[`${x},${y}`] = true;
+  checkForFootstepCutscene() {
+    const hero = this.gameObjects["hero"];
+    const match = this.cutsceneSpaces[`${hero.x},${hero.y}`];
+    if (!this.isCutscenePlaying && match) {
+      this.startCutscene(match[0].events);
+    }
   }
-  removeWall(x, y) {
-    delete this.walls[`${x},${y}`];
-  }
-  moveWall(wasX, wasY, direction) {
-    this.removeWall(wasX, wasY);
-    const { x, y } = utils.nextPosition(wasX, wasY, direction);
-    this.addWall(x, y);
-  }
+
+  // addWall(x, y) {
+  //   this.walls[`${x},${y}`] = true;
+  // }
+  // removeWall(x, y) {
+  //   delete this.walls[`${x},${y}`];
+  // }
+  // moveWall(wasX, wasY, direction) {
+  //   this.removeWall(wasX, wasY);
+  //   const { x, y } = utils.nextPosition(wasX, wasY, direction);
+  //   this.addWall(x, y);
+  // }
 }
 
 window.OverworldMaps = {
   outsideMap: {
     lowerSrc: "src/game/assets/maps/testMapOutside.png",
     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
-    gameObjects: {
-      hero2: new Person({
+    configObjects: {
+      hero: {
+        type: "Person",
+        isPlayerControlled: true,
+        x: utils.withGrid(9),
+        y: utils.withGrid(4),
+        src: "src/game/assets/characters/hero2.png",
+      },
+      hero2: {
+        type: "Person",
         x: utils.withGrid(8),
         y: utils.withGrid(4),
         offsetX: 9,
         shadowOffsetX: 1,
         behaviorLoop: [
-          {type: "stand", direction: "down", time: 800},
-          {type: "stand", direction: "right", time: 1200},
+          { type: "stand", direction: "down", time: 800 },
+          { type: "stand", direction: "right", time: 1200 },
         ],
         talking: [
           {
+            required: ["next_talk"],
+            events: [{ type: "textMessage", text: "Its next_talk " }],
+          },
+          {
+            required: ["something_to_do"],
             events: [
-              { type: "textMessage", text: "hella", faceHero: "hero2"},
-              { type: "textMessage", text: "emalla"}
-            ]
-          }
-        ]
-      }),
-      hero: new Person({
-        isPlayerControlled: true,
-        x: utils.withGrid(9),
-        y: utils.withGrid(4),
-        src: "src/game/assets/characters/hero2.png",
-      }),
-      hero3: new Person({
+              { type: "textMessage", text: "Its working" },
+              { type: "addStoryFlag", flag: "next_talk" },
+            ],
+          },
+          {
+            events: [
+              { type: "textMessage", text: "hella", faceHero: "hero2" },
+              { type: "textMessage", text: "emalla" },
+            ],
+          },
+        ],
+      },
+      hero3: {
+        type: "Person",
         x: utils.withGrid(12),
         y: utils.withGrid(7),
         offsetX: 8,
-        src: 'src/game/assets/characters/hero3.png',
+        src: "src/game/assets/characters/hero3.png",
         behaviorLoop: [
-          {type: "walk", direction: "right"},
-          {type: "walk", direction: "right"},
-          {type: "walk", direction: "right"},
-          {type: "stand", direction: "down", time: 2800},
-          {type: "walk", direction: "down"},
-          {type: "walk", direction: "left"},
-          {type: "walk", direction: "left"},
-          {type: "walk", direction: "left"},
-          {type: "walk", direction: "up"}
-        ]
-      })
+          { type: "walk", direction: "right" },
+          { type: "walk", direction: "right" },
+          { type: "walk", direction: "right" },
+          { type: "stand", direction: "down", time: 2800 },
+          { type: "walk", direction: "down" },
+          { type: "walk", direction: "left" },
+          { type: "walk", direction: "left" },
+          { type: "walk", direction: "left" },
+          { type: "walk", direction: "up" },
+        ],
+      },
     },
     walls: convertedOutisdeMapWalls,
     cutsceneSpaces: {
-      [utils.asGridCoords(7,4)]: [
+      [utils.asGridCoords(7, 4)]: [
         {
           events: [
             { who: "hero", type: "walk", direction: "down" },
             { who: "hero", type: "walk", direction: "down" },
-            {type: "textMessage", text: "You cant go there"}
-          ]
-        }
+            { type: "textMessage", text: "You cant go there" },
+          ],
+        },
       ],
-      [utils.asGridCoords(6,4)]: [
+      [utils.asGridCoords(6, 4)]: [
         {
-          events: [
-            { type: "changeMap", map: "insideMap" }
-          ]
-        }
-      ]
-    }
-  },
-  insideMap: {
-    lowerSrc: "src/game/assets/maps/testMap.png",
-    upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
-    gameObjects: {
-      hero: new Person({
-        isPlayerControlled: true,
-        x: utils.withGrid(7),
-        y: utils.withGrid(4),
-        offsetX: 9,
-        shadowOffsetX: 1,
-      }),
-      hero2: new Person({
-        isPlayerControlled: true,
-        x: utils.withGrid(9),
-        y: utils.withGrid(4),
-        offsetX: 9,
-        shadowOffsetX: 1,
-      }),
-      hero3: new Person({
-        x: utils.withGrid(12),
-        y: utils.withGrid(7),
-        offsetX: 9,
-        shadowOffsetX: 1,
-        src: 'src/game/assets/characters/hero3.png'
-      }),
+          events: [{ type: "changeMap", map: "insideMap" }],
+        },
+      ],
     },
   },
+  // insideMap: {
+  //   lowerSrc: "src/game/assets/maps/testMap.png",
+  //   upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
+  //   gameObjects: {
+  //     hero: new Person({
+  //       isPlayerControlled: true,
+  //       x: utils.withGrid(7),
+  //       y: utils.withGrid(4),
+  //       offsetX: 9,
+  //       shadowOffsetX: 1,
+  //     }),
+  //     hero2: new Person({
+  //       isPlayerControlled: true,
+  //       x: utils.withGrid(9),
+  //       y: utils.withGrid(4),
+  //       offsetX: 9,
+  //       shadowOffsetX: 1,
+  //     }),
+  //     hero3: new Person({
+  //       x: utils.withGrid(12),
+  //       y: utils.withGrid(7),
+  //       offsetX: 9,
+  //       shadowOffsetX: 1,
+  //       src: 'src/game/assets/characters/hero3.png'
+  //     }),
+  //   },
+  // },
 };

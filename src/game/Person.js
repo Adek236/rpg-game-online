@@ -6,6 +6,7 @@ export class Person extends GameObject {
     super(config);
     this.movingProgressReaming = 0;
     this.isStanding = false;
+    this.intentPos = null; // [x,y]
 
 
     this.isPlayerControlled = config.isPlayerControlled || false;
@@ -36,6 +37,11 @@ export class Person extends GameObject {
   }
 
   startBehavior(state, behavior) {
+
+    if (!this.isMounted) {
+      return;
+    }
+
     // Set character direction to whatever behavior has
     this.direction = behavior.direction;
     if (behavior.type === "walk") {
@@ -50,9 +56,17 @@ export class Person extends GameObject {
       // Ready to walk
 
       // Reserve the space front of you (place wall)
-      state.map.moveWall(this.x, this.y, this.direction);
+      // state.map.moveWall(this.x, this.y, this.direction);
 
       this.movingProgressReaming = 16;
+
+      // Add next position intent
+      const intentPos = utils.nextPosition(this.x, this.y, this.direction)
+      this.intentPos = [
+        intentPos.x,
+        intentPos.y
+      ]
+
       this.updateSprite(state);
     }
     
@@ -74,6 +88,7 @@ export class Person extends GameObject {
 
     if (this.movingProgressReaming === 0) {
       // We finished the walk
+      this.intentPos = null;
       utils.emitEvent("PersonWalkingComplete", {
         whoId: this.id,
       });

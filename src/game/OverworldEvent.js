@@ -1,6 +1,5 @@
 import { TextMessage } from "./TextMessage.js";
 import { utils } from "./utils/utils.js";
-// import { OverworldMaps } from "./OverworldMap.js";
 
 export class OverworldEvent {
   constructor({ map, event }) {
@@ -69,7 +68,18 @@ export class OverworldEvent {
     message.init(document.querySelector(".game-page"));
   }
 
+  addStoryFlag(resolve) {
+    window.playerState.storyFlags[this.event.flag] = true;
+    resolve();
+  }
+
   changeMap(resolve){
+    
+    // Deactive old objects
+    Object.values(this.map.gameObjects).forEach(obj => {
+      obj.isMounted = false;
+    })
+
     this.map.overworld.startMap(window.OverworldMaps[this.event.map])
     // console.log(window.OverworldMaps[this.event.map])
     resolve();
