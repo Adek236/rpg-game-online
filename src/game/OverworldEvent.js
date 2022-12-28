@@ -1,5 +1,6 @@
 import { TextMessage } from "./TextMessage.js";
 import { utils } from "./utils/utils.js";
+import { playerState } from "./PlayerState.js";
 
 export class OverworldEvent {
   constructor({ map, event }) {
@@ -32,7 +33,12 @@ export class OverworldEvent {
   }
 
   walk(resolve) {
-    const who = this.map.gameObjects[this.event.who];
+    // TODO: Need to change globaly here \/
+    const who =
+      this.map.gameObjects[
+        this.event.who === "hero" ? this.map.overworld.hero : this.event.who
+      ];
+    // const who = this.map.gameObjects[this.event.who];
     who.startBehavior(
       {
         map: this.map,
@@ -46,7 +52,8 @@ export class OverworldEvent {
 
     // Set up a handler to complete when correct person is done walking, then resolve the event
     const completeHandler = (e) => {
-      if (e.detail.whoId === this.event.who) {
+      // TODO: Need to change globaly here who.id \/
+      if (e.detail.whoId === who.id) {
         document.removeEventListener("PersonWalkingComplete", completeHandler);
         resolve();
       }
@@ -58,7 +65,9 @@ export class OverworldEvent {
   textMessage(resolve) {
     if (this.event.faceHero) {
       const obj = this.map.gameObjects[this.event.faceHero];
-      obj.direction = utils.oppositeDirection(this.map.gameObjects["hero"].direction);
+      obj.direction = utils.oppositeDirection(
+        this.map.gameObjects[this.map.overworld.hero].direction
+      );
     }
 
     const message = new TextMessage({
@@ -69,19 +78,17 @@ export class OverworldEvent {
   }
 
   addStoryFlag(resolve) {
-    window.playerState.storyFlags[this.event.flag] = true;
+    playerState.storyFlags[this.event.flag] = true;
     resolve();
   }
 
-  changeMap(resolve){
-    
+  changeMap(resolve) {
     // Deactive old objects
-    Object.values(this.map.gameObjects).forEach(obj => {
+    Object.values(this.map.gameObjects).forEach((obj) => {
       obj.isMounted = false;
-    })
+    });
 
-    this.map.overworld.startMap(window.OverworldMaps[this.event.map])
-    // console.log(window.OverworldMaps[this.event.map])
+    this.map.overworld.startMap(window.OverworldMaps[this.event.map]);
     resolve();
   }
 

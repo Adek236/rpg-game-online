@@ -2,6 +2,7 @@ import { DirectionInput } from "./DirectonInput.js";
 import { GameObject } from "./GameObject.js";
 import { KeyPressListener } from "./KeyPressListener.js";
 import { OverworldMap } from "./OverworldMap.js";
+import { playerState } from "./PlayerState.js";
 
 export class Overworld {
   constructor(config) {
@@ -9,16 +10,19 @@ export class Overworld {
     this.canvas = this.element.querySelector(".game-canvas");
     this.ctx = this.canvas.getContext("2d");
     this.map = null;
+    this.hero = null;
   }
 
   startGameLoop() {
     const step = () => {
       // Clear off the canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      this.hero = playerState.name;
 
       // Establish the camera person
-      const cameraPerson = this.map.gameObjects.hero;
-
+      const cameraPerson = this.map.gameObjects[this.hero];
+      // console.log(cameraPerson)
       // Update all objects
       Object.values(this.map.gameObjects).forEach((object) => {
         object.update({
@@ -57,11 +61,13 @@ export class Overworld {
   }
   bindHeroPositionCheck() {
     document.addEventListener("PersonWalkingComplete", (e) => {
-      if (e.detail.whoId === "hero") {
+      if (e.detail.whoId === this.hero) {
         this.map.checkForFootstepCutscene();
       }
     });
   }
+
+  
 
   startMap(mapConfig) {
     this.map = new OverworldMap(mapConfig);

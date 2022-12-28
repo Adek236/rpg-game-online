@@ -6,6 +6,7 @@ import { auth } from "../config/firebase.js"
 import { getGamePage } from "../app.js";
 import { Overworld } from "./Overworld.js";
 import { convertCollision } from "./utils/convertCollision.js";
+import { playerState } from "./PlayerState.js";
 
 (function () {
 
@@ -28,7 +29,15 @@ import { convertCollision } from "./utils/convertCollision.js";
     if (user) {
       console.log(user);
       console.log("login");
-      getGamePage();
+
+
+      // console.log(window.OverworldMaps)
+
+      playerState.update(user, callback =>{
+        overworld.init();
+      });
+      
+      // getGamePage(); 
     } else {
       console.log("not login");
     }
@@ -39,7 +48,7 @@ import { convertCollision } from "./utils/convertCollision.js";
     element: document.querySelector(".game-page")
   })
 
-  overworld.init();
+  // overworld.init();
   // convertCollision(); // convert map collision
 
 })();

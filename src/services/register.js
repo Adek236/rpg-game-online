@@ -72,6 +72,9 @@ function addPlayerDataToDB(data) {
       set(playerRef, {
         id: playerId,
         name: data.nickname,
+        x: 9,
+        y: 4,
+        currentMap: "outsideMap"
       });
       // console.log("data added");
     })

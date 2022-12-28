@@ -3,6 +3,7 @@ import { utils } from "./utils/utils.js";
 import { Person } from "./Person.js";
 import { convertedOutisdeMapWalls } from "./data/testMapOutsideCollision.js";
 import { OverworldEvent } from "./OverworldEvent.js";
+import { playerState } from "./PlayerState.js";
 
 export class OverworldMap {
   constructor(config) {
@@ -39,17 +40,19 @@ export class OverworldMap {
 
   isSpaceTaken(currentX, currentY, direction) {
     const { x, y } = utils.nextPosition(currentX, currentY, direction);
-   if (this.walls[`${x},${y}`]) {
-    return true;
-   }
-   // Check for game objecs at this position
-   return Object.values(this.gameObjects).find(obj => {
-    if (obj.x === x && obj.y === y) {return true;}
-    if (obj.intentPos && obj.intentPos[0] === x && obj. intentPos[1] === y){
+    if (this.walls[`${x},${y}`]) {
       return true;
     }
-    return false;
-   })
+    // Check for game objecs at this position
+    return Object.values(this.gameObjects).find((obj) => {
+      if (obj.x === x && obj.y === y) {
+        return true;
+      }
+      if (obj.intentPos && obj.intentPos[0] === x && obj.intentPos[1] === y) {
+        return true;
+      }
+      return false;
+    });
   }
 
   mountObjects() {
@@ -89,17 +92,18 @@ export class OverworldMap {
   }
 
   checkForActionCutscene() {
-    const hero = this.gameObjects["hero"];
+    // console.log(this.overworld)
+    const hero = this.gameObjects[this.overworld.hero];
     const nextCoords = utils.nextPosition(hero.x, hero.y, hero.direction);
     const match = Object.values(this.gameObjects).find((object) => {
       return `${object.x},${object.y}` === `${nextCoords.x},${nextCoords.y}`;
     });
-    console.log({ match });
+    // console.log({ match });
     if (!this.isCutscenePlaying && match && match.talking.length) {
       const relevantScenario = match.talking.find((scenario) => {
         return (scenario.required || []).every((sf) => {
-          console.log(window.playerState);
-          return window.playerState.storyFlags[sf];
+          // console.log(window.playerState);
+          return playerState.storyFlags[sf];
         });
       });
 
@@ -108,9 +112,10 @@ export class OverworldMap {
   }
 
   checkForFootstepCutscene() {
-    const hero = this.gameObjects["hero"];
+    const hero = this.gameObjects[this.overworld.hero];
     const match = this.cutsceneSpaces[`${hero.x},${hero.y}`];
     if (!this.isCutscenePlaying && match) {
+      console.log({ match });
       this.startCutscene(match[0].events);
     }
   }
@@ -133,13 +138,13 @@ window.OverworldMaps = {
     lowerSrc: "src/game/assets/maps/testMapOutside.png",
     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
     configObjects: {
-      hero: {
-        type: "Person",
-        isPlayerControlled: true,
-        x: utils.withGrid(9),
-        y: utils.withGrid(4),
-        src: "src/game/assets/characters/hero2.png",
-      },
+      // hero: {
+      //   type: "Person",
+      //   isPlayerControlled: true,
+      //   x: utils.withGrid(9),
+      //   y: utils.withGrid(4),
+      //   src: "src/game/assets/characters/hero2.png",
+      // },
       hero2: {
         type: "Person",
         x: utils.withGrid(8),
@@ -153,7 +158,10 @@ window.OverworldMaps = {
         talking: [
           {
             required: ["next_talk"],
-            events: [{ type: "textMessage", text: "Its next_talk " }],
+            events: [
+              { type: "textMessage", text: "Its next_talk ", faceHero:"hero2" },
+              { who: "Teddy", type: "walk", direction: "down" },
+            ],
           },
           {
             required: ["something_to_do"],
@@ -177,15 +185,15 @@ window.OverworldMaps = {
         offsetX: 8,
         src: "src/game/assets/characters/hero3.png",
         behaviorLoop: [
-          { type: "walk", direction: "right" },
-          { type: "walk", direction: "right" },
-          { type: "walk", direction: "right" },
-          { type: "stand", direction: "down", time: 2800 },
-          { type: "walk", direction: "down" },
-          { type: "walk", direction: "left" },
-          { type: "walk", direction: "left" },
-          { type: "walk", direction: "left" },
-          { type: "walk", direction: "up" },
+          // { type: "walk", direction: "right" },
+          // { type: "walk", direction: "right" },
+          // { type: "walk", direction: "right" },
+          // { type: "stand", direction: "down", time: 2800 },
+          // { type: "walk", direction: "down" },
+          // { type: "walk", direction: "left" },
+          // { type: "walk", direction: "left" },
+          // { type: "walk", direction: "left" },
+          // { type: "walk", direction: "up" },
         ],
       },
     },
