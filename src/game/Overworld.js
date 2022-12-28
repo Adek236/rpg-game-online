@@ -1,7 +1,7 @@
 import { DirectionInput } from "./DirectonInput.js";
 import { GameObject } from "./GameObject.js";
 import { KeyPressListener } from "./KeyPressListener.js";
-import { OverworldMap, OverworldMaps } from "./OverworldMap.js";
+import { OverworldMap } from "./OverworldMap.js";
 
 export class Overworld {
   constructor(config) {
@@ -70,7 +70,7 @@ export class Overworld {
   }
 
   init() {
-    this.startMap(OverworldMaps.outsideMap);
+    this.startMap(window.OverworldMaps.outsideMap);
 
     this.bindActionInput();
     this.bindHeroPositionCheck();

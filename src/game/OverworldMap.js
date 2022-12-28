@@ -104,7 +104,7 @@ export class OverworldMap {
   }
 }
 
-export const OverworldMaps = {
+window.OverworldMaps = {
   outsideMap: {
     lowerSrc: "src/game/assets/maps/testMapOutside.png",
     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
