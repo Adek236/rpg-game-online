@@ -1,3 +1,4 @@
+import { getGamePage } from "../app.js";
 import { DirectionInput } from "./DirectonInput.js";
 import { GameObject } from "./GameObject.js";
 import { KeyPressListener } from "./KeyPressListener.js";
@@ -11,15 +12,16 @@ export class Overworld {
     this.ctx = this.canvas.getContext("2d");
     this.map = null;
     this.hero = null;
+    this.heroId = null;
   }
 
   startGameLoop() {
     const step = () => {
       // Clear off the canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      
+      console.log("3-overworld")
       this.hero = playerState.name;
-
+      this.heroId = playerState.id;
       // Establish the camera person
       const cameraPerson = this.map.gameObjects[this.hero];
       // console.log(cameraPerson)
@@ -85,6 +87,7 @@ export class Overworld {
     this.directionInput.init();
 
     this.startGameLoop();
+    // getGamePage();
 
     // this.map.startCutscene([
     //   { type: "textMessage", text: "hello"}

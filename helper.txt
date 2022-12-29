@@ -1,4 +1,6 @@
-TODO: OverworldEvent walk method done but need to do this globaly at OverworldEvent
+TODO: 
+onAuthStateChanged must working after register or login
+OverworldEvent walk method done but need to do this globaly at OverworldEvent
 
 
 

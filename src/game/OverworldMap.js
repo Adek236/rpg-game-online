@@ -65,6 +65,9 @@ export class OverworldMap {
       if (object.type === "Person") {
         instace = new Person(object);
       }
+      if (object.type === "NPC") {
+        instace = new Person(object);
+      }
       // object.type === monster np
 
       this.gameObjects[key] = instace;
@@ -160,7 +163,7 @@ window.OverworldMaps = {
             required: ["next_talk"],
             events: [
               { type: "textMessage", text: "Its next_talk ", faceHero:"hero2" },
-              { who: "Teddy", type: "walk", direction: "down" },
+              { who: "hero", type: "walk", direction: "down" },
             ],
           },
           {

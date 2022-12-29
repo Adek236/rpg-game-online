@@ -10,10 +10,11 @@ export function login() {
   
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
+        console.log("login 4")
         // Signed in
         // const user = userCredential.user;
-        // console.log("singed in");
-        getGamePage();
+        // console.log("usss", user);
+        // getGamePage();
       })
       .catch((error) => {
         const errorCode = error.code;

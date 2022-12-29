@@ -9,7 +9,12 @@ export class OverworldEvent {
   }
 
   stand(resolve) {
-    const who = this.map.gameObjects[this.event.who];
+    // TODO: Need to change globaly here \/
+    const who =
+      this.map.gameObjects[
+        this.event.who === "hero" ? this.map.overworld.hero : this.event.who
+      ];
+    // const who = this.map.gameObjects[this.event.who];
     who.startBehavior(
       {
         map: this.map,
@@ -23,7 +28,8 @@ export class OverworldEvent {
 
     // Set up a handler to complete when correct person is done walking, then resolve the event
     const completeHandler = (e) => {
-      if (e.detail.whoId === this.event.who) {
+      // TODO: Need to change globaly here who.id \/
+      if (e.detail.whoId === who.id) {
         document.removeEventListener("PersonStandComplete", completeHandler);
         resolve();
       }
@@ -34,10 +40,11 @@ export class OverworldEvent {
 
   walk(resolve) {
     // TODO: Need to change globaly here \/
+    console.log(this.map)
     const who =
-      this.map.gameObjects[
-        this.event.who === "hero" ? this.map.overworld.hero : this.event.who
-      ];
+    this.map.gameObjects[
+      this.event.who === "hero" ? this.map.overworld.hero : this.event.who
+    ];
     // const who = this.map.gameObjects[this.event.who];
     who.startBehavior(
       {

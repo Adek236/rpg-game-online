@@ -7,7 +7,6 @@ export function getGamePage() {
   document.querySelector(".login-page").style.display = "none";
   document.querySelector(".register-page").style.display = "none";
   document.querySelector(".game-page").style.display = "flex";
-  console.log("fire getgamepage")
 }
 
 export function getRegisterPage() {

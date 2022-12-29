@@ -48,8 +48,10 @@ export async function registerUser() {
       // Signed in
       const user = userCredential.user;
       // console.log("user created");
-      addPlayerDataToDB({ user, nickname });
-      getGamePage();
+      addPlayerDataToDB({ user, nickname }, ()=>{
+        console.log("register 5")
+        getGamePage();
+      });
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -62,10 +64,10 @@ export async function registerUser() {
     });
 }
 
-function addPlayerDataToDB(data) {
+async function addPlayerDataToDB(data, resolve) {
   const playerId = data.user.uid;
 
-  get(child(dbRef, `players/${playerId}`))
+  await get(child(dbRef, `players/${playerId}`))
     .then((snapshot) => {
       if (snapshot.exists()) return;
       const playerRef = ref(db, `players/${playerId}`);
@@ -74,11 +76,13 @@ function addPlayerDataToDB(data) {
         name: data.nickname,
         x: 9,
         y: 4,
-        currentMap: "outsideMap"
+        currentMap: "outsideMap",
+        online: false
       });
-      // console.log("data added");
+      console.log("data added");
     })
     .catch((error) => {
       console.error(error);
     });
+    resolve();
 }
