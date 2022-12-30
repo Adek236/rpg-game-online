@@ -45,7 +45,7 @@ class PlayerState {
               src: "src/game/assets/characters/hero2.png",
             };
             console.log("1 - playerState getPlayerData")
-            // this.setPlayerOnline();
+            this.setPlayerOnline();
           } 
         });
       })
@@ -65,9 +65,9 @@ class PlayerState {
     update(this.playerRef, { online: true });
   }
 
-  // setPlayerOffline(){
-  //   update(this.playerRef, {online: false})
-  // }
+  setPlayerOffline(){
+    update(this.playerRef, {online: false})
+  }
 }
 
 export const playerState = new PlayerState();
