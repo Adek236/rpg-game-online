@@ -19,7 +19,7 @@ export class Overworld {
     const step = () => {
       // Clear off the canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      console.log("3-overworld")
+      // console.log("3-overworld")
       this.hero = playerState.name;
       this.heroId = playerState.id;
       // Establish the camera person

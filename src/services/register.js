@@ -50,7 +50,7 @@ export async function registerUser() {
       const user = userCredential.user;
       // console.log("user created");
       addPlayerDataToDB({ user, nickname }, ()=>{
-        console.log("register 5")
+        // console.log("register 5")
         init(user);
         // getGamePage();
       });
@@ -81,7 +81,7 @@ async function addPlayerDataToDB(data, resolve) {
         currentMap: "outsideMap",
         online: false
       });
-      console.log("data added");
+      // console.log("data added");
     })
     .catch((error) => {
       console.error(error);

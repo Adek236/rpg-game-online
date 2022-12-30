@@ -35,6 +35,7 @@ class PlayerState {
           // console.log("userdata=", userData);
           this.name = userData.name;
             this.id = userData.id;
+            this.currentMap = userData.currentMap;
             window.OverworldMaps[userData.currentMap].configObjects[
               userData.name
             ] = {
@@ -44,7 +45,7 @@ class PlayerState {
               y: utils.withGrid(userData.y),
               src: "src/game/assets/characters/hero2.png",
             };
-            console.log("1 - playerState getPlayerData")
+            // console.log("1 - playerState getPlayerData")
             this.setPlayerOnline();
           } 
         });

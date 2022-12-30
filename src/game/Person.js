@@ -36,7 +36,7 @@ export class Person extends GameObject {
           direction: state.arrow,
         });
       }
-      this.updateSprite(state);
+      this.updateSprite();
     }
   }
 
@@ -49,6 +49,7 @@ export class Person extends GameObject {
     this.direction = behavior.direction;
     if (behavior.type === "walk") {
       // Stop here if space is not free
+      console.log(state);
       if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
         behavior.retry &&
           setTimeout(() => {
@@ -65,7 +66,7 @@ export class Person extends GameObject {
       const intentPos = utils.nextPosition(this.x, this.y, this.direction);
       this.intentPos = [intentPos.x, intentPos.y];
 
-      this.updateSprite(state);
+      this.updateSprite();
     }
 
     if (behavior.type === "stand") {
@@ -97,9 +98,13 @@ export class Person extends GameObject {
         const player = {
           x: utils.withGridReverse(this.intentPos[0]),
           y: utils.withGridReverse(this.intentPos[1]),
+          direction: this.direction
         };
         playerState.updatePlayer({ player });
+        window.OverworldMaps[playerState.currentMap].configObjects[playerState.name].x = this.intentPos[0];
+        window.OverworldMaps[playerState.currentMap].configObjects[playerState.name].y = this.intentPos[1];
       }
+
       this.intentPos = null;
       utils.emitEvent("PersonWalkingComplete", {
         whoId: this.id,
