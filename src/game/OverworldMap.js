@@ -149,7 +149,7 @@ window.OverworldMaps = {
       //   src: "src/game/assets/characters/hero2.png",
       // },
       hero2: {
-        type: "Person",
+        type: "NPC",
         x: utils.withGrid(8),
         y: utils.withGrid(4),
         offsetX: 9,
@@ -182,7 +182,7 @@ window.OverworldMaps = {
         ],
       },
       hero3: {
-        type: "Person",
+        type: "NPC",
         x: utils.withGrid(12),
         y: utils.withGrid(7),
         offsetX: 8,
