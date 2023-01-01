@@ -8,6 +8,7 @@ import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebase
 import { auth, db, dbRef } from "../config/firebase.js";
 import { getGamePage, registerAuthErr } from "../app.js";
 import { init } from "../game/gameInit.js";
+import { playerState } from "../game/PlayerState.js";
 
 export async function registerUser() {
   const nickname = document.getElementById("registerNickname").value;
@@ -50,7 +51,8 @@ export async function registerUser() {
       const user = userCredential.user;
       // console.log("user created");
       addPlayerDataToDB({ user, nickname }, ()=>{
-        // console.log("register 5")
+        console.log("register 5")
+        console.log("regis player ", playerState)
         init(user);
         // getGamePage();
       });

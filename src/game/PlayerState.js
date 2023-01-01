@@ -40,6 +40,7 @@ class PlayerState {
               userData.name
             ] = {
               type: "Person",
+              direction: userData.direction,
               isPlayerControlled: true,
               x: utils.withGrid(userData.x),
               y: utils.withGrid(userData.y),

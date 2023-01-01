@@ -1,4 +1,6 @@
 // import { GameObject } from "./GameObject.js";
+import { onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+import { playersRef } from "../config/firebase.js";
 import { utils } from "./utils/utils.js";
 import { Person } from "./Person.js";
 import { convertedOutisdeMapWalls } from "./data/testMapOutsideCollision.js";
@@ -40,6 +42,7 @@ export class OverworldMap {
 
   isSpaceTaken(currentX, currentY, direction) {
     const { x, y } = utils.nextPosition(currentX, currentY, direction);
+    console.log(x,y)
     if (this.walls[`${x},${y}`]) {
       return true;
     }
@@ -55,9 +58,10 @@ export class OverworldMap {
     });
   }
 
-  mountObjects() {
-    Object.keys(this.configObjects).forEach((key) => {
+  mountObjects(objects = this.configObjects) {
+    Object.keys(objects).forEach((key) => {
       let object = this.configObjects[key];
+      // console.log("this", object);
       object.id = key;
 
       let instace;
@@ -76,11 +80,109 @@ export class OverworldMap {
     });
   }
 
+  objectListener() {
+    onValue(playersRef, (snapshot) => {
+      // console.log(snapshot.val());
+      // console.log("playerstate", playerState);
+      // console.log("gameObjectsgameObjects", this.gameObjects);
+      const players = snapshot.val();
+      console.log(playerState.name);
+      // console.log(window.OverworldMaps.outsideMap.configObjects);
+      Object.values(players).forEach((player) => {
+
+        // If player is online and its not me, add him to his current map object
+        // or update him
+        if (
+          player.online &&
+          player.currentMap === playerState.currentMap &&
+          player.name !== playerState.name
+        ) {
+          // console.log("updating overworldmaps");
+          if (window.OverworldMaps[player.currentMap].configObjects[player.name]) {
+            const currentPlayerState = window.OverworldMaps[player.currentMap].configObjects[player.name];
+            window.OverworldMaps[player.currentMap].configObjects[player.name] = {
+              type: "Person",
+              direction: player.direction,
+              x: utils.withGrid(player.x),
+              y: utils.withGrid(player.y),
+              src: "src/game/assets/characters/hero2.png",
+              // behaviorLoop: [
+              //   {type: "walk", direction: "down"}
+              // ]
+            };
+            const newPlayerState = window.OverworldMaps[player.currentMap].configObjects[player.name];
+            // console.log("currentPlayerState ", currentPlayerState)
+            // console.log("newPlayerState ", newPlayerState)
+            if ((currentPlayerState.x !==  newPlayerState.x) || (currentPlayerState.y !==  newPlayerState.y)){
+              // const eventHandler = new OverworldEvent({
+              //   event: {who: player.name, type: "walk", direction: newPlayerState.direction},
+              //   map: this,
+              // });
+              //  await eventHandler.init();
+              this.gameObjects[player.name].startBehavior({arrow: newPlayerState.direction, map:this},{type: "walk", direction: newPlayerState.direction})
+            // console.log("this321 ", this)
+            }
+
+          } else {
+            window.OverworldMaps[player.currentMap].configObjects[player.name] = {
+              type: "Person",
+              direction: player.direction,
+              x: utils.withGrid(player.x),
+              y: utils.withGrid(player.y),
+              src: "src/game/assets/characters/hero2.png",
+              // behaviorLoop: [
+              //   {type: "walk", direction: "down"}
+              // ]
+            };
+          }
+          console.log("overworld", this.overworld.map)
+        }
+        // If player goes offline and its not me, delete him from map and game objects
+        else if (
+          !player.online &&
+          player.currentMap === playerState.currentMap &&
+          player.name !== playerState.name &&
+          window.OverworldMaps[player.currentMap].configObjects[player.name]
+        ) {
+          this.unmountObject(player);
+        }
+      });
+
+      // Check for unmounted players if appear add to game objects
+      if (
+        Object.keys(this.gameObjects).length !==
+        Object.keys(this.configObjects).length
+      ) {
+        const notMountedObj = this.checkForNotMountedObjects();
+        this.mountObjects(notMountedObj);
+      }
+    });
+  }
+
+  checkForNotMountedObjects() {
+    const objects = {};
+    Object.keys(this.configObjects).forEach((key) => {
+      const objIsHere = Object.keys(this.gameObjects).includes(key);
+      if (!objIsHere) {
+        objects[key] = { toMounted: true };
+      }
+    });
+    // console.log("notmounterd ", objects);
+    return objects;
+  }
+
+  unmountObject(player) {
+    delete window.OverworldMaps[player.currentMap].configObjects[player.name];
+    delete this.gameObjects[player.name];
+    // console.log("deletera");
+  }
+
   async startCutscene(events) {
     this.isCutscenePlaying = true;
 
     // Start a loop of async events
     for (let i = 0; i < events.length; i++) {
+      // console.log("events ", events[i])
       const eventHandler = new OverworldEvent({
         event: events[i],
         map: this,
@@ -118,7 +220,7 @@ export class OverworldMap {
     const hero = this.gameObjects[this.overworld.hero];
     const match = this.cutsceneSpaces[`${hero.x},${hero.y}`];
     if (!this.isCutscenePlaying && match) {
-      console.log({ match });
+      // console.log({ match });
       this.startCutscene(match[0].events);
     }
   }
@@ -155,14 +257,18 @@ window.OverworldMaps = {
         offsetX: 9,
         shadowOffsetX: 1,
         behaviorLoop: [
-          { type: "stand", direction: "down", time: 800 },
-          { type: "stand", direction: "right", time: 1200 },
+          // { type: "stand", direction: "down", time: 800 },
+          // { type: "stand", direction: "right", time: 1200 },
         ],
         talking: [
           {
             required: ["next_talk"],
             events: [
-              { type: "textMessage", text: "Its next_talk ", faceHero:"hero2" },
+              {
+                type: "textMessage",
+                text: "Its next_talk ",
+                faceHero: "hero2",
+              },
               { who: "hero", type: "walk", direction: "down" },
             ],
           },

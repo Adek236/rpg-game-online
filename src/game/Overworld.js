@@ -16,12 +16,12 @@ export class Overworld {
   }
 
   startGameLoop() {
+    this.hero = playerState.name;
+    this.heroId = playerState.id;
     const step = () => {
       // Clear off the canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       // console.log("3-overworld")
-      this.hero = playerState.name;
-      this.heroId = playerState.id;
       // Establish the camera person
       const cameraPerson = this.map.gameObjects[this.hero];
       // console.log(cameraPerson)
@@ -75,6 +75,7 @@ export class Overworld {
     this.map = new OverworldMap(mapConfig);
     this.map.overworld = this;
     this.map.mountObjects();
+    this.map.objectListener();
   }
 
   init() {

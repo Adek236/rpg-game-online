@@ -41,42 +41,23 @@ export function init(user) {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       // console.log(user);
-      // console.log("onAuthStateChanged login");
-      // getGamePage();
+      console.log("onAuthStateChanged login");
+      // console.log(playerState)
+      // // if (isStarted) {
+      //   getGamePage();
+      // // }
+      // if (!playerState.name){
 
+      //   init(user)
+      // }
       // console.log(window.OverworldMaps);
       // init(user);
     } else {
-      // console.log("onAuthStateChanged not login");
+      console.log("onAuthStateChanged not login");
     }
   });
 
-  onValue(playersRef, (snapshot) => {
-    // console.log(snapshot.val());
-    // console.log("playerstate", playerState);
-    const players = snapshot.val();
-    console.log(playerState.name)
-    console.log(window.OverworldMaps.outsideMap.configObjects);
-    Object.values(players).forEach((player) => {
-      // console.log("player", player);
-      if (!player.online) return;
-      if (
-        player.currentMap === playerState.currentMap &&
-        player.name !== playerState.name
-      ) {
-        window.OverworldMaps[player.currentMap].configObjects[player.name] = {
-          type: "Person",
-          x: utils.withGrid(player.x),
-          y: utils.withGrid(player.y),
-          src: "src/game/assets/characters/hero2.png",
-          // behaviorLoop: [
-          //   {type: "walk", direction: "down"}
-          // ]
-        };
-      }
-      
-    });
-  });
+  
 
   // overworld.init();
   // convertCollision(); // convert map collision

@@ -11,8 +11,8 @@ export function login() {
   
     signInWithEmailAndPassword(auth, email, password)
       .then((u) => {
-        console.log("login 4")
-        console.log(u)
+        // console.log("login 4")
+        // console.log(u)
         // Signed in
         // const user = userCredential.user;
         // console.log("usss", user);
