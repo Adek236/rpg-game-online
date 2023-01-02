@@ -53,6 +53,8 @@ export class Person extends GameObject {
       // console.log("behavior behavior", behavior);
       // console.log("startBehavior", this.x, this.y, this.direction)
       if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
+        // TODO: Check dir and add to db, check last dir to not multiply
+        console.log("space taken", this.direction)
         behavior.retry &&
           setTimeout(() => {
             this.startBehavior(state, behavior);

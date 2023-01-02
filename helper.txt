@@ -1,4 +1,5 @@
 TODO: 
+Person isSpaceTaken check, need to add dir to db
 onAuthStateChanged need improve
 OverworldEvent walk method done but need to do this globaly at OverworldEvent
 

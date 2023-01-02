@@ -127,23 +127,31 @@ export class OverworldMap {
             // console.log("newPlayerState ", newPlayerState.x, newPlayerState.y);
             if (
               currentPlayerState.x !== newPlayerState.x ||
-              currentPlayerState.y !== newPlayerState.y
+              currentPlayerState.y !== newPlayerState.y || 
+              currentPlayerState.direction !== newPlayerState.direction
             ) {
               // this.gameObjects[player.name].y = newPlayerState.y;
               // this.gameObjects[player.name].x = newPlayerState.x;
               this.gameObjects[player.name].direction = newPlayerState.direction;
               // this.gameObjects[player.name].updatePosition();
-
+              console.log("DIRECTION ", this.gameObjects[player.name].direction)
               console.log("before ", this.gameObjects[player.name]);
               
+              this.gameObjects[player.name].movingProgressReaming = 16;
               for(let i=0; i<16 ; i++){
                 const [property, change] = this.gameObjects[player.name].directionUpdate[this.gameObjects[player.name].direction];
                 this.gameObjects[player.name][property] += change;
-                
-                
+                this.gameObjects[player.name].movingProgressReaming -= 1;
                 // this.gameObjects[player.name].sprite.setAnimation("idle-" + this.direction);                
+                if (this.gameObjects[player.name].movingProgressReaming > 0) {
+                  this.gameObjects[player.name].sprite.setAnimation("walk-" + this.gameObjects[player.name].direction);
+                  return;
+                }
+                console.log("standing")
+                
               }
-              this.gameObjects[player.name].sprite.setAnimation("walk-" + this.gameObjects[player.name].direction);
+              this.gameObjects[player.name].sprite.setAnimation("idle-" + this.gameObjects[player.name].direction);
+              // this.gameObjects[player.name].sprite.setAnimation("walk-" + this.gameObjects[player.name].direction);
               
               console.log("after ", this.gameObjects[player.name]);
             
