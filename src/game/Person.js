@@ -51,6 +51,7 @@ export class Person extends GameObject {
       // Stop here if space is not free
       // console.log("behavior state", state);
       // console.log("behavior behavior", behavior);
+      // console.log("startBehavior", this.x, this.y, this.direction)
       if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
         behavior.retry &&
           setTimeout(() => {
@@ -85,14 +86,14 @@ export class Person extends GameObject {
     const [property, change] = this.directionUpdate[this.direction];
     this[property] += change;
     this.movingProgressReaming -= 1;
-
+    
     if (this.movingProgressReaming === 0) {
       // We finished the walk
       // console.log(this.id)
       // console.log(state);
 
       // Update position at firebase
-      if (this.id === state.map.overworld.hero) {
+      if (state && this.id === state.map.overworld.hero) {
         // console.log(this.intentPos);
         // console.log(this.direction);
         // console.log(playerState.playerRef)
@@ -105,8 +106,8 @@ export class Person extends GameObject {
         // Update position at configObjects
         window.OverworldMaps[playerState.currentMap].configObjects[playerState.name].x = this.intentPos[0];
         window.OverworldMaps[playerState.currentMap].configObjects[playerState.name].y = this.intentPos[1];
-        console.log(this)
-        console.log(window.OverworldMaps)
+        // console.log(this)
+        // console.log(window.OverworldMaps)
 
       }
       // console.log(property, change)

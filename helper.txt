@@ -1,5 +1,4 @@
 TODO: 
-overworldMap isSpaceTaken need to check x,y in database
 onAuthStateChanged need improve
 OverworldEvent walk method done but need to do this globaly at OverworldEvent
 

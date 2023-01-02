@@ -42,7 +42,7 @@ export class OverworldMap {
 
   isSpaceTaken(currentX, currentY, direction) {
     const { x, y } = utils.nextPosition(currentX, currentY, direction);
-    console.log(x,y)
+    // console.log(x, y);
     if (this.walls[`${x},${y}`]) {
       return true;
     }
@@ -89,7 +89,6 @@ export class OverworldMap {
       console.log(playerState.name);
       // console.log(window.OverworldMaps.outsideMap.configObjects);
       Object.values(players).forEach((player) => {
-
         // If player is online and its not me, add him to his current map object
         // or update him
         if (
@@ -98,44 +97,71 @@ export class OverworldMap {
           player.name !== playerState.name
         ) {
           // console.log("updating overworldmaps");
-          if (window.OverworldMaps[player.currentMap].configObjects[player.name]) {
-            const currentPlayerState = window.OverworldMaps[player.currentMap].configObjects[player.name];
-            window.OverworldMaps[player.currentMap].configObjects[player.name] = {
-              type: "Person",
-              direction: player.direction,
-              x: utils.withGrid(player.x),
-              y: utils.withGrid(player.y),
-              src: "src/game/assets/characters/hero2.png",
-              // behaviorLoop: [
-              //   {type: "walk", direction: "down"}
-              // ]
-            };
-            const newPlayerState = window.OverworldMaps[player.currentMap].configObjects[player.name];
-            // console.log("currentPlayerState ", currentPlayerState)
-            // console.log("newPlayerState ", newPlayerState)
-            if ((currentPlayerState.x !==  newPlayerState.x) || (currentPlayerState.y !==  newPlayerState.y)){
-              // const eventHandler = new OverworldEvent({
-              //   event: {who: player.name, type: "walk", direction: newPlayerState.direction},
-              //   map: this,
-              // });
-              //  await eventHandler.init();
-              this.gameObjects[player.name].startBehavior({arrow: newPlayerState.direction, map:this},{type: "walk", direction: newPlayerState.direction})
-            // console.log("this321 ", this)
-            }
+          if (
+            window.OverworldMaps[player.currentMap].configObjects[player.name]
+          ) {
+            const currentPlayerState =
+              window.OverworldMaps[player.currentMap].configObjects[
+                player.name
+              ];
+            window.OverworldMaps[player.currentMap].configObjects[player.name] =
+              {
+                type: "Person",
+                direction: player.direction,
+                x: utils.withGrid(player.x),
+                y: utils.withGrid(player.y),
+                src: "src/game/assets/characters/hero2.png",
+                // behaviorLoop: [
+                //   {type: "walk", direction: "down"}
+                // ]
+              };
+            const newPlayerState =
+              window.OverworldMaps[player.currentMap].configObjects[
+                player.name
+              ];
+            // console.log(
+            //   "currentPlayerState ",
+            //   currentPlayerState.x,
+            //   currentPlayerState.y
+            // );
+            // console.log("newPlayerState ", newPlayerState.x, newPlayerState.y);
+            if (
+              currentPlayerState.x !== newPlayerState.x ||
+              currentPlayerState.y !== newPlayerState.y
+            ) {
+              // this.gameObjects[player.name].y = newPlayerState.y;
+              // this.gameObjects[player.name].x = newPlayerState.x;
+              this.gameObjects[player.name].direction = newPlayerState.direction;
+              // this.gameObjects[player.name].updatePosition();
 
+              console.log("before ", this.gameObjects[player.name]);
+              
+              for(let i=0; i<16 ; i++){
+                const [property, change] = this.gameObjects[player.name].directionUpdate[this.gameObjects[player.name].direction];
+                this.gameObjects[player.name][property] += change;
+                
+                
+                // this.gameObjects[player.name].sprite.setAnimation("idle-" + this.direction);                
+              }
+              this.gameObjects[player.name].sprite.setAnimation("walk-" + this.gameObjects[player.name].direction);
+              
+              console.log("after ", this.gameObjects[player.name]);
+            
+            }
           } else {
-            window.OverworldMaps[player.currentMap].configObjects[player.name] = {
-              type: "Person",
-              direction: player.direction,
-              x: utils.withGrid(player.x),
-              y: utils.withGrid(player.y),
-              src: "src/game/assets/characters/hero2.png",
-              // behaviorLoop: [
-              //   {type: "walk", direction: "down"}
-              // ]
-            };
+            window.OverworldMaps[player.currentMap].configObjects[player.name] =
+              {
+                type: "Person",
+                direction: player.direction,
+                x: utils.withGrid(player.x),
+                y: utils.withGrid(player.y),
+                src: "src/game/assets/characters/hero2.png",
+                // behaviorLoop: [
+                //   {type: "walk", direction: "down"}
+                // ]
+              };
           }
-          console.log("overworld", this.overworld.map)
+          // console.log("overworld", this.overworld.map);
         }
         // If player goes offline and its not me, delete him from map and game objects
         else if (
