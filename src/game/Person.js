@@ -49,12 +49,14 @@ export class Person extends GameObject {
     this.direction = behavior.direction;
     if (behavior.type === "walk") {
       // Stop here if space is not free
-      // console.log("behavior state", state);
-      // console.log("behavior behavior", behavior);
-      // console.log("startBehavior", this.x, this.y, this.direction)
       if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
-        // TODO: Check dir and add to db, check last dir to not multiply
-        console.log("space taken", this.direction)
+        // Check direction and add to db
+        if (state && this.id === state.map.overworld.hero) {
+        const player = {
+          direction: this.direction,
+        };
+        playerState.updatePlayer({ player });
+      }
         behavior.retry &&
           setTimeout(() => {
             this.startBehavior(state, behavior);
@@ -63,12 +65,28 @@ export class Person extends GameObject {
       }
 
       // Ready to walk
-
       this.movingProgressReaming = 16;
 
       // Add next position intent
       const intentPos = utils.nextPosition(this.x, this.y, this.direction);
       this.intentPos = [intentPos.x, intentPos.y];
+
+      // Update position at firebase
+      if (state && this.id === state.map.overworld.hero) {
+        const player = {
+          x: utils.withGridReverse(this.intentPos[0]),
+          y: utils.withGridReverse(this.intentPos[1]),
+          direction: this.direction,
+        };
+        playerState.updatePlayer({ player });
+        // Update position at configObjects
+        window.OverworldMaps[playerState.currentMap].configObjects[
+          playerState.name
+        ].x = this.intentPos[0];
+        window.OverworldMaps[playerState.currentMap].configObjects[
+          playerState.name
+        ].y = this.intentPos[1];
+      }
 
       this.updateSprite();
     }
@@ -88,31 +106,9 @@ export class Person extends GameObject {
     const [property, change] = this.directionUpdate[this.direction];
     this[property] += change;
     this.movingProgressReaming -= 1;
-    
+
     if (this.movingProgressReaming === 0) {
       // We finished the walk
-      // console.log(this.id)
-      // console.log(state);
-
-      // Update position at firebase
-      if (state && this.id === state.map.overworld.hero) {
-        // console.log(this.intentPos);
-        // console.log(this.direction);
-        // console.log(playerState.playerRef)
-        const player = {
-          x: utils.withGridReverse(this.intentPos[0]),
-          y: utils.withGridReverse(this.intentPos[1]),
-          direction: this.direction
-        };
-        playerState.updatePlayer({ player });
-        // Update position at configObjects
-        window.OverworldMaps[playerState.currentMap].configObjects[playerState.name].x = this.intentPos[0];
-        window.OverworldMaps[playerState.currentMap].configObjects[playerState.name].y = this.intentPos[1];
-        // console.log(this)
-        // console.log(window.OverworldMaps)
-
-      }
-      // console.log(property, change)
       this.intentPos = null;
       utils.emitEvent("PersonWalkingComplete", {
         whoId: this.id,

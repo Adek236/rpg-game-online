@@ -96,7 +96,7 @@ export class OverworldMap {
           player.currentMap === playerState.currentMap &&
           player.name !== playerState.name
         ) {
-          // console.log("updating overworldmaps");
+          // If player exist do something
           if (
             window.OverworldMaps[player.currentMap].configObjects[player.name]
           ) {
@@ -119,21 +119,23 @@ export class OverworldMap {
               window.OverworldMaps[player.currentMap].configObjects[
                 player.name
               ];
-            // console.log(
-            //   "currentPlayerState ",
-            //   currentPlayerState.x,
-            //   currentPlayerState.y
-            // );
-            // console.log("newPlayerState ", newPlayerState.x, newPlayerState.y);
+            console.log(
+              "currentPlayerState ",
+              currentPlayerState.direction,
+              // currentPlayerState.y
+            );
+            console.log("newPlayerState ", 
+            newPlayerState.direction, 
+            // newPlayerState.y
+            );
             if (
               currentPlayerState.x !== newPlayerState.x ||
-              currentPlayerState.y !== newPlayerState.y || 
-              currentPlayerState.direction !== newPlayerState.direction
-            ) {
-              // this.gameObjects[player.name].y = newPlayerState.y;
-              // this.gameObjects[player.name].x = newPlayerState.x;
-              this.gameObjects[player.name].direction = newPlayerState.direction;
-              // this.gameObjects[player.name].updatePosition();
+              currentPlayerState.y !== newPlayerState.y 
+              ) {
+                // this.gameObjects[player.name].startBehavior({arrow: newPlayerState.direction, map:this},{type: "walk", direction: newPlayerState.direction})
+                
+                this.gameObjects[player.name].direction = newPlayerState.direction;
+                
               console.log("DIRECTION ", this.gameObjects[player.name].direction)
               console.log("before ", this.gameObjects[player.name]);
               
@@ -142,21 +144,29 @@ export class OverworldMap {
                 const [property, change] = this.gameObjects[player.name].directionUpdate[this.gameObjects[player.name].direction];
                 this.gameObjects[player.name][property] += change;
                 this.gameObjects[player.name].movingProgressReaming -= 1;
-                // this.gameObjects[player.name].sprite.setAnimation("idle-" + this.direction);                
+                               
                 if (this.gameObjects[player.name].movingProgressReaming > 0) {
                   this.gameObjects[player.name].sprite.setAnimation("walk-" + this.gameObjects[player.name].direction);
                   return;
                 }
-                console.log("standing")
-                
+                this.gameObjects[player.name].sprite.setAnimation("idle-" + this.gameObjects[player.name].direction);
               }
-              this.gameObjects[player.name].sprite.setAnimation("idle-" + this.gameObjects[player.name].direction);
-              // this.gameObjects[player.name].sprite.setAnimation("walk-" + this.gameObjects[player.name].direction);
               
               console.log("after ", this.gameObjects[player.name]);
-            
+              
             }
-          } else {
+            if (
+              // currentPlayerState.x === newPlayerState.x ||
+              // currentPlayerState.y === newPlayerState.y ||
+              this.gameObjects[player.name].movingProgressReaming === 0 &&
+              currentPlayerState.direction !== newPlayerState.direction
+              ) {
+                this.gameObjects[player.name].direction = newPlayerState.direction;
+                this.gameObjects[player.name].sprite.setAnimation("idle-" + this.gameObjects[player.name].direction);
+            }
+          } 
+          // If player doesn't exist add him
+          else {
             window.OverworldMaps[player.currentMap].configObjects[player.name] =
               {
                 type: "Person",
@@ -328,15 +338,15 @@ window.OverworldMaps = {
         offsetX: 8,
         src: "src/game/assets/characters/hero3.png",
         behaviorLoop: [
-          // { type: "walk", direction: "right" },
-          // { type: "walk", direction: "right" },
-          // { type: "walk", direction: "right" },
-          // { type: "stand", direction: "down", time: 2800 },
-          // { type: "walk", direction: "down" },
-          // { type: "walk", direction: "left" },
-          // { type: "walk", direction: "left" },
-          // { type: "walk", direction: "left" },
-          // { type: "walk", direction: "up" },
+          { type: "walk", direction: "right" },
+          { type: "walk", direction: "right" },
+          { type: "walk", direction: "right" },
+          { type: "stand", direction: "down", time: 2800 },
+          { type: "walk", direction: "down" },
+          { type: "walk", direction: "left" },
+          { type: "walk", direction: "left" },
+          { type: "walk", direction: "left" },
+          { type: "walk", direction: "up" },
         ],
       },
     },
