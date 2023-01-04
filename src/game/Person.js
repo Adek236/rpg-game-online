@@ -79,6 +79,7 @@ export class Person extends GameObject {
           direction: this.direction,
         };
         playerState.updatePlayer({ player });
+        
         // Update position at configObjects
         window.OverworldMaps[playerState.currentMap].configObjects[
           playerState.name

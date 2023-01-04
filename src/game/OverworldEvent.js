@@ -88,11 +88,21 @@ export class OverworldEvent {
     playerState.storyFlags[this.event.flag] = true;
     resolve();
   }
-
+  // TODO: Something broke
   changeMap(resolve) {
     // Deactive old objects
     Object.values(this.map.gameObjects).forEach((obj) => {
+      console.log("map ", this.map)
+      console.log("obj ", obj)
       obj.isMounted = false;
+      if (obj.id === this.map.overworld.hero){
+        const currentPlayerState = this.map.configObjects[obj.id];
+        console.log("changemap, cplstate", currentPlayerState);
+        currentPlayerState.currentMap = this.event.map;
+        currentPlayerState.name = obj.id; // need to improve, duplicate
+        this.map.unmountObject(this.map.overworld.hero, "outsideMap");
+        this.map.addPlayerObject(currentPlayerState, {isPlayerControlled: true});
+      }
     });
 
     this.map.overworld.startMap(window.OverworldMaps[this.event.map]);

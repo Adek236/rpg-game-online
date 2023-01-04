@@ -121,11 +121,11 @@ export class OverworldMap {
               ];
             console.log(
               "currentPlayerState ",
-              currentPlayerState.direction,
+              currentPlayerState,
               // currentPlayerState.y
             );
             console.log("newPlayerState ", 
-            newPlayerState.direction, 
+            newPlayerState, 
             // newPlayerState.y
             );
             if (
@@ -138,6 +138,9 @@ export class OverworldMap {
                 
               console.log("DIRECTION ", this.gameObjects[player.name].direction)
               console.log("before ", this.gameObjects[player.name]);
+
+              if (this.gameObjects[player.name].x !== currentPlayerState.x) this.gameObjects[player.name].x = currentPlayerState.x;
+              if (this.gameObjects[player.name].y !== currentPlayerState.y) this.gameObjects[player.name].y = currentPlayerState.y;
               
               this.gameObjects[player.name].movingProgressReaming = 16;
               for(let i=0; i<16 ; i++){
@@ -149,11 +152,8 @@ export class OverworldMap {
                   this.gameObjects[player.name].sprite.setAnimation("walk-" + this.gameObjects[player.name].direction);
                   return;
                 }
-                this.gameObjects[player.name].sprite.setAnimation("idle-" + this.gameObjects[player.name].direction);
+                // this.gameObjects[player.name].sprite.setAnimation("idle-" + this.gameObjects[player.name].direction);
               }
-              
-              console.log("after ", this.gameObjects[player.name]);
-              
             }
             if (
               // currentPlayerState.x === newPlayerState.x ||
@@ -215,10 +215,29 @@ export class OverworldMap {
     return objects;
   }
 
-  unmountObject(player) {
-    delete window.OverworldMaps[player.currentMap].configObjects[player.name];
+  unmountObject(player, map = player.currentMap) {
+    delete window.OverworldMaps[map].configObjects[player.name];
     delete this.gameObjects[player.name];
-    // console.log("deletera");
+    console.log("deletera", player, map);
+    console.log("deletera window", window.OverworldMaps[map].configObjects)
+    console.log("deletera gO", this.gameObjects)
+  }
+
+  addPlayerObject(player, {isPlayerControlled = false}){
+    window.OverworldMaps[player.currentMap].configObjects[player.name] =
+              {
+                type: "Person",
+                isPlayerControlled,
+                direction: player.direction,
+                x: player.x,
+                // x: utils.withGrid(player.x),
+                y: player.y,
+                // y: utils.withGrid(player.y),
+                src: "src/game/assets/characters/hero2.png",
+                // behaviorLoop: [
+                //   {type: "walk", direction: "down"}
+                // ]
+              };
   }
 
   async startCutscene(events) {
@@ -287,7 +306,7 @@ window.OverworldMaps = {
     lowerSrc: "src/game/assets/maps/testMapOutside.png",
     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
     configObjects: {
-      // hero: {
+      // Teddy: {
       //   type: "Person",
       //   isPlayerControlled: true,
       //   x: utils.withGrid(9),
@@ -338,15 +357,15 @@ window.OverworldMaps = {
         offsetX: 8,
         src: "src/game/assets/characters/hero3.png",
         behaviorLoop: [
-          { type: "walk", direction: "right" },
-          { type: "walk", direction: "right" },
-          { type: "walk", direction: "right" },
-          { type: "stand", direction: "down", time: 2800 },
-          { type: "walk", direction: "down" },
-          { type: "walk", direction: "left" },
-          { type: "walk", direction: "left" },
-          { type: "walk", direction: "left" },
-          { type: "walk", direction: "up" },
+          // { type: "walk", direction: "right" },
+          // { type: "walk", direction: "right" },
+          // { type: "walk", direction: "right" },
+          // { type: "stand", direction: "down", time: 2800 },
+          // { type: "walk", direction: "down" },
+          // { type: "walk", direction: "left" },
+          // { type: "walk", direction: "left" },
+          // { type: "walk", direction: "left" },
+          // { type: "walk", direction: "up" },
         ],
       },
     },
@@ -368,31 +387,47 @@ window.OverworldMaps = {
       ],
     },
   },
-  // insideMap: {
-  //   lowerSrc: "src/game/assets/maps/testMap.png",
-  //   upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
-  //   gameObjects: {
-  //     hero: new Person({
-  //       isPlayerControlled: true,
-  //       x: utils.withGrid(7),
-  //       y: utils.withGrid(4),
-  //       offsetX: 9,
-  //       shadowOffsetX: 1,
-  //     }),
-  //     hero2: new Person({
-  //       isPlayerControlled: true,
-  //       x: utils.withGrid(9),
-  //       y: utils.withGrid(4),
-  //       offsetX: 9,
-  //       shadowOffsetX: 1,
-  //     }),
-  //     hero3: new Person({
-  //       x: utils.withGrid(12),
-  //       y: utils.withGrid(7),
-  //       offsetX: 9,
-  //       shadowOffsetX: 1,
-  //       src: 'src/game/assets/characters/hero3.png'
-  //     }),
-  //   },
-  // },
+  insideMap: {
+    lowerSrc: "src/game/assets/maps/testMap.png",
+    upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
+    configObjects: {
+      hero2: {
+        type: "NPC",
+        x: utils.withGrid(8),
+        y: utils.withGrid(4),
+        offsetX: 9,
+        shadowOffsetX: 1,
+        behaviorLoop: [
+          // { type: "stand", direction: "down", time: 800 },
+          // { type: "stand", direction: "right", time: 1200 },
+        ],
+        talking: [
+          {
+            required: ["next_talk"],
+            events: [
+              {
+                type: "textMessage",
+                text: "Its next_talk ",
+                faceHero: "hero2",
+              },
+              { who: "hero", type: "walk", direction: "down" },
+            ],
+          },
+          {
+            required: ["something_to_do"],
+            events: [
+              { type: "textMessage", text: "Its working" },
+              { type: "addStoryFlag", flag: "next_talk" },
+            ],
+          },
+          {
+            events: [
+              { type: "textMessage", text: "hella", faceHero: "hero2" },
+              { type: "textMessage", text: "emalla" },
+            ],
+          },
+        ],
+      }
+    },
+  },
 };

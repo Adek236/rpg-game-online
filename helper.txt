@@ -1,5 +1,6 @@
 TODO: 
-Person isSpaceTaken check, need to add dir to db
+Other players movement sprite broke
+OverworldEvent changeMap broke
 onAuthStateChanged need improve
 OverworldEvent walk method done but need to do this globaly at OverworldEvent
 
