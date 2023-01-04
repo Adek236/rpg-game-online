@@ -18,6 +18,7 @@ export class Overworld {
   startGameLoop() {
     this.hero = playerState.name;
     this.heroId = playerState.id;
+    console.log(this)
     const step = () => {
       // Clear off the canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -78,8 +79,8 @@ export class Overworld {
     this.map.objectListener();
   }
 
-  init() {
-    this.startMap(window.OverworldMaps.outsideMap);
+  init(map) {
+    this.startMap(window.OverworldMaps[map]);
 
     this.bindActionInput();
     this.bindHeroPositionCheck();

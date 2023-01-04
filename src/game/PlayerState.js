@@ -12,6 +12,7 @@ class PlayerState {
   constructor() {
     this.name = null;
     this.id = null;
+    this.currentMap = null;
     this.storyFlags = {
       // "do-somethig": true
       something_to_do: true,
@@ -55,7 +56,7 @@ class PlayerState {
         console.log("Update user player state error:", error);
       });
 
-    resolve();
+    resolve(this.currentMap);
   }
 
   updatePlayer(state) {

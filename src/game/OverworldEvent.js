@@ -92,15 +92,17 @@ export class OverworldEvent {
   changeMap(resolve) {
     // Deactive old objects
     Object.values(this.map.gameObjects).forEach((obj) => {
-      console.log("map ", this.map)
-      console.log("obj ", obj)
+      // console.log("map ", this.map)
+      // console.log("obj ", obj)
       obj.isMounted = false;
       if (obj.id === this.map.overworld.hero){
         const currentPlayerState = this.map.configObjects[obj.id];
         console.log("changemap, cplstate", currentPlayerState);
         currentPlayerState.currentMap = this.event.map;
         currentPlayerState.name = obj.id; // need to improve, duplicate
-        this.map.unmountObject(this.map.overworld.hero, "outsideMap");
+        // this.map.unmountObject(obj.id, "outsideMap");
+        delete window.OverworldMaps["outsideMap"].configObjects[obj.id];
+        delete this.map.gameObjects[obj.id];
         this.map.addPlayerObject(currentPlayerState, {isPlayerControlled: true});
       }
     });

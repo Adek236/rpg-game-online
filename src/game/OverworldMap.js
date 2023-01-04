@@ -138,6 +138,7 @@ export class OverworldMap {
                 
               console.log("DIRECTION ", this.gameObjects[player.name].direction)
               console.log("before ", this.gameObjects[player.name]);
+              console.log(this)
 
               if (this.gameObjects[player.name].x !== currentPlayerState.x) this.gameObjects[player.name].x = currentPlayerState.x;
               if (this.gameObjects[player.name].y !== currentPlayerState.y) this.gameObjects[player.name].y = currentPlayerState.y;
@@ -224,6 +225,7 @@ export class OverworldMap {
   }
 
   addPlayerObject(player, {isPlayerControlled = false}){
+    console.log("addplayer", player)
     window.OverworldMaps[player.currentMap].configObjects[player.name] =
               {
                 type: "Person",
