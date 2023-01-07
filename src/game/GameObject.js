@@ -3,7 +3,8 @@ import { OverworldEvent } from "./OverworldEvent.js";
 
 export class GameObject {
   constructor(config) {
-    this.id = null;
+    this.name = config.name;
+    this.currentMap = config.currentMap || null;
     this.isMounted = false;
     this.x = config.x || 0;
     this.y = config.y || 0;
@@ -15,7 +16,7 @@ export class GameObject {
 
     this.sprite = new Sprite({
       gameObject: this,
-      src: config.src || "src/game/assets/characters/hero.png",
+      src: config.outfit || "src/game/assets/characters/hero.png",
     });
 
     this.behaviorLoop = config.behaviorLoop || [];
@@ -57,7 +58,7 @@ export class GameObject {
 
     // Setting up our event with relevant info
     let eventConfig = this.behaviorLoop[this.behaviorLoopIndex];
-    eventConfig.who = this.id;
+    eventConfig.who = this.name;
 
     // Create an event instace out of our next config
     const eventHandler = new OverworldEvent({ map, event: eventConfig });

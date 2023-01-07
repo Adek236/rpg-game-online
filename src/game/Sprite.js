@@ -39,7 +39,6 @@ export class Sprite {
         [0, 0],
       ],
       "walk-up": [
-       
         [1, 2],
         [0, 2],
         [3, 2],
@@ -52,7 +51,7 @@ export class Sprite {
         [0, 1],
       ],
     };
-    this.currentAnimation = "walk-down"; //config.currentAnimation || "idleDown";
+    this.currentAnimation = config.currentAnimation || "idle-down"; // "walk-down";
     this.currentAnimationFrame = 0;
 
     this.animationFrameLimit = config.animationFrameLimit || 10;
@@ -60,6 +59,7 @@ export class Sprite {
 
     // Reference the game object
     this.gameObject = config.gameObject;
+    
   }
 
   get frame() {

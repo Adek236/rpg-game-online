@@ -15,9 +15,9 @@ export function init(user) {
   const overworld = new Overworld({
     element: document.querySelector(".game-page"),
   });
-  playerState.getPlayerData(user, resolve => {
+  playerState.getPlayerData(user, object => {
     // console.log("2 - gameinit");
-    overworld.init(resolve);
+    overworld.init(object);
     getGamePage();
   });
 }

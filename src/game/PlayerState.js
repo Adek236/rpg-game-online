@@ -13,8 +13,8 @@ class PlayerState {
     this.name = null;
     this.id = null;
     this.currentMap = null;
+    this.outfit = null;
     this.storyFlags = {
-      // "do-somethig": true
       something_to_do: true,
     };
   }
@@ -24,52 +24,56 @@ class PlayerState {
   }
 
   async getPlayerData(userData, resolve) {
+    let object;
     const myId = userData.uid;
-    // console.log("myId ", myId )
     await get(child(dbRef, "players"))
-    .then((snapshot) => {
-      if (!snapshot.exists()) return;
-      snapshot.forEach((user) => {
-        const userData = user.val();
-        // console.log("userData ", userData.id )
-        if (userData.id === myId) {
-          // console.log("userdata=", userData);
-          this.name = userData.name;
+      .then((snapshot) => {
+        if (!snapshot.exists()) return;
+        snapshot.forEach((user) => {
+          const userData = user.val();
+          if (userData.id === myId) {
+            this.name = userData.name;
             this.id = userData.id;
             this.currentMap = userData.currentMap;
-            window.OverworldMaps[userData.currentMap].configObjects[
+            this.outfit = userData.outfit; 
+            window.OverworldMaps[userData.currentMap].playersPosition[
               userData.name
             ] = {
+              direction: userData.direction,
+              x: utils.withGrid(userData.x),
+              y: utils.withGrid(userData.y),
+            };
+            object = {
+              name: userData.name,
               type: "Person",
               direction: userData.direction,
+              currentMap: userData.currentMap,
               isPlayerControlled: true,
               x: utils.withGrid(userData.x),
               y: utils.withGrid(userData.y),
-              src: "src/game/assets/characters/hero2.png",
-            };
-            // console.log("1 - playerState getPlayerData")
+              outfit: userData.outfit,
+            }
             this.setPlayerOnline();
-          } 
+          }
         });
       })
       .catch((error) => {
         console.log("Update user player state error:", error);
       });
 
-    resolve(this.currentMap);
+    resolve(object);
   }
 
   updatePlayer(state) {
-    // console.log(state.player)
     update(this.playerRef, state.player);
   }
 
-  setPlayerOnline() {
-    update(this.playerRef, { online: true });
+  setPlayerOnline(id = this.id) {
+    update(ref(db, `players/${id}`), { online: true });
   }
 
-  setPlayerOffline(){
-    update(this.playerRef, {online: false})
+  setPlayerOffline(id = this.id) {
+    update(ref(db, `players/${id}`), { online: false });
   }
 }
 

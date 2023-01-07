@@ -51,7 +51,7 @@ export class Person extends GameObject {
       // Stop here if space is not free
       if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
         // Check direction and add to db
-        if (state && this.id === state.map.overworld.hero) {
+        if (state && this.name === playerState.name) {
         const player = {
           direction: this.direction,
         };
@@ -72,23 +72,24 @@ export class Person extends GameObject {
       this.intentPos = [intentPos.x, intentPos.y];
 
       // Update position at firebase
-      if (state && this.id === state.map.overworld.hero) {
+      if (state && this.name === playerState.name) {
         const player = {
           x: utils.withGridReverse(this.intentPos[0]),
           y: utils.withGridReverse(this.intentPos[1]),
           direction: this.direction,
         };
         playerState.updatePlayer({ player });
-        
-        // Update position at configObjects
-        window.OverworldMaps[playerState.currentMap].configObjects[
-          playerState.name
-        ].x = this.intentPos[0];
-        window.OverworldMaps[playerState.currentMap].configObjects[
-          playerState.name
-        ].y = this.intentPos[1];
-      }
 
+         // Update position at playersPosition
+         window.OverworldMaps[playerState.currentMap].playersPosition[playerState.name] = {
+          direction: this.direction,
+          x : this.intentPos[0],
+          y : this.intentPos[1]
+         };
+        //  console.log("players position", window.OverworldMaps[playerState.currentMap].playersPosition)
+        //  console.log("players position 2", this)
+        //  window.OverworldMaps[playerState.currentMap].playersPosition[playerState.name].y = this.intentPos[1];
+      }
       this.updateSprite();
     }
 
@@ -96,14 +97,14 @@ export class Person extends GameObject {
       this.isStanding = true;
       setTimeout(() => {
         utils.emitEvent("PersonStandComplete", {
-          whoId: this.id,
+          who: this.name,
         });
         this.isStanding = false;
       }, behavior.time);
     }
   }
 
-  updatePosition(state) {
+  updatePosition() {
     const [property, change] = this.directionUpdate[this.direction];
     this[property] += change;
     this.movingProgressReaming -= 1;
@@ -112,16 +113,16 @@ export class Person extends GameObject {
       // We finished the walk
       this.intentPos = null;
       utils.emitEvent("PersonWalkingComplete", {
-        whoId: this.id,
+        who: this.name,
       });
     }
   }
 
-  updateSprite() {
-    if (this.movingProgressReaming > 0) {
-      this.sprite.setAnimation("walk-" + this.direction);
+  updateSprite(obj = this) {
+    if (obj.movingProgressReaming > 0) {
+      obj.sprite.setAnimation("walk-" + obj.direction);
       return;
     }
-    this.sprite.setAnimation("idle-" + this.direction);
+    obj.sprite.setAnimation("idle-" + obj.direction);
   }
 }

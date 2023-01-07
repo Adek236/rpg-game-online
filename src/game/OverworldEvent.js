@@ -12,7 +12,7 @@ export class OverworldEvent {
     // TODO: Need to change globaly here \/
     const who =
       this.map.gameObjects[
-        this.event.who === "hero" ? this.map.overworld.hero : this.event.who
+        this.event.who === "hero" ? playerState.name : this.event.who
       ];
     // const who = this.map.gameObjects[this.event.who];
     who.startBehavior(
@@ -29,7 +29,7 @@ export class OverworldEvent {
     // Set up a handler to complete when correct person is done walking, then resolve the event
     const completeHandler = (e) => {
       // TODO: Need to change globaly here who.id \/
-      if (e.detail.whoId === who.id) {
+      if (e.detail.who === who.name) {
         document.removeEventListener("PersonStandComplete", completeHandler);
         resolve();
       }
@@ -40,11 +40,10 @@ export class OverworldEvent {
 
   walk(resolve) {
     // TODO: Need to change globaly here \/
-    console.log(this.map)
     const who =
-    this.map.gameObjects[
-      this.event.who === "hero" ? this.map.overworld.hero : this.event.who
-    ];
+      this.map.gameObjects[
+        this.event.who === "hero" ? playerState.name : this.event.who
+      ];
     // const who = this.map.gameObjects[this.event.who];
     who.startBehavior(
       {
@@ -60,7 +59,7 @@ export class OverworldEvent {
     // Set up a handler to complete when correct person is done walking, then resolve the event
     const completeHandler = (e) => {
       // TODO: Need to change globaly here who.id \/
-      if (e.detail.whoId === who.id) {
+      if (e.detail.who === who.name) {
         document.removeEventListener("PersonWalkingComplete", completeHandler);
         resolve();
       }
@@ -73,7 +72,7 @@ export class OverworldEvent {
     if (this.event.faceHero) {
       const obj = this.map.gameObjects[this.event.faceHero];
       obj.direction = utils.oppositeDirection(
-        this.map.gameObjects[this.map.overworld.hero].direction
+        this.map.gameObjects[playerState.name].direction
       );
     }
 
@@ -90,24 +89,61 @@ export class OverworldEvent {
   }
   // TODO: Something broke
   changeMap(resolve) {
-    // Deactive old objects
+    let object;
     Object.values(this.map.gameObjects).forEach((obj) => {
-      // console.log("map ", this.map)
-      // console.log("obj ", obj)
+      // Deactive old objects
       obj.isMounted = false;
-      if (obj.id === this.map.overworld.hero){
-        const currentPlayerState = this.map.configObjects[obj.id];
-        console.log("changemap, cplstate", currentPlayerState);
-        currentPlayerState.currentMap = this.event.map;
-        currentPlayerState.name = obj.id; // need to improve, duplicate
-        // this.map.unmountObject(obj.id, "outsideMap");
-        delete window.OverworldMaps["outsideMap"].configObjects[obj.id];
-        delete this.map.gameObjects[obj.id];
-        this.map.addPlayerObject(currentPlayerState, {isPlayerControlled: true});
+
+      // Update player to new map
+      if (obj.name === playerState.name) {
+        console.log("change map ", obj.name);
+
+        // Game object player state update
+        object = {
+          name: playerState.name,
+          type: "Person",
+          currentMap: this.event.map,
+          isPlayerControlled: true,
+          outfit: playerState.outfit,
+        };
+
+        // Player state map update
+        playerState.currentMap = this.event.map;
+
+        // Add position at window playersPosition
+        window.OverworldMaps[playerState.currentMap].playersPosition[playerState.name] = {
+          direction: this.event.direction,
+          x : this.event.x,
+          y : this.event.y
+         };
+
+        // Firebase db update
+        const player = {
+          currentMap: this.event.map,
+          x: utils.withGridReverse(this.event.x),
+          y: utils.withGridReverse(this.event.y),
+          direction: this.event.direction,
+        };
+        playerState.updatePlayer({ player });
+
+        // playerState.setPlayerOffline(playerState.id);
+        // const currentPlayerState = this.map.configObjects[obj.name];
+        // currentPlayerState.currentMap = this.event.map;
+        // playerState.currentMap = this.event.map;
+        // currentPlayerState.name = obj.name; // need to improve, duplicate
+        // // this.map.unmountObject(obj.id, "outsideMap");
+        // // TODO: need to change "outsidemap", works badly
+        // // delete window.OverworldMaps["outsideMap"].configObjects[obj.id];
+        // // delete this.map.gameObjects[obj.id];
+        // this.map.addPlayerObject(currentPlayerState, {isPlayerControlled: true});
+        // playerState.setPlayerOnline(playerState.id);
       }
     });
-
-    this.map.overworld.startMap(window.OverworldMaps[this.event.map]);
+    this.map.overworld.startMap(object, {
+      x: this.event.x,
+      y: this.event.y,
+      direction: this.event.direction,
+    });
     resolve();
   }
 

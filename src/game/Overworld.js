@@ -4,6 +4,7 @@ import { GameObject } from "./GameObject.js";
 import { KeyPressListener } from "./KeyPressListener.js";
 import { OverworldMap } from "./OverworldMap.js";
 import { playerState } from "./PlayerState.js";
+import { utils } from "./utils/utils.js";
 
 export class Overworld {
   constructor(config) {
@@ -11,21 +12,17 @@ export class Overworld {
     this.canvas = this.element.querySelector(".game-canvas");
     this.ctx = this.canvas.getContext("2d");
     this.map = null;
-    this.hero = null;
-    this.heroId = null;
   }
 
   startGameLoop() {
-    this.hero = playerState.name;
-    this.heroId = playerState.id;
-    console.log(this)
+    // this.hero = playerState.name;
+    // this.heroId = playerState.id;
     const step = () => {
       // Clear off the canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       // console.log("3-overworld")
       // Establish the camera person
-      const cameraPerson = this.map.gameObjects[this.hero];
-      // console.log(cameraPerson)
+      const cameraPerson = this.map.gameObjects[playerState.name];
       // Update all objects
       Object.values(this.map.gameObjects).forEach((object) => {
         object.update({
@@ -49,7 +46,6 @@ export class Overworld {
       // Draw Upper layer
       this.map.drawUpperImage(this.ctx, cameraPerson);
 
-      // console.log(OverworldMaps.outsideMap.walls)
 
       requestAnimationFrame(step);
     };
@@ -64,7 +60,7 @@ export class Overworld {
   }
   bindHeroPositionCheck() {
     document.addEventListener("PersonWalkingComplete", (e) => {
-      if (e.detail.whoId === this.hero) {
+      if (e.detail.who === playerState.name) {
         this.map.checkForFootstepCutscene();
       }
     });
@@ -72,15 +68,29 @@ export class Overworld {
 
   
 
-  startMap(mapConfig) {
-    this.map = new OverworldMap(mapConfig);
+  startMap(object, mapInitialConfig=null) {
+    this.map = new OverworldMap(window.OverworldMaps[object.currentMap]);
     this.map.overworld = this;
-    this.map.mountObjects();
+    this.map.mountObjectsFromConfig();
+    this.map.mountGameObject(object);
     this.map.objectListener();
+    console.log(this)
+
+    if (mapInitialConfig) {
+      // const player = {
+      //   x: utils.withGridReverse(mapInitialConfig.x),
+      //   y: utils.withGridReverse(mapInitialConfig.y),
+      //   direction: mapInitialConfig.direction,
+      // };
+      // playerState.updatePlayer({ player });
+      this.map.gameObjects[object.name].x = mapInitialConfig.x;
+      this.map.gameObjects[object.name].y = mapInitialConfig.y;
+      this.map.gameObjects[object.name].direction = mapInitialConfig.direction;
+    }
   }
 
-  init(map) {
-    this.startMap(window.OverworldMaps[map]);
+  init(object) {
+    this.startMap(object);
 
     this.bindActionInput();
     this.bindHeroPositionCheck();

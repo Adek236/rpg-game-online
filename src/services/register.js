@@ -81,7 +81,8 @@ async function addPlayerDataToDB(data, resolve) {
         x: 9,
         y: 4,
         currentMap: "outsideMap",
-        online: false
+        online: false,
+        outfit: "src/game/assets/characters/hero2.png"
       });
       // console.log("data added");
     })
