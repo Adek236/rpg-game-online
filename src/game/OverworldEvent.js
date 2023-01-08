@@ -93,7 +93,7 @@ export class OverworldEvent {
     Object.values(this.map.gameObjects).forEach((obj) => {
       // Deactive old objects
       obj.isMounted = false;
-
+      this.isObjectsListens = false;
       // Update player to new map
       if (obj.name === playerState.name) {
         console.log("change map ", obj.name);
@@ -137,6 +137,7 @@ export class OverworldEvent {
         // // delete this.map.gameObjects[obj.id];
         // this.map.addPlayerObject(currentPlayerState, {isPlayerControlled: true});
         // playerState.setPlayerOnline(playerState.id);
+        
       }
     });
     this.map.overworld.startMap(object, {
