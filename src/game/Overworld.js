@@ -14,16 +14,13 @@ export class Overworld {
     this.canvas = this.element.querySelector(".game-canvas");
     this.ctx = this.canvas.getContext("2d");
     this.map = null;
-    this.isObjectsListens = true;
+    // this.isObjectsListens = true;
   }
 
   startGameLoop() {
-    // this.hero = playerState.name;
-    // this.heroId = playerState.id;
     const step = () => {
       // Clear off the canvas
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      // console.log("3-overworld")
       // Establish the camera person
       const cameraPerson = this.map.gameObjects[playerState.name];
       // Update all objects
@@ -49,7 +46,6 @@ export class Overworld {
       // Draw Upper layer
       this.map.drawUpperImage(this.ctx, cameraPerson);
 
-      // console.log(this.map.gameObjects["Merry"]?.movingProgressReaming)
       requestAnimationFrame(step);
     };
     step();
@@ -73,18 +69,11 @@ export class Overworld {
     this.map = new OverworldMap(window.OverworldMaps[object.currentMap]);
     this.map.overworld = this;
     this.map.mountObjectsFromConfig();
-    this.map.mountGameObject(object, ()=>{
+    this.map.mountGameObject(object, () => {
       this.isObjectsListens = true;
     });
-    console.log(this);
 
     if (mapInitialConfig) {
-      // const player = {
-      //   x: utils.withGridReverse(mapInitialConfig.x),
-      //   y: utils.withGridReverse(mapInitialConfig.y),
-      //   direction: mapInitialConfig.direction,
-      // };
-      // playerState.updatePlayer({ player });
       this.map.gameObjects[object.name].x = mapInitialConfig.x;
       this.map.gameObjects[object.name].y = mapInitialConfig.y;
       this.map.gameObjects[object.name].direction = mapInitialConfig.direction;
@@ -120,18 +109,13 @@ export class Overworld {
     onValue(playersRef, (snapshot) => {
       const players = snapshot.val();
       Object.values(players).forEach((player) => {
-        console.log("LISTENING!!!", this.isObjectsListens)
-        if (!this.isObjectsListens) return;
+        // if (!this.isObjectsListens) return;
         // If player its me skip
         if (player.name === playerState.name) return;
-        // console.log("db up", this);
-        
+
         const playerObj = this.map.gameObjects[player.name];
-        
-        console.log("db up window ", window.OverworldMaps[player.currentMap].playersPosition[
-          player.name
-        ])
-        console.log("db up", playerObj, this);
+
+        console.log("db up");
 
         // If player is online at your map and exist in game objects
         // do something
@@ -148,7 +132,6 @@ export class Overworld {
             window.OverworldMaps[player.currentMap].playersPosition[
               player.name
             ];
-          console.log("currentPlayerState", currentPlayerState);
 
           // Update position at playersPosition
           window.OverworldMaps[player.currentMap].playersPosition[player.name] =
@@ -162,82 +145,35 @@ export class Overworld {
             window.OverworldMaps[player.currentMap].playersPosition[
               player.name
             ];
-          console.log("newPlayerState", newPlayerState);
 
           if (
             currentPlayerState.x !== newPlayerState.x ||
             currentPlayerState.y !== newPlayerState.y
           ) {
-              console.log("diffrent x,y - go!!");
-              // if (player.direction !== playerObj.direction) playerObj.direction = player.direction;
-              playerObj.direction = newPlayerState.direction;
-              console.log("dir changed!");
-              // if (playerObj.x !== currentPlayerState.x)
-              //   playerObj.x = currentPlayerState.x;
-              // if (playerObj.y !== currentPlayerState.y)
-              //   playerObj.y = currentPlayerState.y;
-              console.log("diffrent gameobj with currentplstat checked!");
+            // TODO: need to improve animations
+            playerObj.direction = newPlayerState.direction;
+            if (playerObj.x !== currentPlayerState.x)
+              playerObj.x = currentPlayerState.x;
+            if (playerObj.y !== currentPlayerState.y)
+              playerObj.y = currentPlayerState.y;
+            // playerObj.startBehavior({arrow: newPlayerState.direction, map:this.map},{type: "walk", direction: newPlayerState.direction})
 
-              // console.log("before this.gameObjects", this.gameObjects);
-              // playerObj.x = newPlayerState.x;
-              // playerObj.y = newPlayerState.y;
-              playerObj.movingProgressReaming = 16;
-              // playerObj.sprite.animationFrameLimit = 3;
-              // playerObj.sprite.animations = {
-              //   "idle-up": [[0, 2]],
-              //   "idle-down": [[0, 0]],
-              //   "idle-left": [[0, 3]],
-              //   "idle-right": [[0, 1]],
-              //   "walk-left": [
-              //     [1, 3],
-              //     [1, 3],
-              //     [0, 3],
-              //     [3, 3],
-              //     [3, 3],
-              //     [0, 3],
-              //   ],
-              //   "walk-down": [
-              //     [1, 0],
-              //     [1, 0],
-              //     [0, 0],
-              //     [3, 0],
-              //     [3, 0],
-              //     [0, 0],
-              //   ],
-              //   "walk-up": [
-              //     [1, 2],
-              //     [1, 2],
-              //     [0, 2],
-              //     [3, 2],
-              //     [3, 2],
-              //     [0, 2],
-              //   ],
-              //   "walk-right": [
-              //     [1, 1],
-              //     [1, 1],
-              //     [0, 1],
-              //     [3, 1],
-              //     [3, 1],
-              //     [0, 1],
-              //   ],
-              // };
-              console.log("moving 16 added");
-              // for (let i = 0; i < 16; i++) {
-              // console.log("for looop!")
-              // const [property, change] =
-              //   playerObj.directionUpdate[playerObj.direction];
-              // playerObj[property] += change;
-              // playerObj.movingProgressReaming -= 1;
+            playerObj.movingProgressReaming = 16;
+            // // playerObj.sprite.animationFrameLimit = 7.2;
+            // // playerObj.updateSprite();
+            // if (this.movingProgressReaming > 0) {
+            // for (let i = 0; i < 16; i++) {
+            // const [property, change] =
+            // playerObj.directionUpdate[playerObj.direction];
+            // playerObj[property] += change;
+            // playerObj.movingProgressReaming -= 1;
 
-              // if (playerObj.movingProgressReaming > 0) {
-              // console.log("walk sprite !")
-              // playerObj.updateSprite();
-              playerObj.sprite.setAnimation("walk-" + playerObj.direction);
-              // return;
-              // }
-              // }
-              // playerObj.sprite.draw(this.overworld.ctx, playerObj);
-              console.log(playerObj);   
+            // }
+            // } else {
+            // playerObj.sprite.setAnimation("walk-" + playerObj.direction);
+
+            playerObj.updateSprite();
+            // }
           }
 
           // If player not moving but change direction, update his game obj
@@ -249,7 +185,7 @@ export class Overworld {
               "If player not moving but change direction, update his game obj"
             );
             playerObj.direction = player.direction;
-            playerObj.sprite.setAnimation("idle-" + playerObj.direction);
+            // playerObj.sprite.setAnimation("idle-" + playerObj.direction);
           }
         }
 
@@ -264,15 +200,14 @@ export class Overworld {
           console.log(
             "If player is online at your map and doesn't exist in game objects, add him"
           );
-          
+
           window.OverworldMaps[player.currentMap].playersPosition[player.name] =
             {
               direction: player.direction,
               x: utils.withGrid(player.x),
               y: utils.withGrid(player.y),
             };
-            
-          // console.log("add player", player.name);
+
           const object = {
             name: player.name,
             type: "Person",
@@ -283,9 +218,9 @@ export class Overworld {
             outfit: player.outfit,
           };
 
+          setTimeout(() => {
             this.map.mountGameObject(object);
-          
-
+          }, 200);
         }
 
         // If player exist and changed map, delete him from game objects
@@ -298,9 +233,8 @@ export class Overworld {
           console.log(
             "If player exist and changed map, delete him from game object, and playersPosition"
           );
-         
-            this.map.unmountGameObject(player.name);
-          
+
+          this.map.unmountGameObject(player.name);
         }
 
         // If player exist and went offline, delete him from game objects
@@ -313,9 +247,8 @@ export class Overworld {
           console.log(
             "If player exist and went offline, delete him from game objects, and playersPosition"
           );
-         
-            this.map.unmountGameObject(player.name);
-          
+
+          this.map.unmountGameObject(player.name);
         }
       });
     });

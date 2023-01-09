@@ -1,8 +1,6 @@
 TODO: 
-OverworldEvent changeMap need improve
-Other players movement sprite broke
+Other players movement sprite BROKE
 onAuthStateChanged need improve
-OverworldEvent walk method done but need to do this globaly at OverworldEvent
 
 
 

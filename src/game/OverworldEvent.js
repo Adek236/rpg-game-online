@@ -87,13 +87,13 @@ export class OverworldEvent {
     playerState.storyFlags[this.event.flag] = true;
     resolve();
   }
-  // TODO: Something broke
+
   changeMap(resolve) {
     let object;
     Object.values(this.map.gameObjects).forEach((obj) => {
       // Deactive old objects
       obj.isMounted = false;
-      this.isObjectsListens = false;
+      // this.isObjectsListens = false;
       // Update player to new map
       if (obj.name === playerState.name) {
         console.log("change map ", obj.name);
@@ -125,18 +125,6 @@ export class OverworldEvent {
           direction: this.event.direction,
         };
         playerState.updatePlayer({ player });
-
-        // playerState.setPlayerOffline(playerState.id);
-        // const currentPlayerState = this.map.configObjects[obj.name];
-        // currentPlayerState.currentMap = this.event.map;
-        // playerState.currentMap = this.event.map;
-        // currentPlayerState.name = obj.name; // need to improve, duplicate
-        // // this.map.unmountObject(obj.id, "outsideMap");
-        // // TODO: need to change "outsidemap", works badly
-        // // delete window.OverworldMaps["outsideMap"].configObjects[obj.id];
-        // // delete this.map.gameObjects[obj.id];
-        // this.map.addPlayerObject(currentPlayerState, {isPlayerControlled: true});
-        // playerState.setPlayerOnline(playerState.id);
         
       }
     });

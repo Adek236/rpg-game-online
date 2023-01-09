@@ -21,7 +21,7 @@ export class Person extends GameObject {
 
   update(state) {
     if (this.movingProgressReaming > 0) {
-      this.updatePosition(state);
+      this.updatePosition();
     } else {
       // More cases for starting to walk will here
 
