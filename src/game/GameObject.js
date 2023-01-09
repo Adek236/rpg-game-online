@@ -55,6 +55,12 @@ export class GameObject {
       }, 1000);
       return;
     }
+    
+    if (this.type && this.type === "monster") {
+      console.log("MOONSTERR!!");
+      this.behaviorLoop = this.newBehav;
+      this.time();
+    }
 
     // Setting up our event with relevant info
     let eventConfig = this.behaviorLoop[this.behaviorLoopIndex];
@@ -69,7 +75,7 @@ export class GameObject {
     if (this.behaviorLoopIndex === this.behaviorLoop.length) {
       this.behaviorLoopIndex = 0;
     }
-
+    
     // Do it again
     this.doBehaviorEvent(map);
   }

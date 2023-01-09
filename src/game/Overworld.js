@@ -115,7 +115,7 @@ export class Overworld {
 
         const playerObj = this.map.gameObjects[player.name];
 
-        console.log("db up");
+        console.log("db up", this);
 
         // If player is online at your map and exist in game objects
         // do something
