@@ -8,11 +8,9 @@ export class GameObject {
     this.isMounted = false;
     this.x = config.x || 0;
     this.y = config.y || 0;
-    this.center = config.center || {
-      offsetX : 16,
-      offsetY : 24,
-      x: this.x + this.offsetX,
-      y: this.y + this.offsetY
+    this.center = {
+      offsetX: 16,
+      offsetY: 24,
     }
     this.offsetX = config.offsetX || 8;
     this.offsetY = config.offsetY || 18;
