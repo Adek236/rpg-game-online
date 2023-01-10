@@ -93,7 +93,14 @@ export class Sprite {
   draw(ctx, cameraPerson) {
     const x = this.gameObject.x - this.gameObject.offsetX + utils.withGrid(10.5) - cameraPerson.x;
     const y = this.gameObject.y - this.gameObject.offsetY + utils.withGrid(6) - cameraPerson.y;
-
+    
+    if (this.isLoaded) {
+      ctx.beginPath()
+      ctx.arc(x+this.gameObject.center.offsetX, y+this.gameObject.center.offsetY, this.gameObject.radius, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(0, 0, 255, 0.2)'
+      ctx.fill()
+    }
+    
     this.isShadowLoaded &&
       ctx.drawImage(
         this.shadow,
@@ -105,12 +112,13 @@ export class Sprite {
         y + this.gameObject.shadowOffsetY,
         32,
         32
-      );
-
-    const [frameX, frameY] = this.frame;
-
-    this.isLoaded &&
-      ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
+        );
+        
+        const [frameX, frameY] = this.frame;
+        
+        this.isLoaded &&
+        ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
+        
 
     this.updateAnimationProgress();
   }

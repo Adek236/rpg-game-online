@@ -41,6 +41,9 @@ export class Overworld {
         })
         .forEach((object) => {
           object.sprite.draw(this.ctx, cameraPerson);
+          // if (object.type && object.type === "monster"){
+          //   object.draw(this.ctx, cameraPerson)
+          // }
         });
 
       // Draw Upper layer

@@ -5,9 +5,11 @@ import { playerState } from "./PlayerState.js";
 export class Person extends GameObject {
   constructor(config) {
     super(config);
+    this.type = config.type;
     this.movingProgressReaming = 0;
     this.isStanding = false;
     this.intentPos = null; // [x,y]
+    this.radius = config.radius || 12;
 
     this.isPlayerControlled = config.isPlayerControlled || false;
 

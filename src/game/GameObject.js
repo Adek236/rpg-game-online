@@ -8,6 +8,12 @@ export class GameObject {
     this.isMounted = false;
     this.x = config.x || 0;
     this.y = config.y || 0;
+    this.center = config.center || {
+      offsetX : 16,
+      offsetY : 24,
+      x: this.x + this.offsetX,
+      y: this.y + this.offsetY
+    }
     this.offsetX = config.offsetX || 8;
     this.offsetY = config.offsetY || 18;
     this.shadowOffsetX = config.shadowOffsetX || 0;
@@ -56,11 +62,10 @@ export class GameObject {
       return;
     }
     
-    if (this.type && this.type === "monster") {
-      console.log("MOONSTERR!!");
-      this.behaviorLoop = this.newBehav;
-      this.time();
-    }
+    // if (this.type && this.type === "monster") {
+    //   this.behaviorLoop = this.newBehav;
+    //   this.time();
+    // }
 
     // Setting up our event with relevant info
     let eventConfig = this.behaviorLoop[this.behaviorLoopIndex];
