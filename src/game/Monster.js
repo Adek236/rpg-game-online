@@ -85,8 +85,62 @@ export class Monster extends Person {
         ? (target.aroundFreeSpace[direction] = false)
         : (target.aroundFreeSpace[direction] = true);
 
-      console.log(target.aroundFreeSpace);
-    });
+      });
+    
+    // Choose one free space (actually first)
+    // TODO: choose close position, check distance
+    const freeDirection = Object.keys(target.aroundFreeSpace).find((key) => {
+      return target.aroundFreeSpace[key];
+    })
+    const waypoint = utils.nextPosition(target.x, target.y, freeDirection);
+    
+    // Convert amount of square, axis x and y,
+    // needed to approach player
+    const gapX = waypoint.x - this.x;
+    const gapY = waypoint.y - this.y;
+    // console.log(freeDirection)
+    console.log(gapX, gapY, freeDirection);
+
+    const monsterWaypoints = [];
+    let dir, square;
+    if (gapX < 0){
+      dir = "left";
+      gapX < 16 ? 16 : gapX;
+      square = Math.abs(Math.floor(gapX/16));
+      for(let i = 0; i<square; i++){
+        monsterWaypoints.push(dir);
+      }
+    } else {
+      dir = "right";
+      gapX < 16 ? 16 : gapX;
+      square = Math.abs(Math.floor(gapX/16));
+      for(let i = 0; i<square; i++){
+        monsterWaypoints.push(dir);
+      }
+    }
+    if (gapY < 0){
+      dir = "up";
+      gapY < 16 ? 16 : gapY;
+      square = Math.abs(Math.floor(gapY/16));
+      for(let i = 0; i<square; i++){
+        monsterWaypoints.push(dir);
+      }
+    } else {
+      dir = "down";
+      gapY < 16 ? 16 : gapY;
+      square = Math.abs(Math.floor(gapY/16));
+      for(let i = 0; i<square; i++){
+        monsterWaypoints.push(dir);
+      }
+    }
+
+    console.log(monsterWaypoints)
+    // TODO: stop if u are in free space around player
+    monsterWaypoints.forEach(direction=>{
+      this.startBehavior({arrow: direction, map: state.map},{type: "walk", direction: direction})
+    })
+    
+
   }
 
   attack() {
