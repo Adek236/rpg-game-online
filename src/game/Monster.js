@@ -56,86 +56,112 @@ export class Monster extends Person {
     // (path must check walls)
     // if not free spot try again untill spot will be free
     if (!this.validTargets) return;
+    // if (this.validTargets[0]?.movingProgressReaming !== 0 
+    //   && this.movingProgressReaming !== 0
+    //   ) return;
     const target = {
       x: this.validTargets[0]?.x,
       y: this.validTargets[0]?.y,
       aroundFreeSpace: {
-        up: null,
-        down: null,
-        left: null,
-        right: null,
+        up: {isFree:null, position: null},
+        down: {isFree:null, position: null},
+        left: {isFree:null, position: null},
+        right: {isFree:null, position: null},
       },
     };
 
     // Clear free spaces if target disappear
     if (!target.x || !target.y) {
       target.aroundFreeSpace = {
-        up: null,
-        down: null,
-        left: null,
-        right: null,
+        up: {isFree:null, position: null},
+        down: {isFree:null, position: null},
+        left: {isFree:null, position: null},
+        right: {isFree:null, position: null},
       };
       return;
     }
 
+    if (this.movingProgressReaming > 0) return;
+    // TODO: stop if u are in free space around player
+    
+
     // Check free spaces around target
     Object.keys(target.aroundFreeSpace).forEach((direction) => {
       const result = state.map.isSpaceTaken(target.x, target.y, direction);
+      const pos = utils.nextPosition(target.x, target.y, direction);
       result
-        ? (target.aroundFreeSpace[direction] = false)
-        : (target.aroundFreeSpace[direction] = true);
-
-      });
+      ? (target.aroundFreeSpace[direction] = {isFree: false, position: pos})
+      : (target.aroundFreeSpace[direction] = {isFree: true, position: pos});
+    });
     
-    // Choose one free space (actually first)
-    // TODO: choose close position, check distance
-    const freeDirection = Object.keys(target.aroundFreeSpace).find((key) => {
-      return target.aroundFreeSpace[key];
-    })
+    let inFreeSpace = false;
+    for (const obj in target.aroundFreeSpace){
+      if (target.aroundFreeSpace[obj].position.x === this.x && target.aroundFreeSpace[obj].position.y === this.y){
+        console.log("im in free spot");
+        inFreeSpace = true;
+        return;
+      }
+    }
+    if (inFreeSpace) return;
+    target.aroundFreeSpace["up"].isFree = false;
+    console.log(target.aroundFreeSpace)
+      // Choose one free space (actually first)
+      // TODO: choose close position, check distance
+      const freeDirection = Object.keys(target.aroundFreeSpace).find((key) => {
+        return target.aroundFreeSpace[key].isFree;
+      })
+      // console.log(freeDirection);
     const waypoint = utils.nextPosition(target.x, target.y, freeDirection);
     
     // Convert amount of square, axis x and y,
     // needed to approach player
+    // if (waypoint.x % 16 !== 0 || waypoint.y % 16 !== 0) return;
     const gapX = waypoint.x - this.x;
     const gapY = waypoint.y - this.y;
     // console.log(freeDirection)
-    console.log(gapX, gapY, freeDirection);
+    console.log("x = ", gapX, "y = ", gapY, freeDirection);
 
     const monsterWaypoints = [];
     let dir, square;
     if (gapX < 0){
       dir = "left";
-      gapX < 16 ? 16 : gapX;
-      square = Math.abs(Math.floor(gapX/16));
+      // gapX < 16 ? 16 : gapX;
+      square = Math.abs(Math.trunc(gapX/16));
       for(let i = 0; i<square; i++){
         monsterWaypoints.push(dir);
       }
-    } else {
+    }  
+    if(gapX > 0) {
       dir = "right";
-      gapX < 16 ? 16 : gapX;
-      square = Math.abs(Math.floor(gapX/16));
+      // gapX < 16 ? 16 : gapX;
+      square = Math.abs(Math.trunc(gapX/16));
       for(let i = 0; i<square; i++){
         monsterWaypoints.push(dir);
       }
     }
     if (gapY < 0){
       dir = "up";
-      gapY < 16 ? 16 : gapY;
-      square = Math.abs(Math.floor(gapY/16));
+      // gapY < 16 ? 16 : gapY;
+      square = Math.abs(Math.trunc(gapY/16));
+      
+      console.log("gapy", gapY/16);
+      console.log(square);
       for(let i = 0; i<square; i++){
         monsterWaypoints.push(dir);
       }
-    } else {
+    } 
+    if (gapY > 0) {
       dir = "down";
-      gapY < 16 ? 16 : gapY;
-      square = Math.abs(Math.floor(gapY/16));
+      // gapY < 16 ? 16 : gapY;
+      square = Math.abs(Math.trunc(gapY/16));
       for(let i = 0; i<square; i++){
         monsterWaypoints.push(dir);
       }
     }
-
+    console.log("player ", waypoint.x, waypoint.y)
+    console.log("monster ", this.x, this.y)
     console.log(monsterWaypoints)
-    // TODO: stop if u are in free space around player
+    
     monsterWaypoints.forEach(direction=>{
       this.startBehavior({arrow: direction, map: state.map},{type: "walk", direction: direction})
     })
