@@ -179,12 +179,25 @@ export class OverworldMap {
 window.OverworldMaps = {
   outsideMap: {
     mapName: "outsideMap",
-    lowerSrc: "src/game/assets/maps/testMapOutsideSquare.png",
+    lowerSrc: "src/game/assets/maps/testMapOutside.png",
     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
     configObjects: {
       skeleton: {
         type: "Monster",
         x: utils.withGrid(13),
+        y: utils.withGrid(16),
+        outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+        hp: 100,
+        behaviorLoop: [
+          // { type: "stand", direction: "down", time: 800 }
+          // { type: "walk", direction: "right" },
+          // { type: "stand", direction: "down", time: 2800 },
+          // { type: "walk", direction: "left" },
+        ],
+      },
+      skeleton2: {
+        type: "Monster",
+        x: utils.withGrid(15),
         y: utils.withGrid(16),
         outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
         hp: 100,
