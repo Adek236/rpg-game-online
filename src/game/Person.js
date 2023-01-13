@@ -7,6 +7,7 @@ export class Person extends GameObject {
     super(config);
     this.type = config.type;
     this.movingProgressReaming = 0;
+    this.movingProgressReamingMax = 16;
     this.isStanding = false;
     this.intentPos = null; // [x,y]
     this.radius = config.radius || 12;
@@ -67,7 +68,7 @@ export class Person extends GameObject {
       }
 
       // Ready to walk
-      this.movingProgressReaming = 16;
+      this.movingProgressReaming = this.movingProgressReamingMax;
 
       // Add next position intent
       const intentPos = utils.nextPosition(this.x, this.y, this.direction);

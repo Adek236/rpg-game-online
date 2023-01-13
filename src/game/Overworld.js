@@ -161,7 +161,7 @@ export class Overworld {
               playerObj.y = currentPlayerState.y;
             // playerObj.startBehavior({arrow: newPlayerState.direction, map:this.map},{type: "walk", direction: newPlayerState.direction})
 
-            playerObj.movingProgressReaming = 16;
+            playerObj.movingProgressReaming = playerObj.movingProgressReamingMax;
             // // playerObj.sprite.animationFrameLimit = 7.2;
             // // playerObj.updateSprite();
             // if (this.movingProgressReaming > 0) {

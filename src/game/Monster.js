@@ -8,8 +8,16 @@ export class Monster extends Person {
     super(config);
     // this.type = config.type || "monster";
     this.hp = config.hp;
-    this.radius = 50;
+    this.radius = 100;
     this.validTargets = [];
+    this.movingProgressReamingMax = 32;
+    this.directionUpdate = {
+      up: ["y", -0.5],
+      down: ["y", 0.5],
+      left: ["x", -0.5],
+      right: ["x", 0.5],
+    };
+
   }
 
   update(state) {
@@ -209,10 +217,12 @@ export class Monster extends Person {
     console.log(monsterWaypoints);
 
     monsterWaypoints.forEach((direction) => {
-      this.startBehavior(
-        { arrow: direction, map: state.map },
-        { type: "walk", direction: direction }
-      );
+      if (this.movingProgressReaming === 0) {
+        this.startBehavior(
+          { arrow: direction, map: state.map },
+          { type: "walk", direction: direction }
+        );
+      }
     });
   }
 
