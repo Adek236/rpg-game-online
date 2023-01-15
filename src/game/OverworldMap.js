@@ -208,6 +208,71 @@ window.OverworldMaps = {
       //     // { type: "walk", direction: "left" },
       //   ],
       // },
+      // skeleton3: {
+      //   type: "Monster",
+      //   x: utils.withGrid(15),
+      //   y: utils.withGrid(16),
+      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+      //   hp: 100,
+      //   behaviorLoop: [
+      //     // { type: "stand", direction: "down", time: 800 }
+      //     // { type: "walk", direction: "right" },
+      //     // { type: "stand", direction: "down", time: 2800 },
+      //     // { type: "walk", direction: "left" },
+      //   ],
+      // },
+      // skeleton4: {
+      //   type: "Monster",
+      //   x: utils.withGrid(15),
+      //   y: utils.withGrid(16),
+      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+      //   hp: 100,
+      //   behaviorLoop: [
+      //     // { type: "stand", direction: "down", time: 800 }
+      //     // { type: "walk", direction: "right" },
+      //     // { type: "stand", direction: "down", time: 2800 },
+      //     // { type: "walk", direction: "left" },
+      //   ],
+      // },
+      // skeleton5: {
+      //   type: "Monster",
+      //   x: utils.withGrid(15),
+      //   y: utils.withGrid(16),
+      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+      //   hp: 100,
+      //   behaviorLoop: [
+      //     // { type: "stand", direction: "down", time: 800 }
+      //     // { type: "walk", direction: "right" },
+      //     // { type: "stand", direction: "down", time: 2800 },
+      //     // { type: "walk", direction: "left" },
+      //   ],
+      // },
+      // skeleton6: {
+      //   type: "Monster",
+      //   x: utils.withGrid(15),
+      //   y: utils.withGrid(16),
+      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+      //   hp: 100,
+      //   behaviorLoop: [
+      //     // { type: "stand", direction: "down", time: 800 }
+      //     // { type: "walk", direction: "right" },
+      //     // { type: "stand", direction: "down", time: 2800 },
+      //     // { type: "walk", direction: "left" },
+      //   ],
+      // },
+      // skeleton7: {
+      //   type: "Monster",
+      //   x: utils.withGrid(15),
+      //   y: utils.withGrid(16),
+      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+      //   hp: 100,
+      //   behaviorLoop: [
+      //     // { type: "stand", direction: "down", time: 800 }
+      //     // { type: "walk", direction: "right" },
+      //     // { type: "stand", direction: "down", time: 2800 },
+      //     // { type: "walk", direction: "left" },
+      //   ],
+      // },
       hero2: {
         type: "NPC",
         x: utils.withGrid(8),

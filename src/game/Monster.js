@@ -13,21 +13,31 @@ export class Monster extends Person {
       down: ["y", 0.5],
       left: ["x", -0.5],
       right: ["x", 0.5],
-      leftUp: [ ["x","y"], [-0.5,-0.5] ],
-      leftDown: [ ["x","y"], [-0.5,0.5] ],
-      rightUp: [ ["x","y"], [0.5,-0.5] ],
-      rightDown: [ ["x","y"], [0.5,0.5] ],
+      leftUp: [
+        ["x", "y"],
+        [-0.5, -0.5],
+      ],
+      leftDown: [
+        ["x", "y"],
+        [-0.5, 0.5],
+      ],
+      rightUp: [
+        ["x", "y"],
+        [0.5, -0.5],
+      ],
+      rightDown: [
+        ["x", "y"],
+        [0.5, 0.5],
+      ],
     };
     this.hp = config.hp;
     this.radius = 100;
     this.validTargets = [];
-    
+    this.lastPosition = null;
   }
 
   update(state) {
     super.update(state);
-    // console.log(this.validTargets);
-    // this.possibleTargets = state.map.gameObjects;
 
     this.findTarget(state);
   }
@@ -56,7 +66,7 @@ export class Monster extends Person {
       }
     );
 
-    this.createPathToTarget(state);
+    this.followTarget(state);
   }
 
   getDistanceToTarget(from, to) {
@@ -65,12 +75,7 @@ export class Monster extends Person {
     return Math.hypot(gapX, gapY);
   }
 
-  createPathToTarget(state) {
-    // TODO: if we have target
-    // find free spot around target (NEED TO IMPROVE TO 8 SPOT)
-    // create path to first free spot around target
-    // (path must check walls)
-    // if not free spot try again untill spot will be free
+  followTarget(state) {
     if (!this.validTargets) return;
 
     const target = {
@@ -89,6 +94,7 @@ export class Monster extends Person {
     };
 
     // Clear free spaces if target disappear
+    // TODO: loop
     if (!target.x || !target.y) {
       target.aroundFreeSpace = {
         up: { isFree: null, position: null, distance: null },
@@ -120,7 +126,7 @@ export class Monster extends Person {
         { x: this.x, y: this.y }
       );
     });
-    console.log(target.aroundFreeSpace);
+    // console.log(target.aroundFreeSpace);
 
     // Stop if monster is in free space around player
     let inFreeSpace = false;
@@ -129,14 +135,15 @@ export class Monster extends Person {
         target.aroundFreeSpace[obj].position.x === this.x &&
         target.aroundFreeSpace[obj].position.y === this.y
       ) {
-        console.log("im in free spot");
+        // console.log("im in free spot");
         inFreeSpace = true;
         return;
       }
     }
 
     if (inFreeSpace) return;
-    console.log(target.aroundFreeSpace);
+    // console.log(target.aroundFreeSpace);
+
     // Choose one free space
     const freeDirection = Object.keys(target.aroundFreeSpace)
       .sort(
@@ -149,103 +156,43 @@ export class Monster extends Person {
       });
     const waypoint = utils.nextPosition(target.x, target.y, freeDirection);
 
-    // Convert amount of square, axis x and y,
-    // needed to approach player
-    const gapX = waypoint.x - this.x;
-    const gapY = waypoint.y - this.y;
-    console.log("x = ", gapX, "y = ", gapY, freeDirection);
+    if (!freeDirection) return;
 
-    let monsterWaypoints = [];
-    let dir, square;
-    if (gapX < 0) {
-      dir = "left";
-      // gapX < 16 ? 16 : gapX;
-      square = Math.abs(Math.trunc(gapX / 16));
-      for (let i = 0; i < square; i++) {
-        monsterWaypoints.push(dir);
-      }
-    }
-    if (gapX > 0) {
-      dir = "right";
-      // gapX < 16 ? 16 : gapX;
-      square = Math.abs(Math.trunc(gapX / 16));
-      for (let i = 0; i < square; i++) {
-        monsterWaypoints.push(dir);
-      }
-    }
-    if (gapY < 0) {
-      dir = "up";
-      // gapY < 16 ? 16 : gapY;
-      square = Math.abs(Math.trunc(gapY / 16));
-
-      console.log("gapy", gapY / 16);
-      console.log(square);
-      for (let i = 0; i < square; i++) {
-        monsterWaypoints.push(dir);
-      }
-    }
-    if (gapY > 0) {
-      dir = "down";
-      // gapY < 16 ? 16 : gapY;
-      square = Math.abs(Math.trunc(gapY / 16));
-      for (let i = 0; i < square; i++) {
-        monsterWaypoints.push(dir);
-      }
-    }
-    console.log("player ", waypoint.x, waypoint.y);
-    console.log("monster ", this.x, this.y);
-    console.log(monsterWaypoints);
-
-    monsterWaypoints.forEach((direction) => {
-      if (this.movingProgressReaming === 0) {
-        let dir = direction;
-        if (state.map.isSpaceTaken(this.x, this.y, direction)) {
-          this.findPossibleWay(state, monsterWaypoints, target, newDir =>{
-            dir = newDir;
-            console.log(newDir)
-            // switche = this.newWaypoints;
-            // monsterWaypoints.unshift(newDir);
-            // Array.from(["left", "up"]).forEach(dir=>{
-            //   if (this.movingProgressReaming === 0) {
-            //     this.startBehavior(
-            //       { arrow: dir, map: state.map },
-            //       { type: "walk", direction: dir }
-            //     );
-            //   }
-            // })
-          });
-        }
-        this.startBehavior(
-          { arrow: dir, map: state.map },
-          { type: "walk", direction: dir }
-        );
-      }
-    });
-  }
-  // TODO: całe bieganie przerobić na sprawdzanie dystansu
-  // (nie może wrócic na wcześniejsza kratke)
-  findPossibleWay(state, waypoints, target, resolve) {
     const possibleMove = [];
-    const nearestTargetPos = waypoints[0];
+
+    // Check possible move around monster
     Object.keys(this.directionUpdate).forEach((direction) => {
       possibleMove.push({
         name: direction,
-        isPossible: !state.map.isSpaceTaken(this.x, this.y, direction),
-        // position: utils.nextPosition(this.x, this.y, direction),
+        isPossible:
+          // Check if last monster position, move is not available
+          direction === this.lastPosition
+            ? false
+            : !state.map.isSpaceTaken(this.x, this.y, direction),
         distanceToTarget: this.getDistanceToTarget(
-          target.aroundFreeSpace[nearestTargetPos].position,
+          target.aroundFreeSpace[freeDirection].position,
           utils.nextPosition(this.x, this.y, direction)
         ),
       });
     });
+
+    // Sort possible move around monster by distance
+    // and return closest move to target
     const newDirection = possibleMove
       .sort((a, b) => a.distanceToTarget - b.distanceToTarget)
       .find((_, i) => {
         return possibleMove[i].isPossible;
       });
-    console.log(possibleMove);
-    // waypoints.unshift(newDirection.name);
-    resolve(newDirection.name);
+    //   console.log(freeDirection)
+    // console.log(possibleMove);
+
+    if (this.movingProgressReaming === 0) {
+      // this.lastPosition = utils.oppositeDirection(newDirection.name);
+      this.startBehavior(
+        { arrow: newDirection.name, map: state.map },
+        { type: "walk", direction: newDirection.name }
+      );
+    }
   }
 
   attack() {

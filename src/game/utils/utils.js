@@ -39,8 +39,20 @@ export const utils = {
     if (direction === "left") {
       return "right";
     }
+    if (direction === "leftUp") {
+      return "rightDown";
+    }
+    if (direction === "leftDown") {
+      return "rightUp";
+    }
     if (direction === "right") {
       return "left";
+    }
+    if (direction === "rightUp") {
+      return "leftDown";
+    }
+    if (direction === "rightDown") {
+      return "leftUp";
     }
     if (direction === "up") {
       return "down";
