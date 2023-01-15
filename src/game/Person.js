@@ -19,6 +19,10 @@ export class Person extends GameObject {
       down: ["y", 1],
       left: ["x", -1],
       right: ["x", 1],
+      leftUp: [ ["x","y"], [-1,-1] ],
+      leftDown: [ ["x","y"], [-1,1] ],
+      rightUp: [ ["x","y"], [1,-1] ],
+      rightDown: [ ["x","y"], [1,1] ],
     };
   }
 
@@ -109,7 +113,12 @@ export class Person extends GameObject {
 
   updatePosition() {
     const [property, change] = this.directionUpdate[this.direction];
-    this[property] += change;
+    if (this.direction === "leftUp" || this.direction === "leftDown" ||this.direction === "rightDown" ||this.direction === "rightUp"){
+      this[property[0]] += change[0];
+      this[property[1]] += change[1];
+    } else {
+      this[property] += change;
+    }
     this.movingProgressReaming -= 1;
 
     if (this.movingProgressReaming === 0) {

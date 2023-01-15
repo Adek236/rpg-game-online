@@ -30,7 +30,7 @@ export class Overworld {
           map: this.map,
         });
       });
-
+      // console.log(this.directionInput.heldDirections)
       // Draw Lower layer
       this.map.drawLowerImage(this.ctx, cameraPerson);
 

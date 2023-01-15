@@ -25,8 +25,24 @@ export class Sprite {
       "idle-up": [[0, 2]],
       "idle-down": [[0, 0]],
       "idle-left": [[0, 3]],
+      "idle-leftUp": [[0, 3]],
+      "idle-leftDown": [[0, 3]],
       "idle-right": [[0, 1]],
+      "idle-rightUp": [[0, 1]],
+      "idle-rightDown": [[0, 1]],
       "walk-left": [
+        [1, 3],
+        [0, 3],
+        [3, 3],
+        [0, 3],
+      ],
+      "walk-leftUp": [
+        [1, 3],
+        [0, 3],
+        [3, 3],
+        [0, 3],
+      ],
+      "walk-leftDown": [
         [1, 3],
         [0, 3],
         [3, 3],
@@ -45,6 +61,18 @@ export class Sprite {
         [0, 2]
       ],
       "walk-right": [
+        [1, 1],
+        [0, 1],
+        [3, 1],
+        [0, 1],
+      ],
+      "walk-rightUp": [
+        [1, 1],
+        [0, 1],
+        [3, 1],
+        [0, 1],
+      ],
+      "walk-rightDown": [
         [1, 1],
         [0, 1],
         [3, 1],

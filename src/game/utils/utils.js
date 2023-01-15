@@ -20,14 +20,32 @@ export const utils = {
       y -= size;
     } else if (direction === "down") {
       y += size;
+    } else if (direction === "leftUp") {
+      x -= size;
+      y -= size;
+    } else if (direction === "leftDown") {
+      x -= size;
+      y += size;
+    } else if (direction === "rightUp") {
+      x += size;
+      y -= size;
+    } else if (direction === "rightDown") {
+      x += size;
+      y += size;
     }
     return { x, y };
   },
-  oppositeDirection(direction){
-    if (direction === "left") {return "right"}
-    if (direction === "right") {return "left"}
-    if (direction === "up") {return "down"}
-    return "up"
+  oppositeDirection(direction) {
+    if (direction === "left") {
+      return "right";
+    }
+    if (direction === "right") {
+      return "left";
+    }
+    if (direction === "up") {
+      return "down";
+    }
+    return "up";
   },
   emitEvent(name, detail) {
     const event = new CustomEvent(name, {

@@ -108,16 +108,16 @@ export class OverworldMap {
     console.log("unmountGameObject", name);
   }
 
-  checkForNotMountedObjects() {
-    const objects = {};
-    Object.keys(this.configObjects).forEach((key) => {
-      const objIsHere = Object.keys(this.gameObjects).includes(key);
-      if (!objIsHere) {
-        objects[key] = { toMounted: true };
-      }
-    });
-    return objects;
-  }
+  // checkForNotMountedObjects() {
+  //   const objects = {};
+  //   Object.keys(this.configObjects).forEach((key) => {
+  //     const objIsHere = Object.keys(this.gameObjects).includes(key);
+  //     if (!objIsHere) {
+  //       objects[key] = { toMounted: true };
+  //     }
+  //   });
+  //   return objects;
+  // }
 
 
   async startCutscene(events) {
@@ -195,19 +195,19 @@ window.OverworldMaps = {
           // { type: "walk", direction: "left" },
         ],
       },
-      skeleton2: {
-        type: "Monster",
-        x: utils.withGrid(15),
-        y: utils.withGrid(16),
-        outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
-        hp: 100,
-        behaviorLoop: [
-          // { type: "stand", direction: "down", time: 800 }
-          // { type: "walk", direction: "right" },
-          // { type: "stand", direction: "down", time: 2800 },
-          // { type: "walk", direction: "left" },
-        ],
-      },
+      // skeleton2: {
+      //   type: "Monster",
+      //   x: utils.withGrid(15),
+      //   y: utils.withGrid(16),
+      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+      //   hp: 100,
+      //   behaviorLoop: [
+      //     // { type: "stand", direction: "down", time: 800 }
+      //     // { type: "walk", direction: "right" },
+      //     // { type: "stand", direction: "down", time: 2800 },
+      //     // { type: "walk", direction: "left" },
+      //   ],
+      // },
       hero2: {
         type: "NPC",
         x: utils.withGrid(8),
