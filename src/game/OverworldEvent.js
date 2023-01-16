@@ -92,7 +92,9 @@ export class OverworldEvent {
     let object;
     Object.values(this.map.gameObjects).forEach((obj) => {
       // Deactive old objects
-      obj.isMounted = false;
+      if (obj.type !== "Monster") {
+        obj.isMounted = false;
+      }
       // this.isObjectsListens = false;
       // Update player to new map
       if (obj.name === playerState.name) {

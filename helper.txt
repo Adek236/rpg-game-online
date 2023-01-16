@@ -1,4 +1,8 @@
 TODO: 
+Monsters - each respawn monster add his data to db,
+           monsters need yourself mount fn,
+            
+
 Other players movement sprite BROKE
 onAuthStateChanged need improve
 
