@@ -1,5 +1,10 @@
 import { Person } from "./Person.js";
 import { utils } from "./utils/utils.js";
+import { db } from "../config/firebase.js";
+import {
+  ref,
+  update,
+} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
 // TODO: Monsters must have db connection to see all players (gameObjects)
 
@@ -34,6 +39,7 @@ export class Monster extends Person {
     this.radius = 100;
     this.validTargets = [];
     this.lastPosition = null;
+    this.id = config.id;
   }
 
   update(state) {
@@ -144,7 +150,7 @@ export class Monster extends Person {
     if (inFreeSpace) return;
     // console.log(target.aroundFreeSpace);
 
-    // Choose one free space
+    // Choose nearest free space by distance
     const freeDirection = Object.keys(target.aroundFreeSpace)
       .sort(
         (a, b) =>
@@ -164,11 +170,7 @@ export class Monster extends Person {
     Object.keys(this.directionUpdate).forEach((direction) => {
       possibleMove.push({
         name: direction,
-        isPossible:
-          // Check if last monster position, move is not available
-          direction === this.lastPosition
-            ? false
-            : !state.map.isSpaceTaken(this.x, this.y, direction),
+        isPossible: !state.map.isSpaceTaken(this.x, this.y, direction),
         distanceToTarget: this.getDistanceToTarget(
           target.aroundFreeSpace[freeDirection].position,
           utils.nextPosition(this.x, this.y, direction)
@@ -187,12 +189,15 @@ export class Monster extends Person {
     // console.log(possibleMove);
 
     if (this.movingProgressReaming === 0) {
-      // this.lastPosition = utils.oppositeDirection(newDirection.name);
       this.startBehavior(
         { arrow: newDirection.name, map: state.map },
         { type: "walk", direction: newDirection.name }
       );
     }
+  }
+
+  dbUpdateMonster(state){
+    update(ref(db, `monsters/${this.currentMap}/${this.id}`), state.monster);
   }
 
   attack() {

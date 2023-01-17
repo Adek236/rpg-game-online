@@ -1,6 +1,9 @@
 // import { GameObject } from "./GameObject.js";
-import { onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-import { playersRef } from "../config/firebase.js";
+import {
+  child,
+  get,
+} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+import { dbRef } from "../config/firebase.js";
 import { utils } from "./utils/utils.js";
 import { Person } from "./Person.js";
 import { convertedOutisdeMapWalls } from "./data/testMapOutsideCollision.js";
@@ -83,7 +86,9 @@ export class OverworldMap {
     });
   }
 
-  mountGameObject(object, resolve = null) {
+  mountGameObject(object
+    // ,resolve = null
+    ) {
     // console.log("moungameobj ", object);
     console.log("mountGameObject", object.name);
     let instace;
@@ -98,7 +103,7 @@ export class OverworldMap {
     this.gameObjects[object.name] = instace;
     instace.mount(this);
 
-    if (resolve !== null) resolve();
+    // if (resolve !== null) resolve();
   }
 
   unmountGameObject(name) {
@@ -118,7 +123,6 @@ export class OverworldMap {
   //   });
   //   return objects;
   // }
-
 
   async startCutscene(events) {
     this.isCutscenePlaying = true;
@@ -163,17 +167,36 @@ export class OverworldMap {
     }
   }
 
-  // addWall(x, y) {
-  //   this.walls[`${x},${y}`] = true;
-  // }
-  // removeWall(x, y) {
-  //   delete this.walls[`${x},${y}`];
-  // }
-  // moveWall(wasX, wasY, direction) {
-  //   this.removeWall(wasX, wasY);
-  //   const { x, y } = utils.nextPosition(wasX, wasY, direction);
-  //   this.addWall(x, y);
-  // }
+  async loadMonsters(mapName, resolve) {
+    // return new Promise(async (resolve, reject) => {
+      await get(child(dbRef, `monsters/${mapName}`))
+        .then((snapshot) => {
+          if (!snapshot.exists()) return;
+          snapshot.forEach((monster) => {
+            const monsterData = monster.val();
+
+            window.OverworldMaps[mapName].configObjects[monsterData.id] = {
+              type: "Monster",
+              currentMap: monsterData.currentMap,
+              currentTarget: monsterData.currentTarget,
+              direction: monsterData.direction,
+              isAlive: monsterData.isAlive,
+              name: monsterData.name,
+              id: monsterData.id,
+              outfit: monsterData.outfit,
+              x: utils.withGrid(monsterData.x),
+              y: utils.withGrid(monsterData.y),
+            };
+          });
+          
+        })
+        .catch((error) => {
+          console.log("loadMonsters error:", error);
+          // reject();
+        });
+        resolve();
+    // });
+  }
 }
 
 window.OverworldMaps = {
@@ -182,19 +205,19 @@ window.OverworldMaps = {
     lowerSrc: "src/game/assets/maps/testMapOutside.png",
     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
     configObjects: {
-      skeleton: {
-        type: "Monster",
-        x: utils.withGrid(13),
-        y: utils.withGrid(16),
-        outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
-        hp: 100,
-        behaviorLoop: [
-          // { type: "stand", direction: "down", time: 800 }
-          // { type: "walk", direction: "right" },
-          // { type: "stand", direction: "down", time: 2800 },
-          // { type: "walk", direction: "left" },
-        ],
-      },
+      // skeleton: {
+      //   type: "Monster",
+      //   x: utils.withGrid(13),
+      //   y: utils.withGrid(16),
+      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+      //   hp: 100,
+      //   behaviorLoop: [
+      //     // { type: "stand", direction: "down", time: 800 }
+      //     // { type: "walk", direction: "right" },
+      //     // { type: "stand", direction: "down", time: 2800 },
+      //     // { type: "walk", direction: "left" },
+      //   ],
+      // },
       // skeleton2: {
       //   type: "Monster",
       //   x: utils.withGrid(15),

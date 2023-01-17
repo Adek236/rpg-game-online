@@ -71,10 +71,14 @@ export class Overworld {
   startMap(object, mapInitialConfig = null) {
     this.map = new OverworldMap(window.OverworldMaps[object.currentMap]);
     this.map.overworld = this;
-    this.map.mountObjectsFromConfig();
-    this.map.mountGameObject(object, () => {
-      this.isObjectsListens = true;
-    });
+    this.map.loadMonsters(object.currentMap, ()=>{
+      this.map.mountObjectsFromConfig();
+    })
+    this.map.mountGameObject(object
+    //   , () => {
+    //   this.isObjectsListens = true;
+    // }
+    );
 
     if (mapInitialConfig) {
       this.map.gameObjects[object.name].x = mapInitialConfig.x;
@@ -197,8 +201,8 @@ export class Overworld {
         if (
           player.online &&
           player.currentMap === playerState.currentMap &&
-          !playerObj &&
-          this.isObjectsListens
+          !playerObj 
+          // && this.isObjectsListens
         ) {
           console.log(
             "If player is online at your map and doesn't exist in game objects, add him"

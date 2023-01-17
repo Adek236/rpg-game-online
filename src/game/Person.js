@@ -57,13 +57,15 @@ export class Person extends GameObject {
     if (behavior.type === "walk") {
       // Stop here if space is not free
       if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
-        // Check direction and add to db
+        
+        // Check player direction and add to db
         if (state && this.name === playerState.name) {
         const player = {
           direction: this.direction,
         };
         playerState.updatePlayer({ player });
       }
+
         behavior.retry &&
           setTimeout(() => {
             this.startBehavior(state, behavior);
@@ -78,7 +80,7 @@ export class Person extends GameObject {
       const intentPos = utils.nextPosition(this.x, this.y, this.direction);
       this.intentPos = [intentPos.x, intentPos.y];
 
-      // Update position at firebase
+      // Update player position at firebase
       if (state && this.name === playerState.name) {
         const player = {
           x: utils.withGridReverse(this.intentPos[0]),
@@ -93,10 +95,24 @@ export class Person extends GameObject {
           x : this.intentPos[0],
           y : this.intentPos[1]
          };
-        //  console.log("players position", window.OverworldMaps[playerState.currentMap].playersPosition)
-        //  console.log("players position 2", this)
-        //  window.OverworldMaps[playerState.currentMap].playersPosition[playerState.name].y = this.intentPos[1];
       }
+
+      if (this.type === "Monster"){
+        const monster = {
+          x: utils.withGridReverse(this.intentPos[0]),
+          y: utils.withGridReverse(this.intentPos[1]),
+          direction: this.direction,
+        };
+        this.dbUpdateMonster({ monster });
+
+        // Update position at configObjects
+        window.OverworldMaps[this.currentMap].configObjects[this.id] = {
+          direction: this.direction,
+          x : this.intentPos[0],
+          y : this.intentPos[1]
+         };
+      }
+
       this.updateSprite();
     }
 
