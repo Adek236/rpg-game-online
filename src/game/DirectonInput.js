@@ -31,7 +31,6 @@ export class DirectionInput {
             data.includes(this.heldDirections[1])
         );
         if (whichSlant.length > 0) {
-            console.log(slantDirection);
           return slantDirection;
         }
       }

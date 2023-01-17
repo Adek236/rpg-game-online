@@ -65,14 +65,14 @@ export class OverworldMap {
   mountObjectsFromConfig(objects = this.configObjects) {
     Object.keys(objects).forEach((key) => {
       let object = this.configObjects[key];
-      object.name = key;
-
+      
       let instace;
-
+      
       if (object.type === "Person") {
         instace = new Person(object);
       }
       if (object.type === "NPC") {
+        object.name = key;
         instace = new Person(object);
       }
       if (object.type === "Monster") {
@@ -81,7 +81,7 @@ export class OverworldMap {
       // object.type === monster np
 
       this.gameObjects[key] = instace;
-      this.gameObjects[key].name = key;
+      // this.gameObjects[key].name = key;
       instace.mount(this);
     });
   }
@@ -168,7 +168,6 @@ export class OverworldMap {
   }
 
   async loadMonsters(mapName, resolve) {
-    // return new Promise(async (resolve, reject) => {
       await get(child(dbRef, `monsters/${mapName}`))
         .then((snapshot) => {
           if (!snapshot.exists()) return;
@@ -192,10 +191,8 @@ export class OverworldMap {
         })
         .catch((error) => {
           console.log("loadMonsters error:", error);
-          // reject();
         });
         resolve();
-    // });
   }
 }
 

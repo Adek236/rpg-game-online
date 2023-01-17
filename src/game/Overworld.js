@@ -6,7 +6,7 @@ import { OverworldMap } from "./OverworldMap.js";
 import { playerState } from "./PlayerState.js";
 import { utils } from "./utils/utils.js";
 import { onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-import { playersRef } from "../config/firebase.js";
+import { playersRef, monstersRef, dbRef, db } from "../config/firebase.js";
 
 export class Overworld {
   constructor(config) {
@@ -71,13 +71,14 @@ export class Overworld {
   startMap(object, mapInitialConfig = null) {
     this.map = new OverworldMap(window.OverworldMaps[object.currentMap]);
     this.map.overworld = this;
-    this.map.loadMonsters(object.currentMap, ()=>{
+    this.map.loadMonsters(object.currentMap, () => {
       this.map.mountObjectsFromConfig();
-    })
-    this.map.mountGameObject(object
-    //   , () => {
-    //   this.isObjectsListens = true;
-    // }
+    });
+    this.map.mountGameObject(
+      object
+      //   , () => {
+      //   this.isObjectsListens = true;
+      // }
     );
 
     if (mapInitialConfig) {
@@ -89,7 +90,9 @@ export class Overworld {
 
   init(object) {
     this.startMap(object);
-    this.objectListener();
+    // this.objectListener();
+    this.playersObjectListener();
+    // this.monstersObjectListener();
 
     this.bindActionInput();
     this.bindHeroPositionCheck();
@@ -112,9 +115,11 @@ export class Overworld {
     // )
   }
 
-  objectListener() {
-    onValue(playersRef, (snapshot) => {
-      const players = snapshot.val();
+
+
+  playersObjectListener() {
+    onValue(dbRef, (snapshot) => {
+      const players = snapshot.val().players;
       Object.values(players).forEach((player) => {
         // if (!this.isObjectsListens) return;
         // If player its me skip
@@ -122,7 +127,7 @@ export class Overworld {
 
         const playerObj = this.map.gameObjects[player.name];
 
-        console.log("db up", this);
+        // console.log("db up", this);
 
         // If player is online at your map and exist in game objects
         // do something
@@ -131,9 +136,9 @@ export class Overworld {
           player.currentMap === playerState.currentMap &&
           playerObj
         ) {
-          console.log(
-            "If player is online at your map and exist in game objects, do something"
-          );
+          // console.log(
+          //   "If player is online at your map and exist in game objects, do something"
+          // );
           // If player change position, update his game object
           const currentPlayerState =
             window.OverworldMaps[player.currentMap].playersPosition[
@@ -165,7 +170,8 @@ export class Overworld {
               playerObj.y = currentPlayerState.y;
             // playerObj.startBehavior({arrow: newPlayerState.direction, map:this.map},{type: "walk", direction: newPlayerState.direction})
 
-            playerObj.movingProgressReaming = playerObj.movingProgressReamingMax;
+            playerObj.movingProgressReaming =
+              playerObj.movingProgressReamingMax;
             // // playerObj.sprite.animationFrameLimit = 7.2;
             // // playerObj.updateSprite();
             // if (this.movingProgressReaming > 0) {
@@ -188,9 +194,9 @@ export class Overworld {
             playerObj.movingProgressReaming === 0 &&
             player.direction !== playerObj.direction
           ) {
-            console.log(
-              "If player not moving but change direction, update his game obj"
-            );
+            // console.log(
+            //   "If player not moving but change direction, update his game obj"
+            // );
             playerObj.direction = player.direction;
             // playerObj.sprite.setAnimation("idle-" + playerObj.direction);
           }
@@ -201,12 +207,12 @@ export class Overworld {
         if (
           player.online &&
           player.currentMap === playerState.currentMap &&
-          !playerObj 
+          !playerObj
           // && this.isObjectsListens
         ) {
-          console.log(
-            "If player is online at your map and doesn't exist in game objects, add him"
-          );
+          // console.log(
+          //   "If player is online at your map and doesn't exist in game objects, add him"
+          // );
 
           window.OverworldMaps[player.currentMap].playersPosition[player.name] =
             {
@@ -237,9 +243,9 @@ export class Overworld {
           playerObj &&
           player.currentMap !== playerState.currentMap
         ) {
-          console.log(
-            "If player exist and changed map, delete him from game object, and playersPosition"
-          );
+          // console.log(
+          //   "If player exist and changed map, delete him from game object, and playersPosition"
+          // );
 
           this.map.unmountGameObject(player.name);
         }
@@ -251,13 +257,77 @@ export class Overworld {
           playerObj &&
           player.currentMap === playerState.currentMap
         ) {
-          console.log(
-            "If player exist and went offline, delete him from game objects, and playersPosition"
-          );
+          // console.log(
+          //   "If player exist and went offline, delete him from game objects, and playersPosition"
+          // );
 
           this.map.unmountGameObject(player.name);
         }
       });
+
+
+
+      const monsters = snapshot.val().monsters[playerState.currentMap];
+      if (!monsters) return;
+      Object.values(monsters).forEach((monster) => {
+        const monsterObj = this.map.gameObjects[monster.id];
+
+        // If monster is alive at your map, exist in game objects
+        // and you are not the current target
+        // do something
+        if (
+          monster.isAlive &&
+          monster.currentMap === playerState.currentMap &&
+          monster.currentTarget !== playerState.name &&
+          monsterObj
+        ) {
+          console.log("MOONSTERR");
+
+          const currentMonsterState =
+            window.OverworldMaps[monster.currentMap].configObjects[monster.id];
+
+          // Update position at playersPosition
+          window.OverworldMaps[monster.currentMap].configObjects[monster.id] = {
+            direction: monster.direction,
+            x: utils.withGrid(monster.x),
+            y: utils.withGrid(monster.y),
+          };
+
+          const newMonsterState =
+            window.OverworldMaps[monster.currentMap].configObjects[monster.id];
+
+          if (
+            currentMonsterState.x !== newMonsterState.x ||
+            currentMonsterState.y !== newMonsterState.y
+          ) {
+
+            // Deactive monster movement scripts if someone else controll
+            monsterObj.isPlayerControlledMonster = false;
+            
+            monsterObj.direction = newMonsterState.direction;
+            if (monsterObj.x !== currentMonsterState.x)
+              monsterObj.x = currentMonsterState.x;
+            if (monsterObj.y !== currentMonsterState.y)
+              monsterObj.y = currentMonsterState.y;
+
+            monsterObj.movingProgressReaming =
+              monsterObj.movingProgressReamingMax;
+
+            monsterObj.updateSprite();
+          }
+        }
+        if (
+          monster.isAlive &&
+          monster.currentMap === playerState.currentMap &&
+          monster.currentTarget === playerState.name &&
+          monsterObj
+        ) {
+          // Active monster movement controll scrips by you 
+          monsterObj.isPlayerControlledMonster = true;
+        }
+      });
     });
   }
+
+  
 }

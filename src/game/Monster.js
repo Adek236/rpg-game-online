@@ -1,9 +1,11 @@
 import { Person } from "./Person.js";
 import { utils } from "./utils/utils.js";
-import { db } from "../config/firebase.js";
+import { db, dbRef } from "../config/firebase.js";
 import {
   ref,
   update,
+  child,
+  get,
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
 // TODO: Monsters must have db connection to see all players (gameObjects)
@@ -37,9 +39,10 @@ export class Monster extends Person {
     };
     this.hp = config.hp;
     this.radius = 100;
-    this.validTargets = [];
+    this.validTarget = null;
     this.lastPosition = null;
     this.id = config.id;
+    this.isPlayerControlledMonster = true;
   }
 
   update(state) {
@@ -55,7 +58,7 @@ export class Monster extends Person {
     // reset all, back to position, start valid targets again.
 
     // Mark targets that will enter your radius
-    this.validTargets = Object.values(state.map.gameObjects).filter(
+    const validTargets = Object.values(state.map.gameObjects).filter(
       (target) => {
         const targetObj = {
           x: target.x,
@@ -72,6 +75,41 @@ export class Monster extends Person {
       }
     );
 
+    if (validTargets.length < 1) return;
+
+    // Check current target at db, if it doesn't have,
+    // add new target
+    // TODO: NEED RE-WORK
+    this.loadMonsterCurrentData(
+      { currentMap: this.currentMap, id: this.id, findData: "currentTarget" },
+      (currentTarget) => {
+        // No target
+        if (!currentTarget) {
+          // Add new
+          this.validTarget = validTargets[0];
+          this.dbUpdateMonster({
+            monster: { currentTarget: validTargets[0].name },
+          });
+        }
+        // Target is in db
+        else {
+          // Check current valid targets
+          const isTargetHere = validTargets.find(
+            (target) => target.name === currentTarget
+          );
+          if (isTargetHere) {
+            this.validTarget = state.map.gameObjects[currentTarget];
+          } else {
+            this.validTarget = null;
+            this.dbUpdateMonster({ monster: { currentTarget: false } });
+          }
+        }
+      }
+    );
+    
+    // If someone else control monster, stop here
+    if (!this.isPlayerControlledMonster) return;
+
     this.followTarget(state);
   }
 
@@ -82,11 +120,11 @@ export class Monster extends Person {
   }
 
   followTarget(state) {
-    if (!this.validTargets) return;
+    if (!this.validTarget) return;
 
     const target = {
-      x: this.validTargets[0]?.x,
-      y: this.validTargets[0]?.y,
+      x: this.validTarget?.x,
+      y: this.validTarget?.y,
       aroundFreeSpace: {
         up: { isFree: null, position: null, distance: null },
         down: { isFree: null, position: null, distance: null },
@@ -160,7 +198,6 @@ export class Monster extends Person {
       .find((key) => {
         return target.aroundFreeSpace[key].isFree;
       });
-    const waypoint = utils.nextPosition(target.x, target.y, freeDirection);
 
     if (!freeDirection) return;
 
@@ -185,8 +222,6 @@ export class Monster extends Person {
       .find((_, i) => {
         return possibleMove[i].isPossible;
       });
-    //   console.log(freeDirection)
-    // console.log(possibleMove);
 
     if (this.movingProgressReaming === 0) {
       this.startBehavior(
@@ -196,8 +231,23 @@ export class Monster extends Person {
     }
   }
 
-  dbUpdateMonster(state){
+  dbUpdateMonster(state) {
     update(ref(db, `monsters/${this.currentMap}/${this.id}`), state.monster);
+  }
+
+  // Load one specific data from db
+  async loadMonsterCurrentData({ currentMap, id, findData }, resolve) {
+    let currentData = null;
+    await get(child(dbRef, `monsters/${currentMap}/${id}`))
+      .then((snapshot) => {
+        if (!snapshot.exists()) return;
+        const monsterData = snapshot.val();
+        currentData = monsterData[findData];
+      })
+      .catch((error) => {
+        console.log("loadMonsters error:", error);
+      });
+    resolve(currentData);
   }
 
   attack() {

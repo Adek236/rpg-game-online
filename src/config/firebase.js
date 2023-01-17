@@ -22,5 +22,6 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const dbRef = ref(db);
 const playersRef = ref(db, "players");
+const monstersRef = ref(db, "monsters");
 
-export { auth, db, dbRef, playersRef };
+export { auth, db, dbRef, playersRef, monstersRef };
