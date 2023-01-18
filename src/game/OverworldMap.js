@@ -185,6 +185,8 @@ export class OverworldMap {
               outfit: monsterData.outfit,
               x: utils.withGrid(monsterData.x),
               y: utils.withGrid(monsterData.y),
+              initialX: utils.withGrid(monsterData.initialX),
+              initialY: utils.withGrid(monsterData.initialY),
             };
           });
           

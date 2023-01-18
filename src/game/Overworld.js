@@ -91,7 +91,7 @@ export class Overworld {
   init(object) {
     this.startMap(object);
     // this.objectListener();
-    this.playersObjectListener();
+    this.objectListener();
     // this.monstersObjectListener();
 
     this.bindActionInput();
@@ -117,8 +117,9 @@ export class Overworld {
 
 
 
-  playersObjectListener() {
+  objectListener() {
     onValue(dbRef, (snapshot) => {
+      console.log(this)
       const players = snapshot.val().players;
       Object.values(players).forEach((player) => {
         // if (!this.isObjectsListens) return;
@@ -281,7 +282,6 @@ export class Overworld {
           monster.currentTarget !== playerState.name &&
           monsterObj
         ) {
-          console.log("MOONSTERR");
 
           const currentMonsterState =
             window.OverworldMaps[monster.currentMap].configObjects[monster.id];
@@ -316,13 +316,16 @@ export class Overworld {
             monsterObj.updateSprite();
           }
         }
+
+        // If monster is alive at your map, exist in game objects
+        // and you are the current target
         if (
           monster.isAlive &&
           monster.currentMap === playerState.currentMap &&
           monster.currentTarget === playerState.name &&
           monsterObj
         ) {
-          // Active monster movement controll scrips by you 
+          // Active monster movement control scrips by you 
           monsterObj.isPlayerControlledMonster = true;
         }
       });

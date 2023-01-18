@@ -37,6 +37,8 @@ export class Monster extends Person {
         [0.5, 0.5],
       ],
     };
+    this.initialX = config.initialX;
+    this.initialY = config.initialY;
     this.hp = config.hp;
     this.radius = 100;
     this.validTarget = null;
@@ -47,6 +49,17 @@ export class Monster extends Person {
 
   update(state) {
     super.update(state);
+
+    // If monster is too far away from initial position,
+    // teleport him back to start
+    const distanceFromInitialPosition = this.getDistanceToTarget(
+      { x: this.initialX, y: this.initialY },
+      { x: this.x, y: this.y }
+    );
+    if (distanceFromInitialPosition > this.radius * 2) {
+      this.teleportToInitialPosition();
+      return;
+    }
 
     this.findTarget(state);
   }
@@ -75,7 +88,15 @@ export class Monster extends Person {
       }
     );
 
-    if (validTargets.length < 1) return;
+    // If no valid targets, and monster isn't in initial position
+    // just return monster to initial position
+    if (
+      validTargets.length < 1 &&
+      (this.x !== this.initialX || this.y !== this.initialY)
+    )
+      return this.returnToInitialPosition(state);
+
+      if (validTargets.length < 1) return;
 
     // Check current target at db, if it doesn't have,
     // add new target
@@ -106,7 +127,7 @@ export class Monster extends Person {
         }
       }
     );
-    
+
     // If someone else control monster, stop here
     if (!this.isPlayerControlledMonster) return;
 
@@ -170,7 +191,6 @@ export class Monster extends Person {
         { x: this.x, y: this.y }
       );
     });
-    // console.log(target.aroundFreeSpace);
 
     // Stop if monster is in free space around player
     let inFreeSpace = false;
@@ -179,16 +199,14 @@ export class Monster extends Person {
         target.aroundFreeSpace[obj].position.x === this.x &&
         target.aroundFreeSpace[obj].position.y === this.y
       ) {
-        // console.log("im in free spot");
         inFreeSpace = true;
         return;
       }
     }
 
     if (inFreeSpace) return;
-    // console.log(target.aroundFreeSpace);
 
-    // Choose nearest free space by distance
+    // Choose nearest target free space by distance
     const freeDirection = Object.keys(target.aroundFreeSpace)
       .sort(
         (a, b) =>
@@ -201,33 +219,72 @@ export class Monster extends Person {
 
     if (!freeDirection) return;
 
-    const possibleMove = [];
-
     // Check possible move around monster
-    Object.keys(this.directionUpdate).forEach((direction) => {
-      possibleMove.push({
-        name: direction,
-        isPossible: !state.map.isSpaceTaken(this.x, this.y, direction),
-        distanceToTarget: this.getDistanceToTarget(
-          target.aroundFreeSpace[freeDirection].position,
-          utils.nextPosition(this.x, this.y, direction)
-        ),
-      });
-    });
+    const possibleMove = this.checkPossibleMoveAround(
+      state,
+      target.aroundFreeSpace[freeDirection].position
+    );
 
     // Sort possible move around monster by distance
     // and return closest move to target
-    const newDirection = possibleMove
-      .sort((a, b) => a.distanceToTarget - b.distanceToTarget)
-      .find((_, i) => {
-        return possibleMove[i].isPossible;
-      });
+    const newDirection = this.sortPossibleMoveByDistance(possibleMove);
 
     if (this.movingProgressReaming === 0) {
       this.startBehavior(
         { arrow: newDirection.name, map: state.map },
         { type: "walk", direction: newDirection.name }
       );
+    }
+  }
+
+  checkPossibleMoveAround(state, targetPosition) {
+    // Check possible move around monster
+    const possibleMove = [];
+    Object.keys(this.directionUpdate).forEach((direction) => {
+      possibleMove.push({
+        name: direction,
+        isPossible: !state.map.isSpaceTaken(this.x, this.y, direction),
+        distanceToTarget: this.getDistanceToTarget(
+          targetPosition,
+          utils.nextPosition(this.x, this.y, direction)
+        ),
+      });
+    });
+    return possibleMove;
+  }
+
+  sortPossibleMoveByDistance(array) {
+    // Sort possible move around monster by distance
+    // and return closest move to target
+    return array
+      .sort((a, b) => a.distanceToTarget - b.distanceToTarget)
+      .find((_, i) => {
+        return array[i].isPossible;
+      });
+  }
+
+  returnToInitialPosition(state) {
+    const initialPosition = {x: this.initialX, y: this.initialY};
+    const possibleMove = this.checkPossibleMoveAround(state, initialPosition);
+    const newDirection = this.sortPossibleMoveByDistance(possibleMove);
+    if (this.movingProgressReaming === 0) {
+      this.startBehavior(
+        { arrow: newDirection.name, map: state.map },
+        { type: "walk", direction: newDirection.name }
+      );
+    }
+  }
+
+  teleportToInitialPosition() {
+    if (this.movingProgressReaming === 0) {
+      this.x = this.initialX;
+      this.y = this.initialY;
+      this.dbUpdateMonster({
+        monster: {
+          x: utils.withGridReverse(this.initialX),
+          y: utils.withGridReverse(this.initialY),
+        },
+      });
     }
   }
 
