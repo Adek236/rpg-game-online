@@ -128,6 +128,18 @@ export class Sprite {
       ctx.fillStyle = 'rgba(0, 0, 255, 0.2)'
       ctx.fill()
     }
+
+    // if(this.isLoaded){
+    //   // window.devicePixelRatio=6;
+    //   // const scale = window.devicePixelRatio; 
+    //   // ctx.scale(scale, scale);
+    //   ctx.font = 'bold 10px Arial';
+    //   // ctx.strokeStyle = 'black';
+    //   ctx.fillStyle = 'black';
+    //   // ctx.lineWidth = 4;
+    //   // ctx.strokeText("Teddy", x+8, y+5);
+    //   ctx.fillText("Teddy", x+8, y+5);
+    // }
     
     this.isShadowLoaded &&
       ctx.drawImage(

@@ -89,6 +89,7 @@ export class Overworld {
   }
 
   init(object) {
+   
     this.startMap(object);
     // this.objectListener();
     this.objectListener();

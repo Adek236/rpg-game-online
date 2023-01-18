@@ -96,7 +96,7 @@ export class Monster extends Person {
     )
       return this.returnToInitialPosition(state);
 
-      if (validTargets.length < 1) return;
+    if (validTargets.length < 1) return;
 
     // Check current target at db, if it doesn't have,
     // add new target
@@ -264,7 +264,7 @@ export class Monster extends Person {
   }
 
   returnToInitialPosition(state) {
-    const initialPosition = {x: this.initialX, y: this.initialY};
+    const initialPosition = { x: this.initialX, y: this.initialY };
     const possibleMove = this.checkPossibleMoveAround(state, initialPosition);
     const newDirection = this.sortPossibleMoveByDistance(possibleMove);
     if (this.movingProgressReaming === 0) {

@@ -1,6 +1,6 @@
 TODO: 
-Monsters - each respawn monster add his data to db,
-           monsters need yourself mount fn,
+Monsters - one sqm way, need to change target if u cant reach player
+           (if [left, right x4] 4x left and 4x right change target if possible)
             
 
 Other players movement sprite BROKE
