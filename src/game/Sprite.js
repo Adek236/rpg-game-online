@@ -1,6 +1,5 @@
 import { utils } from "./utils/utils.js";
 
-
 export class Sprite {
   constructor(config) {
     // Set up the image
@@ -17,6 +16,14 @@ export class Sprite {
     if (this.useShadow) {
       this.shadow.onload = () => {
         this.isShadowLoaded = true;
+      };
+    }
+    // Shadow
+    this.isNick = new Image();
+    this.isNick.src = "src/game/assets/objects/napis.png";
+    if (true) {
+      this.isNick.onload = () => {
+        this.isNickLoaded = true;
       };
     }
 
@@ -58,7 +65,7 @@ export class Sprite {
         [1, 2],
         [0, 2],
         [3, 2],
-        [0, 2]
+        [0, 2],
       ],
       "walk-right": [
         [1, 1],
@@ -87,7 +94,6 @@ export class Sprite {
 
     // Reference the game object
     this.gameObject = config.gameObject;
-    
   }
 
   get frame() {
@@ -95,10 +101,10 @@ export class Sprite {
   }
 
   setAnimation(key) {
-    if (this.currentAnimation !== key){
-        this.currentAnimation = key;
-        this.currentAnimationFrame = 0;
-        this.animationFrameProgress = this.animationFrameLimit;
+    if (this.currentAnimation !== key) {
+      this.currentAnimation = key;
+      this.currentAnimationFrame = 0;
+      this.animationFrameProgress = this.animationFrameLimit;
     }
   }
 
@@ -119,28 +125,43 @@ export class Sprite {
   }
 
   draw(ctx, cameraPerson) {
-    const x = this.gameObject.x - this.gameObject.offsetX + utils.withGrid(10.5) - cameraPerson.x;
-    const y = this.gameObject.y - this.gameObject.offsetY + utils.withGrid(6) - cameraPerson.y;
-    
-    if (this.isLoaded) {
-      ctx.beginPath()
-      ctx.arc(x+this.gameObject.center.offsetX, y+this.gameObject.center.offsetY, this.gameObject.radius, 0, Math.PI * 2)
-      ctx.fillStyle = 'rgba(0, 0, 255, 0.2)'
-      ctx.fill()
+    const x =
+      this.gameObject.x -
+      this.gameObject.offsetX +
+      utils.withGrid(10.5) -
+      cameraPerson.x;
+    const y =
+      this.gameObject.y -
+      this.gameObject.offsetY +
+      utils.withGrid(6) -
+      cameraPerson.y;
+
+    // if (this.isLoaded) {
+    //   ctx.beginPath()
+    //   ctx.arc(x+this.gameObject.center.offsetX, y+this.gameObject.center.offsetY, this.gameObject.radius, 0, Math.PI * 2)
+    //   ctx.fillStyle = 'rgba(0, 0, 255, 0.2)'
+    //   ctx.fill()
+    // }
+
+    // ctx.font = '5px Arial Black';
+    // ctx.fillStyle = 'red';
+    // ctx.fillText("Teddy", x+8, y+5);
+
+    // If person or monster have valid target show hp bar
+    if (
+      (this.gameObject.type === "Monster" && this.gameObject.validTargets.length > 0) ||
+      this.gameObject.type === "Person"
+    ) {
+      ctx.fillStyle = "rgb(245,245,245, 0.6)";
+      ctx.fillRect(x + 10, y + 8, 12, 3);
+
+      ctx.fillStyle = "silver";
+      ctx.fillRect(x + 11, y + 9, 10, 1);
+
+      ctx.fillStyle = "red";
+      ctx.fillRect(x + 11, y + 9, 5, 1);
     }
 
-    // if(this.isLoaded){
-    //   // window.devicePixelRatio=6;
-    //   // const scale = window.devicePixelRatio; 
-    //   // ctx.scale(scale, scale);
-    //   ctx.font = 'bold 10px Arial';
-    //   // ctx.strokeStyle = 'black';
-    //   ctx.fillStyle = 'black';
-    //   // ctx.lineWidth = 4;
-    //   // ctx.strokeText("Teddy", x+8, y+5);
-    //   ctx.fillText("Teddy", x+8, y+5);
-    // }
-    
     this.isShadowLoaded &&
       ctx.drawImage(
         this.shadow,
@@ -152,13 +173,12 @@ export class Sprite {
         y + this.gameObject.shadowOffsetY,
         32,
         32
-        );
-        
-        const [frameX, frameY] = this.frame;
-        
-        this.isLoaded &&
-        ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
-        
+      );
+
+    const [frameX, frameY] = this.frame;
+
+    this.isLoaded &&
+      ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
 
     this.updateAnimationProgress();
   }

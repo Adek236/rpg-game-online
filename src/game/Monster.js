@@ -41,15 +41,19 @@ export class Monster extends Person {
     this.initialY = config.initialY;
     this.hp = config.hp;
     this.radius = 100;
-    this.validTarget = null;
+    this.validTargets = [];
+    this.focusedTarget = null;
+    // this.isTargetReachable = true;
     this.lastPosition = null;
     this.id = config.id;
     this.isPlayerControlledMonster = true;
+    this.lastMoveHistory = [];
+    this.lastMoveHistoryMaxLength = 8;
   }
 
   update(state) {
     super.update(state);
-
+    console.log(this.lastMoveHistory);
     // If monster is too far away from initial position,
     // teleport him back to start
     const distanceFromInitialPosition = this.getDistanceToTarget(
@@ -71,7 +75,7 @@ export class Monster extends Person {
     // reset all, back to position, start valid targets again.
 
     // Mark targets that will enter your radius
-    const validTargets = Object.values(state.map.gameObjects).filter(
+    this.validTargets = Object.values(state.map.gameObjects).filter(
       (target) => {
         const targetObj = {
           x: target.x,
@@ -83,7 +87,9 @@ export class Monster extends Person {
         };
         const distance = this.getDistanceToTarget(monsterObj, targetObj);
         return (
-          target.type === "Person" && distance < target.radius + this.radius
+          target.type === "Person" &&
+          // this.isTargetReachable &&
+          distance < target.radius + this.radius
         );
       }
     );
@@ -91,12 +97,21 @@ export class Monster extends Person {
     // If no valid targets, and monster isn't in initial position
     // just return monster to initial position
     if (
-      validTargets.length < 1 &&
+      this.validTargets.length < 1 &&
       (this.x !== this.initialX || this.y !== this.initialY)
     )
       return this.returnToInitialPosition(state);
 
-    if (validTargets.length < 1) return;
+    // If no valid targets, and monster is in initial position
+    // clear valid target
+    if (
+      this.validTargets.length < 1 &&
+      (this.x === this.initialX || this.y === this.initialY) &&
+      this.focusedTarget
+    )
+      return (this.focusedTarget = null);
+
+    if (this.validTargets.length < 1) return;
 
     // Check current target at db, if it doesn't have,
     // add new target
@@ -107,21 +122,21 @@ export class Monster extends Person {
         // No target
         if (!currentTarget) {
           // Add new
-          this.validTarget = validTargets[0];
+          this.focusedTarget = this.validTargets[0];
           this.dbUpdateMonster({
-            monster: { currentTarget: validTargets[0].name },
+            monster: { currentTarget: this.validTargets[0].name },
           });
         }
         // Target is in db
         else {
           // Check current valid targets
-          const isTargetHere = validTargets.find(
+          const isTargetHere = this.validTargets.find(
             (target) => target.name === currentTarget
           );
           if (isTargetHere) {
-            this.validTarget = state.map.gameObjects[currentTarget];
+            this.focusedTarget = state.map.gameObjects[currentTarget];
           } else {
-            this.validTarget = null;
+            this.focusedTarget = null;
             this.dbUpdateMonster({ monster: { currentTarget: false } });
           }
         }
@@ -141,11 +156,11 @@ export class Monster extends Person {
   }
 
   followTarget(state) {
-    if (!this.validTarget) return;
+    if (!this.focusedTarget) return;
 
     const target = {
-      x: this.validTarget?.x,
-      y: this.validTarget?.y,
+      x: this.focusedTarget?.x,
+      y: this.focusedTarget?.y,
       aroundFreeSpace: {
         up: { isFree: null, position: null, distance: null },
         down: { isFree: null, position: null, distance: null },
@@ -229,11 +244,45 @@ export class Monster extends Person {
     // and return closest move to target
     const newDirection = this.sortPossibleMoveByDistance(possibleMove);
 
+    // Move
     if (this.movingProgressReaming === 0) {
       this.startBehavior(
         { arrow: newDirection.name, map: state.map },
         { type: "walk", direction: newDirection.name }
       );
+      // // Add last move to store
+      // if (this.lastMoveHistory.length < this.lastMoveHistoryMaxLength)
+      //   return this.lastMoveHistory.push(newDirection.name);
+
+      // // If store is full, check if monster stuck
+      // const firstMove = this.lastMoveHistory.filter((n) => {
+      //   return n === this.lastMoveHistory[0];
+      // });
+
+      // const secondMove = this.lastMoveHistory.filter((n) => {
+      //   return n === this.lastMoveHistory[1];
+      // });
+
+      // console.log(firstMove, secondMove);
+      // console.log(firstMove.length, secondMove.length);
+      // // If first and second move repeat four times change target if possible
+      // if (
+      //   firstMove.length === 4 &&
+      //   secondMove.length === 4 &&
+      //   this.validTargets.length >= 2
+      // ) {
+      //   console.log("change target");
+      //   // const newFocusedTarget = this.validTargets.filter((target) => {
+      //   //   return target.name !== this.focusedTarget.name;
+      //   // });
+      //   // console.log("newFocusedTarget ", newFocusedTarget[0])
+      //   // this.focusedTarget = newFocusedTarget[0];
+      //   // console.log(this);
+        
+      //   this.isTargetReachable = false;
+      // }
+
+      // this.lastMoveHistory = [];
     }
   }
 

@@ -89,7 +89,19 @@ export class Overworld {
   }
 
   init(object) {
-   
+    // this.canvas.width = this.canvas.getBoundingClientRect().width;
+    // this.canvas.height = this.canvas.getBoundingClientRect().height;
+    // this.canvas.width = 936;
+    // this.canvas.height = 435;   
+    // window.devicePixelRatio=1;
+    // const ratio = Math.ceil(window.devicePixelRatio);
+    // this.canvas.width = 704 * ratio;
+    // this.canvas.height = 396 * ratio;
+    // this.canvas.style.width = `${704}px`;
+    // this.canvas.style.height = `${396}px`;
+    // this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    // this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    
     this.startMap(object);
     // this.objectListener();
     this.objectListener();
