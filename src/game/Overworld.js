@@ -54,12 +54,27 @@ export class Overworld {
     step();
   }
 
+  bindChangeDirectionInput() {
+    document.addEventListener("keydown", (e)=>{
+      if (e.code === "ShiftLeft") {
+        playerState.isShiftPressed = true;
+      }
+    });
+    document.addEventListener("keyup", (e)=>{
+      if (e.code === "ShiftLeft") {
+        playerState.isShiftPressed = false;
+      }
+    });
+  }
+
   bindActionInput() {
     new KeyPressListener("Enter", () => {
+      console.log("enter")
       // Is there a person here to talk to
       this.map.checkForActionCutscene();
     });
   }
+
   bindHeroPositionCheck() {
     document.addEventListener("PersonWalkingComplete", (e) => {
       if (e.detail.who === playerState.name) {
@@ -107,6 +122,7 @@ export class Overworld {
     this.objectListener();
     // this.monstersObjectListener();
 
+    this.bindChangeDirectionInput();
     this.bindActionInput();
     this.bindHeroPositionCheck();
 

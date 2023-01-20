@@ -18,14 +18,14 @@ export class Sprite {
         this.isShadowLoaded = true;
       };
     }
-    // Shadow
-    this.isNick = new Image();
-    this.isNick.src = "src/game/assets/objects/napis.png";
-    if (true) {
-      this.isNick.onload = () => {
-        this.isNickLoaded = true;
-      };
-    }
+    // Nickname
+    // this.isNick = new Image();
+    // this.isNick.src = "src/game/assets/objects/napis.png";
+    // if (true) {
+    //   this.isNick.onload = () => {
+    //     this.isNickLoaded = true;
+    //   };
+    // }
 
     // Configure Animation & Initial State
     this.animations = config.animations || {

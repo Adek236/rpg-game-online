@@ -14,6 +14,7 @@ class PlayerState {
     this.id = null;
     this.currentMap = null;
     this.outfit = null;
+    this.isShiftPressed = false;
     this.storyFlags = {
       something_to_do: true,
     };

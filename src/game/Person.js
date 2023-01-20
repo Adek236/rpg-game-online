@@ -19,10 +19,22 @@ export class Person extends GameObject {
       down: ["y", 1],
       left: ["x", -1],
       right: ["x", 1],
-      leftUp: [ ["x","y"], [-1,-1] ],
-      leftDown: [ ["x","y"], [-1,1] ],
-      rightUp: [ ["x","y"], [1,-1] ],
-      rightDown: [ ["x","y"], [1,1] ],
+      leftUp: [
+        ["x", "y"],
+        [-1, -1],
+      ],
+      leftDown: [
+        ["x", "y"],
+        [-1, 1],
+      ],
+      rightUp: [
+        ["x", "y"],
+        [1, -1],
+      ],
+      rightDown: [
+        ["x", "y"],
+        [1, 1],
+      ],
     };
   }
 
@@ -54,17 +66,29 @@ export class Person extends GameObject {
 
     // Set character direction to whatever behavior has
     this.direction = behavior.direction;
+    
     if (behavior.type === "walk") {
+
+      // Stop here if shift pressed
+      if (this.name === playerState.name && playerState.isShiftPressed) {
+        playerState.updatePlayer({
+          player: {
+            direction: this.direction,
+          },
+        });
+        return;
+      }
+
       // Stop here if space is not free
       if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
-        
         // Check player direction and add to db
-        if (state && this.name === playerState.name) {
-        const player = {
-          direction: this.direction,
-        };
-        playerState.updatePlayer({ player });
-      }
+        if (this.name === playerState.name) {
+          playerState.updatePlayer({
+            player: {
+              direction: this.direction,
+            },
+          });
+        }
 
         behavior.retry &&
           setTimeout(() => {
@@ -81,36 +105,40 @@ export class Person extends GameObject {
       this.intentPos = [intentPos.x, intentPos.y];
 
       // Update player position at firebase
-      if (state && this.name === playerState.name) {
-        const player = {
-          x: utils.withGridReverse(this.intentPos[0]),
-          y: utils.withGridReverse(this.intentPos[1]),
-          direction: this.direction,
-        };
-        playerState.updatePlayer({ player });
+      if (this.name === playerState.name) {
+        playerState.updatePlayer({
+          player: {
+            x: utils.withGridReverse(this.intentPos[0]),
+            y: utils.withGridReverse(this.intentPos[1]),
+            direction: this.direction,
+          },
+        });
 
-         // Update position at playersPosition
-         window.OverworldMaps[playerState.currentMap].playersPosition[playerState.name] = {
+        // Update position at playersPosition
+        window.OverworldMaps[playerState.currentMap].playersPosition[
+          playerState.name
+        ] = {
           direction: this.direction,
-          x : this.intentPos[0],
-          y : this.intentPos[1]
-         };
+          x: this.intentPos[0],
+          y: this.intentPos[1],
+        };
       }
 
-      if (this.type === "Monster"){
-        const monster = {
-          x: utils.withGridReverse(this.intentPos[0]),
-          y: utils.withGridReverse(this.intentPos[1]),
-          direction: this.direction,
-        };
-        this.dbUpdateMonster({ monster });
+      if (this.type === "Monster") {
+        this.dbUpdateMonster({
+          monster: {
+            x: utils.withGridReverse(this.intentPos[0]),
+            y: utils.withGridReverse(this.intentPos[1]),
+            direction: this.direction,
+          },
+        });
 
         // Update position at configObjects
         window.OverworldMaps[this.currentMap].configObjects[this.id] = {
           direction: this.direction,
-          x : this.intentPos[0],
-          y : this.intentPos[1]
-         };
+          x: this.intentPos[0],
+          y: this.intentPos[1],
+        };
       }
 
       this.updateSprite();
@@ -129,7 +157,12 @@ export class Person extends GameObject {
 
   updatePosition() {
     const [property, change] = this.directionUpdate[this.direction];
-    if (this.direction === "leftUp" || this.direction === "leftDown" ||this.direction === "rightDown" ||this.direction === "rightUp"){
+    if (
+      this.direction === "leftUp" ||
+      this.direction === "leftDown" ||
+      this.direction === "rightDown" ||
+      this.direction === "rightUp"
+    ) {
       this[property[0]] += change[0];
       this[property[1]] += change[1];
     } else {

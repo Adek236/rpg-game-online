@@ -53,7 +53,7 @@ export class Monster extends Person {
 
   update(state) {
     super.update(state);
-    console.log(this.lastMoveHistory);
+
     // If monster is too far away from initial position,
     // teleport him back to start
     const distanceFromInitialPosition = this.getDistanceToTarget(
