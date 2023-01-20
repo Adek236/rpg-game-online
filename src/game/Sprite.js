@@ -147,6 +147,11 @@ export class Sprite {
     // ctx.fillStyle = 'red';
     // ctx.fillText("Teddy", x+8, y+5);
 
+    // If person or monster attack show it
+    if (this.gameObject.attacks.length > 0) {
+      console.log("atttakkk!!")
+    }
+
     // If person or monster have valid target show hp bar
     if (
       (this.gameObject.type === "Monster" && this.gameObject.validTargets.length > 0) ||

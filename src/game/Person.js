@@ -1,6 +1,7 @@
 import { GameObject } from "./GameObject.js";
 import { utils } from "./utils/utils.js";
 import { playerState } from "./PlayerState.js";
+import { Attack } from "./Attack.js";
 
 export class Person extends GameObject {
   constructor(config) {
@@ -11,6 +12,7 @@ export class Person extends GameObject {
     this.isStanding = false;
     this.intentPos = null; // [x,y]
     this.radius = config.radius || 12;
+    this.attacks = [];
 
     this.isPlayerControlled = config.isPlayerControlled || false;
 

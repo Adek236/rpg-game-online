@@ -41,9 +41,6 @@ export class Overworld {
         })
         .forEach((object) => {
           object.sprite.draw(this.ctx, cameraPerson);
-          // if (object.type && object.type === "monster"){
-          //   object.draw(this.ctx, cameraPerson)
-          // }
         });
 
       // Draw Upper layer
@@ -64,6 +61,12 @@ export class Overworld {
       if (e.code === "ShiftLeft") {
         playerState.isShiftPressed = false;
       }
+    });
+  }
+
+  bindHotKeysInput() {
+    new KeyPressListener("Digit1", () => {
+      console.log("1")
     });
   }
 
@@ -123,6 +126,7 @@ export class Overworld {
     // this.monstersObjectListener();
 
     this.bindChangeDirectionInput();
+    this.bindHotKeysInput();
     this.bindActionInput();
     this.bindHeroPositionCheck();
 

@@ -218,7 +218,7 @@ export class Monster extends Person {
         return;
       }
     }
-
+    //  this.attack()
     if (inFreeSpace) return;
 
     // Choose nearest target free space by distance
@@ -359,6 +359,7 @@ export class Monster extends Person {
   attack() {
     // TODO: if we are at free spot around target
     // start attack him
+    this.attacks.push("Fire!")
   }
 
   // TODO: if target die return to your behaviour (need db connection)
