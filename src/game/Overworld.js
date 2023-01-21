@@ -66,7 +66,13 @@ export class Overworld {
 
   bindHotKeysInput() {
     new KeyPressListener("Digit1", () => {
-      console.log("1")
+      // console.log("1")
+      console.log(this);
+      this.map.gameObjects[playerState.name].attacks.push("Fire!");
+      setTimeout(()=>{
+        this.map.gameObjects[playerState.name].attacks = [];
+
+      },300)
     });
   }
 
@@ -152,7 +158,6 @@ export class Overworld {
 
   objectListener() {
     onValue(dbRef, (snapshot) => {
-      console.log(this)
       const players = snapshot.val().players;
       Object.values(players).forEach((player) => {
         // if (!this.isObjectsListens) return;

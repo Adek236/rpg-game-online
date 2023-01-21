@@ -18,17 +18,28 @@ export class Sprite {
         this.isShadowLoaded = true;
       };
     }
+
     // Nickname
-    // this.isNick = new Image();
-    // this.isNick.src = "src/game/assets/objects/napis.png";
-    // if (true) {
-    //   this.isNick.onload = () => {
-    //     this.isNickLoaded = true;
-    //   };
-    // }
+    this.isSlash = new Image();
+    this.isSlash.src = "src/game/assets/objects/slash3.png";
+    if (true) {
+      this.isSlash.onload = () => {
+        this.isSlashLoaded = true;
+      };
+    }
+
+    // Nickname
+    this.weapon = new Image();
+    this.weapon.src = "src/game/assets/objects/sword2.png";
+    if (true) {
+      this.weapon.onload = () => {
+        this.weaponLoaded = true;
+      };
+    }
 
     // Configure Animation & Initial State
     this.animations = config.animations || {
+      "idle-x": [[0, 2],[0, 0],[0, 3]],
       "idle-up": [[0, 2]],
       "idle-down": [[0, 0]],
       "idle-left": [[0, 3]],
@@ -84,6 +95,10 @@ export class Sprite {
         [0, 1],
         [3, 1],
         [0, 1],
+      ],
+      "attack-up": [
+        [0, 6],
+        [1, 6],
       ],
     };
     this.currentAnimation = config.currentAnimation || "idle-down"; // "walk-down";
@@ -148,8 +163,49 @@ export class Sprite {
     // ctx.fillText("Teddy", x+8, y+5);
 
     // If person or monster attack show it
-    if (this.gameObject.attacks.length > 0) {
-      console.log("atttakkk!!")
+    // if (this.gameObject.attacks.length > 0) {
+    //   console.log("atttakkk!!")
+    //   this.gameObject.attacks = [];
+    // }
+
+    if (this.gameObject.attacks.length > 0 && this.isSlashLoaded ){
+
+      ctx.drawImage(
+        this.isSlash,
+        0,
+        0,
+        32,
+        32,
+        x,
+        y,
+        32,
+        32
+      );
+
+      // ctx.drawImage(
+      //   this.weapon,
+      //   0,
+      //   0,
+      //   32,
+      //   32,
+      //   x+12,
+      //   y+9,
+      //   32,
+      //   32
+      // );
+
+      ctx.drawImage(
+        this.weapon,
+        32,
+        0,
+        32,
+        32,
+        x-12,
+        y+9,
+        32,
+        32
+      );
+
     }
 
     // If person or monster have valid target show hp bar
@@ -184,6 +240,9 @@ export class Sprite {
 
     this.isLoaded &&
       ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
+        
+      
+      
 
     this.updateAnimationProgress();
   }

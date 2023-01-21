@@ -216,7 +216,7 @@ export class Monster extends Person {
       ) {
         inFreeSpace = true;
         return;
-      }
+      } 
     }
     //  this.attack()
     if (inFreeSpace) return;

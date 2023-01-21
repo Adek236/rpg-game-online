@@ -181,11 +181,16 @@ export class Person extends GameObject {
     }
   }
 
-  updateSprite(obj = this) {
-    if (obj.movingProgressReaming > 0) {
-      obj.sprite.setAnimation("walk-" + obj.direction);
+  updateSprite() {
+    if (this.movingProgressReaming > 0) {
+      this.sprite.setAnimation("walk-" + this.direction);
       return;
     }
-    obj.sprite.setAnimation("idle-" + obj.direction);
+    if (this.attacks.length === 0){
+      this.sprite.setAnimation("idle-" + this.direction);
+    }
+    if (this.attacks.length > 0){
+      this.sprite.setAnimation("attack-up");
+    }
   }
 }

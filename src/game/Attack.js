@@ -4,7 +4,7 @@ export class Attack {
 
     }
 
-    draw(){
+    init(){
         
     }
 }
