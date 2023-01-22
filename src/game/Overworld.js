@@ -40,8 +40,18 @@ export class Overworld {
           return a.y - b.y;
         })
         .forEach((object) => {
+          // if(object.attacks.length > 0){
+          //   object.attack.sprite.draw(this.ctx, cameraPerson);
+          // }
           object.sprite.draw(this.ctx, cameraPerson);
         });
+
+      // Draw Game Objects Attacks
+      Object.values(this.map.gameObjects).forEach((object) => {
+        if (object.attacks.length > 0) {
+          object.attack.sprite.draw(this.ctx, cameraPerson);
+        }
+      });
 
       // Draw Upper layer
       this.map.drawUpperImage(this.ctx, cameraPerson);
@@ -52,12 +62,12 @@ export class Overworld {
   }
 
   bindChangeDirectionInput() {
-    document.addEventListener("keydown", (e)=>{
+    document.addEventListener("keydown", (e) => {
       if (e.code === "ShiftLeft") {
         playerState.isShiftPressed = true;
       }
     });
-    document.addEventListener("keyup", (e)=>{
+    document.addEventListener("keyup", (e) => {
       if (e.code === "ShiftLeft") {
         playerState.isShiftPressed = false;
       }
@@ -68,17 +78,15 @@ export class Overworld {
     new KeyPressListener("Digit1", () => {
       // console.log("1")
       console.log(this);
-      this.map.gameObjects[playerState.name].attacks.push("Fire!");
-      setTimeout(()=>{
-        this.map.gameObjects[playerState.name].attacks = [];
-
-      },300)
+      if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
+        return;
+      this.map.gameObjects[playerState.name].initAttack();
     });
   }
 
   bindActionInput() {
     new KeyPressListener("Enter", () => {
-      console.log("enter")
+      console.log("enter");
       // Is there a person here to talk to
       this.map.checkForActionCutscene();
     });
@@ -113,19 +121,6 @@ export class Overworld {
   }
 
   init(object) {
-    // this.canvas.width = this.canvas.getBoundingClientRect().width;
-    // this.canvas.height = this.canvas.getBoundingClientRect().height;
-    // this.canvas.width = 936;
-    // this.canvas.height = 435;   
-    // window.devicePixelRatio=1;
-    // const ratio = Math.ceil(window.devicePixelRatio);
-    // this.canvas.width = 704 * ratio;
-    // this.canvas.height = 396 * ratio;
-    // this.canvas.style.width = `${704}px`;
-    // this.canvas.style.height = `${396}px`;
-    // this.ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    // this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    
     this.startMap(object);
     // this.objectListener();
     this.objectListener();
@@ -153,8 +148,6 @@ export class Overworld {
     // ]
     // )
   }
-
-
 
   objectListener() {
     onValue(dbRef, (snapshot) => {
@@ -304,8 +297,6 @@ export class Overworld {
         }
       });
 
-
-
       const monsters = snapshot.val().monsters[playerState.currentMap];
       if (!monsters) return;
       Object.values(monsters).forEach((monster) => {
@@ -320,7 +311,6 @@ export class Overworld {
           monster.currentTarget !== playerState.name &&
           monsterObj
         ) {
-
           const currentMonsterState =
             window.OverworldMaps[monster.currentMap].configObjects[monster.id];
 
@@ -338,10 +328,9 @@ export class Overworld {
             currentMonsterState.x !== newMonsterState.x ||
             currentMonsterState.y !== newMonsterState.y
           ) {
-
             // Deactive monster movement scripts if someone else controll
             monsterObj.isPlayerControlledMonster = false;
-            
+
             monsterObj.direction = newMonsterState.direction;
             if (monsterObj.x !== currentMonsterState.x)
               monsterObj.x = currentMonsterState.x;
@@ -363,12 +352,10 @@ export class Overworld {
           monster.currentTarget === playerState.name &&
           monsterObj
         ) {
-          // Active monster movement control scrips by you 
+          // Active monster movement control scrips by you
           monsterObj.isPlayerControlledMonster = true;
         }
       });
     });
   }
-
-  
 }

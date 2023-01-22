@@ -2,6 +2,8 @@ import { utils } from "./utils/utils.js";
 
 export class Sprite {
   constructor(config) {
+    this.isAttackAnimation = config.isAttackAnimation || false;
+
     // Set up the image
     this.image = new Image();
     this.image.src = config.src;
@@ -11,7 +13,7 @@ export class Sprite {
 
     // Shadow
     this.shadow = new Image();
-    this.useShadow = true; // config.useShadow || false
+    this.useShadow = config.useShadow || true;
     this.shadow.src = "src/game/assets/objects/shadow.png";
     if (this.useShadow) {
       this.shadow.onload = () => {
@@ -19,27 +21,39 @@ export class Sprite {
       };
     }
 
-    // Nickname
+    // Slash
     this.isSlash = new Image();
+    this.useSlash = config.useSlash || {active: false, direction: "left"};
     this.isSlash.src = "src/game/assets/objects/slash3.png";
-    if (true) {
+    if (this.useSlash.active) {
       this.isSlash.onload = () => {
         this.isSlashLoaded = true;
       };
     }
 
-    // Nickname
-    this.weapon = new Image();
-    this.weapon.src = "src/game/assets/objects/sword2.png";
-    if (true) {
-      this.weapon.onload = () => {
-        this.weaponLoaded = true;
-      };
+    this.slashDirection = {
+      "up": [{frame:0, offset: 3},{frame:0, offset: 0}],
+      "down": [{frame:0, offset: 15},{frame:1, offset: 0}],
+      "left": [{frame:0, offset: 8},{frame:2, offset: -10}],
+      "right": [{frame:0, offset: 8},{frame:3, offset: 10}],
     }
+
+    // // Nickname
+    // this.weapon = new Image();
+    // this.weapon.src = "src/game/assets/objects/sword2.png";
+    // if (true) {
+    //   this.weapon.onload = () => {
+    //     this.weaponLoaded = true;
+    //   };
+    // }
+
+    // Example attack animation
+    // animations: {
+      // "attack-sword": [[{frame:0, offset: -15}, {frame:0, offset: -10}],{frame:1, offset: -15}, {frame:0, offset: -10}],
+    // },
 
     // Configure Animation & Initial State
     this.animations = config.animations || {
-      "idle-x": [[0, 2],[0, 0],[0, 3]],
       "idle-up": [[0, 2]],
       "idle-down": [[0, 0]],
       "idle-left": [[0, 3]],
@@ -100,6 +114,18 @@ export class Sprite {
         [0, 6],
         [1, 6],
       ],
+      "attack-down": [
+        [0, 4],
+        [1, 4],
+      ],
+      "attack-left": [
+        [0, 7],
+        [1, 7],
+      ],
+      "attack-right": [
+        [0, 5],
+        [1, 5],
+      ],
     };
     this.currentAnimation = config.currentAnimation || "idle-down"; // "walk-down";
     this.currentAnimationFrame = 0;
@@ -113,6 +139,10 @@ export class Sprite {
 
   get frame() {
     return this.animations[this.currentAnimation][this.currentAnimationFrame];
+  }
+
+  get slashFrame() {
+    return this.slashDirection[this.useSlash.direction];
   }
 
   setAnimation(key) {
@@ -151,6 +181,7 @@ export class Sprite {
       utils.withGrid(6) -
       cameraPerson.y;
 
+    // Object area
     // if (this.isLoaded) {
     //   ctx.beginPath()
     //   ctx.arc(x+this.gameObject.center.offsetX, y+this.gameObject.center.offsetY, this.gameObject.radius, 0, Math.PI * 2)
@@ -158,55 +189,25 @@ export class Sprite {
     //   ctx.fill()
     // }
 
+    // Name above hero
     // ctx.font = '5px Arial Black';
     // ctx.fillStyle = 'red';
     // ctx.fillText("Teddy", x+8, y+5);
 
-    // If person or monster attack show it
-    // if (this.gameObject.attacks.length > 0) {
-    //   console.log("atttakkk!!")
-    //   this.gameObject.attacks = [];
-    // }
+    const [slashY, slashX] = this.slashFrame;
 
-    if (this.gameObject.attacks.length > 0 && this.isSlashLoaded ){
-
-      ctx.drawImage(
+      this.isSlashLoaded && ctx.drawImage(
         this.isSlash,
-        0,
-        0,
+        slashX.frame*32,
+        slashY.frame*32,
         32,
         32,
-        x,
-        y,
-        32,
-        32
-      );
-
-      // ctx.drawImage(
-      //   this.weapon,
-      //   0,
-      //   0,
-      //   32,
-      //   32,
-      //   x+12,
-      //   y+9,
-      //   32,
-      //   32
-      // );
-
-      ctx.drawImage(
-        this.weapon,
-        32,
-        0,
-        32,
-        32,
-        x-12,
-        y+9,
+        x+slashX.offset,
+        y+slashY.offset,
         32,
         32
       );
 
-    }
 
     // If person or monster have valid target show hp bar
     if (
@@ -236,10 +237,18 @@ export class Sprite {
         32
       );
 
-    const [frameX, frameY] = this.frame;
+     if (!this.isAttackAnimation) {
+      const [frameX, frameY] = this.frame;
+
+      this.isLoaded &&
+        ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
+     } else {
+      const [X, Y] = this.frame;
 
     this.isLoaded &&
-      ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
+      ctx.drawImage(this.image, X.frame * 32, Y.frame * 32, 32, 32, x + X.offset, y + Y.offset, 32, 32);
+     }
+    
         
       
       
