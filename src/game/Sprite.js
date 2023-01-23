@@ -208,7 +208,6 @@ export class Sprite {
         32
       );
 
-
     // If person or monster have valid target show hp bar
     if (
       (this.gameObject.type === "Monster" && this.gameObject.validTargets.length > 0) ||
@@ -249,10 +248,6 @@ export class Sprite {
       ctx.drawImage(this.image, X.frame * 32, Y.frame * 32, 32, 32, x + X.offset, y + Y.offset, 32, 32);
      }
     
-        
-      
-      
-
     this.updateAnimationProgress();
   }
 }

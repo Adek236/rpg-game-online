@@ -190,64 +190,26 @@ export class Person extends GameObject {
       this.sprite.setAnimation("idle-" + this.direction);
     }
     if (this.attacks.length > 0) {
-      if (this.direction === "leftUp" || this.direction === "leftDown") this.direction = "left";
-      if (this.direction === "rightUp" || this.direction === "rightDown") this.direction = "right";
+      if (this.direction === "leftUp" || this.direction === "leftDown")
+        this.direction = "left";
+      if (this.direction === "rightUp" || this.direction === "rightDown")
+        this.direction = "right";
       this.sprite.setAnimation("attack-" + this.direction);
       this.attack.sprite.setAnimation("attack-sword-" + this.direction);
     }
   }
 
-  initAttack() {
-    if (this.direction === "leftUp" || this.direction === "leftDown") this.direction = "left";
-      if (this.direction === "rightUp" || this.direction === "rightDown") this.direction = "right";
+  initAttack(attackName) {
+    if (this.direction === "leftUp" || this.direction === "leftDown")
+      this.direction = "left";
+    if (this.direction === "rightUp" || this.direction === "rightDown")
+      this.direction = "right";
+
     this.attack = new Attack({
-      name: "Fire",
+      name: attackName,
       gameObject: this,
-      animations: {
-        "attack-sword-up": [
-          [
-            { frame: 0, offset: 12 },
-            { frame: 0, offset: 9 },
-          ],
-          [
-            { frame: 1, offset: -12 },
-            { frame: 0, offset: 9 },
-          ],
-        ],
-        "attack-sword-down": [
-          [
-            { frame: 1, offset: -12 },
-            { frame: 0, offset: 9 },
-          ],
-          [
-            { frame: 0, offset: 12 },
-            { frame: 0, offset: 9 },
-          ],
-        ],
-        "attack-sword-left": [
-          [
-            { frame: 3, offset: -3 },
-            { frame: 0, offset: 17 },
-          ],
-          [
-            { frame: 2, offset: -3 },
-            { frame: 0, offset: -5 },
-          ],
-        ],
-        "attack-sword-right": [
-          [
-            { frame: 3, offset: 4 },
-            { frame: 0, offset: 17 },
-          ],
-          [
-            { frame: 2, offset: 4 },
-            { frame: 0, offset: -5 },
-          ],
-        ],
-      },
-      useSlash: {active: true, direction: this.direction},
+      useSlash: { active: true, direction: this.direction },
     });
-    console.log(this.direction)
     this.attack.init();
   }
 }

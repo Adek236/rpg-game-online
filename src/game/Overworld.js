@@ -80,7 +80,7 @@ export class Overworld {
       console.log(this);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
-      this.map.gameObjects[playerState.name].initAttack();
+      this.map.gameObjects[playerState.name].initAttack("swordSlash");
     });
   }
 
