@@ -110,21 +110,37 @@ export class Sprite {
         [3, 1],
         [0, 1],
       ],
+      // "attack-up": [
+      //   [0, 6],
+      //   [1, 6],
+      // ],
+      // "attack-down": [
+      //   [0, 4],
+      //   [1, 4],
+      // ],
+      // "attack-left": [
+      //   [0, 7],
+      //   [1, 7],
+      // ],
+      // "attack-right": [
+      //   [0, 5],
+      //   [1, 5],
+      // ],
       "attack-up": [
-        [0, 6],
-        [1, 6],
+        [1, 2],
+        [0, 2],
       ],
       "attack-down": [
-        [0, 4],
-        [1, 4],
+        [1, 0],
+        [0, 0],
       ],
       "attack-left": [
-        [0, 7],
-        [1, 7],
+        [1, 3],
+        [0, 3],
       ],
       "attack-right": [
-        [0, 5],
-        [1, 5],
+        [1, 1],
+        [0, 1],
       ],
     };
     this.currentAnimation = config.currentAnimation || "idle-down"; // "walk-down";
@@ -138,6 +154,7 @@ export class Sprite {
   }
 
   get frame() {
+    // console.log(this.animations[this.currentAnimation][this.currentAnimationFrame])
     return this.animations[this.currentAnimation][this.currentAnimationFrame];
   }
 
@@ -242,7 +259,8 @@ export class Sprite {
       this.isLoaded &&
         ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
      } else {
-      const [X, Y] = this.frame;
+       
+       const [X, Y] = this.frame;
 
     this.isLoaded &&
       ctx.drawImage(this.image, X.frame * 32, Y.frame * 32, 32, 32, x + X.offset, y + Y.offset, 32, 32);

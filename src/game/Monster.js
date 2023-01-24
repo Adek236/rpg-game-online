@@ -7,7 +7,7 @@ import {
   child,
   get,
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
+import { Attack } from "./Attack.js";
 // TODO: Monsters must have db connection to see all players (gameObjects)
 
 export class Monster extends Person {
@@ -49,6 +49,8 @@ export class Monster extends Person {
     this.isPlayerControlledMonster = true;
     this.lastMoveHistory = [];
     this.lastMoveHistoryMaxLength = 8;
+
+    this.count = 0;
   }
 
   update(state) {
@@ -215,10 +217,16 @@ export class Monster extends Person {
         target.aroundFreeSpace[obj].position.y === this.y
       ) {
         inFreeSpace = true;
+        this.count++;
+        if (this.count % 100 === 0) {
+          // console.log("free space");
+          this.initAttack("swordSlash");
+        }
         return;
-      } 
+      }
     }
-    //  this.attack()
+
+    //  this.initAttack()
     if (inFreeSpace) return;
 
     // Choose nearest target free space by distance
@@ -278,7 +286,7 @@ export class Monster extends Person {
       //   // console.log("newFocusedTarget ", newFocusedTarget[0])
       //   // this.focusedTarget = newFocusedTarget[0];
       //   // console.log(this);
-        
+
       //   this.isTargetReachable = false;
       // }
 
@@ -356,10 +364,22 @@ export class Monster extends Person {
     resolve(currentData);
   }
 
-  attack() {
+  initAttack(attackName) {
     // TODO: if we are at free spot around target
     // start attack him
-    this.attacks.push("Fire!")
+    if (this.movingProgressReaming > 0) return;
+
+    if (this.direction === "leftUp" || this.direction === "leftDown")
+      this.direction = "left";
+    if (this.direction === "rightUp" || this.direction === "rightDown")
+      this.direction = "right";
+
+    this.attack = new Attack({
+      name: attackName,
+      gameObject: this,
+      useSlash: { active: true, direction: this.direction },
+    });
+    this.attack.init();
   }
 
   // TODO: if target die return to your behaviour (need db connection)

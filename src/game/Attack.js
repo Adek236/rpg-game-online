@@ -20,6 +20,9 @@ export class Attack {
   init() {
     // Add attack to attacks array
     this.gameObject.attacks.push(dataAttacks[this.name].name);
+    // TODO: \/ without this is error WHY?
+    this.gameObject.attack.sprite.currentAnimation = "attack-sword-down"
+    
     setTimeout(() => {
         // Remove attack from attacks array
       this.gameObject.attacks = this.gameObject.attacks.filter((el) => {
