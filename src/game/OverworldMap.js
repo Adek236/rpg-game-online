@@ -10,7 +10,7 @@ import { convertedOutisdeMapWalls } from "./data/testMapOutsideCollision.js";
 import { OverworldEvent } from "./OverworldEvent.js";
 import { playerState } from "./PlayerState.js";
 import { Monster } from "./Monster.js";
-
+import { OverworldMaps } from "./data/OverworldMaps.js";
 export class OverworldMap {
   constructor(config) {
     this.overworld = null;
@@ -108,7 +108,7 @@ export class OverworldMap {
 
   unmountGameObject(name) {
     delete this.gameObjects[name];
-    delete window.OverworldMaps[playerState.currentMap].playersPosition[name];
+    delete OverworldMaps[playerState.currentMap].playersPosition[name];
     // console.log("delete", name);
     console.log("unmountGameObject", name);
   }
@@ -174,7 +174,7 @@ export class OverworldMap {
           snapshot.forEach((monster) => {
             const monsterData = monster.val();
 
-            window.OverworldMaps[mapName].configObjects[monsterData.id] = {
+            OverworldMaps[mapName].configObjects[monsterData.id] = {
               type: "Monster",
               currentMap: monsterData.currentMap,
               currentTarget: monsterData.currentTarget,
@@ -198,250 +198,250 @@ export class OverworldMap {
   }
 }
 
-window.OverworldMaps = {
-  outsideMap: {
-    mapName: "outsideMap",
-    lowerSrc: "src/game/assets/maps/testMapOutside.png",
-    upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
-    configObjects: {
-      // skeleton: {
-      //   type: "Monster",
-      //   x: utils.withGrid(13),
-      //   y: utils.withGrid(16),
-      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
-      //   hp: 100,
-      //   behaviorLoop: [
-      //     // { type: "stand", direction: "down", time: 800 }
-      //     // { type: "walk", direction: "right" },
-      //     // { type: "stand", direction: "down", time: 2800 },
-      //     // { type: "walk", direction: "left" },
-      //   ],
-      // },
-      // skeleton2: {
-      //   type: "Monster",
-      //   x: utils.withGrid(15),
-      //   y: utils.withGrid(16),
-      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
-      //   hp: 100,
-      //   behaviorLoop: [
-      //     // { type: "stand", direction: "down", time: 800 }
-      //     // { type: "walk", direction: "right" },
-      //     // { type: "stand", direction: "down", time: 2800 },
-      //     // { type: "walk", direction: "left" },
-      //   ],
-      // },
-      // skeleton3: {
-      //   type: "Monster",
-      //   x: utils.withGrid(15),
-      //   y: utils.withGrid(16),
-      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
-      //   hp: 100,
-      //   behaviorLoop: [
-      //     // { type: "stand", direction: "down", time: 800 }
-      //     // { type: "walk", direction: "right" },
-      //     // { type: "stand", direction: "down", time: 2800 },
-      //     // { type: "walk", direction: "left" },
-      //   ],
-      // },
-      // skeleton4: {
-      //   type: "Monster",
-      //   x: utils.withGrid(15),
-      //   y: utils.withGrid(16),
-      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
-      //   hp: 100,
-      //   behaviorLoop: [
-      //     // { type: "stand", direction: "down", time: 800 }
-      //     // { type: "walk", direction: "right" },
-      //     // { type: "stand", direction: "down", time: 2800 },
-      //     // { type: "walk", direction: "left" },
-      //   ],
-      // },
-      // skeleton5: {
-      //   type: "Monster",
-      //   x: utils.withGrid(15),
-      //   y: utils.withGrid(16),
-      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
-      //   hp: 100,
-      //   behaviorLoop: [
-      //     // { type: "stand", direction: "down", time: 800 }
-      //     // { type: "walk", direction: "right" },
-      //     // { type: "stand", direction: "down", time: 2800 },
-      //     // { type: "walk", direction: "left" },
-      //   ],
-      // },
-      // skeleton6: {
-      //   type: "Monster",
-      //   x: utils.withGrid(15),
-      //   y: utils.withGrid(16),
-      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
-      //   hp: 100,
-      //   behaviorLoop: [
-      //     // { type: "stand", direction: "down", time: 800 }
-      //     // { type: "walk", direction: "right" },
-      //     // { type: "stand", direction: "down", time: 2800 },
-      //     // { type: "walk", direction: "left" },
-      //   ],
-      // },
-      // skeleton7: {
-      //   type: "Monster",
-      //   x: utils.withGrid(15),
-      //   y: utils.withGrid(16),
-      //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
-      //   hp: 100,
-      //   behaviorLoop: [
-      //     // { type: "stand", direction: "down", time: 800 }
-      //     // { type: "walk", direction: "right" },
-      //     // { type: "stand", direction: "down", time: 2800 },
-      //     // { type: "walk", direction: "left" },
-      //   ],
-      // },
-      hero2: {
-        type: "NPC",
-        x: utils.withGrid(8),
-        y: utils.withGrid(4),
-        offsetX: 9,
-        shadowOffsetX: 1,
-        behaviorLoop: [
-          // { type: "stand", direction: "down", time: 800 },
-          // { type: "stand", direction: "right", time: 1200 },
-        ],
-        talking: [
-          {
-            required: ["next_talk"],
-            events: [
-              {
-                type: "textMessage",
-                text: "Its next_talk ",
-                faceHero: "hero2",
-              },
-              { who: "hero", type: "walk", direction: "down" },
-            ],
-          },
-          {
-            required: ["something_to_do"],
-            events: [
-              { type: "textMessage", text: "Its working" },
-              { type: "addStoryFlag", flag: "next_talk" },
-            ],
-          },
-          {
-            events: [
-              { type: "textMessage", text: "hella", faceHero: "hero2" },
-              { type: "textMessage", text: "emalla" },
-            ],
-          },
-        ],
-      },
-      hero3: {
-        type: "NPC",
-        x: utils.withGrid(12),
-        y: utils.withGrid(7),
-        offsetX: 8,
-        outfit: "src/game/assets/characters/hero3.png",
-        behaviorLoop: [
-          // { type: "walk", direction: "right" },
-          // { type: "walk", direction: "right" },
-          // { type: "stand", direction: "down", time: 2800 },
-          // { type: "walk", direction: "down" },
-          // { type: "walk", direction: "down" },
-          // { type: "walk", direction: "down" },
-          // { type: "walk", direction: "down" },
-          // { type: "walk", direction: "down" },
-          // { type: "walk", direction: "left" },
-          // { type: "walk", direction: "left" },
-          // { type: "walk", direction: "up" },
-          // { type: "walk", direction: "up" },
-          // { type: "walk", direction: "up" },
-          // { type: "walk", direction: "up" },
-          // { type: "walk", direction: "up" },
-        ],
-      },
-    },
-    walls: convertedOutisdeMapWalls,
-    cutsceneSpaces: {
-      [utils.asGridCoords(7, 4)]: [
-        {
-          events: [
-            { who: "hero", type: "walk", direction: "down" },
-            { who: "hero", type: "walk", direction: "down" },
-            { type: "textMessage", text: "You cant go there" },
-          ],
-        },
-      ],
-      [utils.asGridCoords(6, 11)]: [
-        {
-          events: [
-            {
-              type: "changeMap",
-              map: "insideMap",
-              x: utils.withGrid(6),
-              y: utils.withGrid(6),
-              direction: "up",
-            },
-          ],
-        },
-      ],
-    },
-    playersPosition: {},
-  },
-  insideMap: {
-    mapName: "insideMap",
-    lowerSrc: "src/game/assets/maps/testMap.png",
-    upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
-    configObjects: {
-      hero2: {
-        type: "NPC",
-        x: utils.withGrid(8),
-        y: utils.withGrid(4),
-        offsetX: 9,
-        shadowOffsetX: 1,
-        behaviorLoop: [
-          // { type: "stand", direction: "down", time: 800 },
-          // { type: "stand", direction: "right", time: 1200 },
-        ],
-        talking: [
-          {
-            required: ["next_talk"],
-            events: [
-              {
-                type: "textMessage",
-                text: "Its next_talk ",
-                faceHero: "hero2",
-              },
-              { who: "hero", type: "walk", direction: "down" },
-            ],
-          },
-          {
-            required: ["something_to_do"],
-            events: [
-              { type: "textMessage", text: "Its working" },
-              { type: "addStoryFlag", flag: "next_talk" },
-            ],
-          },
-          {
-            events: [
-              { type: "textMessage", text: "hella", faceHero: "hero2" },
-              { type: "textMessage", text: "emalla" },
-            ],
-          },
-        ],
-      },
-    },
-    cutsceneSpaces: {
-      [utils.asGridCoords(3, 5)]: [
-        {
-          events: [
-            {
-              type: "changeMap",
-              map: "outsideMap",
-              x: utils.withGrid(6),
-              y: utils.withGrid(12),
-              direction: "up",
-            },
-          ],
-        },
-      ],
-    },
-    playersPosition: {},
-  },
-};
+// window.OverworldMaps = {
+//   outsideMap: {
+//     mapName: "outsideMap",
+//     lowerSrc: "src/game/assets/maps/testMapOutside.png",
+//     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
+//     configObjects: {
+//       // skeleton: {
+//       //   type: "Monster",
+//       //   x: utils.withGrid(13),
+//       //   y: utils.withGrid(16),
+//       //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+//       //   hp: 100,
+//       //   behaviorLoop: [
+//       //     // { type: "stand", direction: "down", time: 800 }
+//       //     // { type: "walk", direction: "right" },
+//       //     // { type: "stand", direction: "down", time: 2800 },
+//       //     // { type: "walk", direction: "left" },
+//       //   ],
+//       // },
+//       // skeleton2: {
+//       //   type: "Monster",
+//       //   x: utils.withGrid(15),
+//       //   y: utils.withGrid(16),
+//       //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+//       //   hp: 100,
+//       //   behaviorLoop: [
+//       //     // { type: "stand", direction: "down", time: 800 }
+//       //     // { type: "walk", direction: "right" },
+//       //     // { type: "stand", direction: "down", time: 2800 },
+//       //     // { type: "walk", direction: "left" },
+//       //   ],
+//       // },
+//       // skeleton3: {
+//       //   type: "Monster",
+//       //   x: utils.withGrid(15),
+//       //   y: utils.withGrid(16),
+//       //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+//       //   hp: 100,
+//       //   behaviorLoop: [
+//       //     // { type: "stand", direction: "down", time: 800 }
+//       //     // { type: "walk", direction: "right" },
+//       //     // { type: "stand", direction: "down", time: 2800 },
+//       //     // { type: "walk", direction: "left" },
+//       //   ],
+//       // },
+//       // skeleton4: {
+//       //   type: "Monster",
+//       //   x: utils.withGrid(15),
+//       //   y: utils.withGrid(16),
+//       //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+//       //   hp: 100,
+//       //   behaviorLoop: [
+//       //     // { type: "stand", direction: "down", time: 800 }
+//       //     // { type: "walk", direction: "right" },
+//       //     // { type: "stand", direction: "down", time: 2800 },
+//       //     // { type: "walk", direction: "left" },
+//       //   ],
+//       // },
+//       // skeleton5: {
+//       //   type: "Monster",
+//       //   x: utils.withGrid(15),
+//       //   y: utils.withGrid(16),
+//       //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+//       //   hp: 100,
+//       //   behaviorLoop: [
+//       //     // { type: "stand", direction: "down", time: 800 }
+//       //     // { type: "walk", direction: "right" },
+//       //     // { type: "stand", direction: "down", time: 2800 },
+//       //     // { type: "walk", direction: "left" },
+//       //   ],
+//       // },
+//       // skeleton6: {
+//       //   type: "Monster",
+//       //   x: utils.withGrid(15),
+//       //   y: utils.withGrid(16),
+//       //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+//       //   hp: 100,
+//       //   behaviorLoop: [
+//       //     // { type: "stand", direction: "down", time: 800 }
+//       //     // { type: "walk", direction: "right" },
+//       //     // { type: "stand", direction: "down", time: 2800 },
+//       //     // { type: "walk", direction: "left" },
+//       //   ],
+//       // },
+//       // skeleton7: {
+//       //   type: "Monster",
+//       //   x: utils.withGrid(15),
+//       //   y: utils.withGrid(16),
+//       //   outfit: "src/game/assets/monsters/skeleton/skeleton_walk.png",
+//       //   hp: 100,
+//       //   behaviorLoop: [
+//       //     // { type: "stand", direction: "down", time: 800 }
+//       //     // { type: "walk", direction: "right" },
+//       //     // { type: "stand", direction: "down", time: 2800 },
+//       //     // { type: "walk", direction: "left" },
+//       //   ],
+//       // },
+//       hero2: {
+//         type: "NPC",
+//         x: utils.withGrid(8),
+//         y: utils.withGrid(4),
+//         offsetX: 9,
+//         shadowOffsetX: 1,
+//         behaviorLoop: [
+//           // { type: "stand", direction: "down", time: 800 },
+//           // { type: "stand", direction: "right", time: 1200 },
+//         ],
+//         talking: [
+//           {
+//             required: ["next_talk"],
+//             events: [
+//               {
+//                 type: "textMessage",
+//                 text: "Its next_talk ",
+//                 faceHero: "hero2",
+//               },
+//               { who: "hero", type: "walk", direction: "down" },
+//             ],
+//           },
+//           {
+//             required: ["something_to_do"],
+//             events: [
+//               { type: "textMessage", text: "Its working" },
+//               { type: "addStoryFlag", flag: "next_talk" },
+//             ],
+//           },
+//           {
+//             events: [
+//               { type: "textMessage", text: "hella", faceHero: "hero2" },
+//               { type: "textMessage", text: "emalla" },
+//             ],
+//           },
+//         ],
+//       },
+//       hero3: {
+//         type: "NPC",
+//         x: utils.withGrid(12),
+//         y: utils.withGrid(7),
+//         offsetX: 8,
+//         outfit: "src/game/assets/characters/hero3.png",
+//         behaviorLoop: [
+//           // { type: "walk", direction: "right" },
+//           // { type: "walk", direction: "right" },
+//           // { type: "stand", direction: "down", time: 2800 },
+//           // { type: "walk", direction: "down" },
+//           // { type: "walk", direction: "down" },
+//           // { type: "walk", direction: "down" },
+//           // { type: "walk", direction: "down" },
+//           // { type: "walk", direction: "down" },
+//           // { type: "walk", direction: "left" },
+//           // { type: "walk", direction: "left" },
+//           // { type: "walk", direction: "up" },
+//           // { type: "walk", direction: "up" },
+//           // { type: "walk", direction: "up" },
+//           // { type: "walk", direction: "up" },
+//           // { type: "walk", direction: "up" },
+//         ],
+//       },
+//     },
+//     walls: convertedOutisdeMapWalls,
+//     cutsceneSpaces: {
+//       [utils.asGridCoords(7, 4)]: [
+//         {
+//           events: [
+//             { who: "hero", type: "walk", direction: "down" },
+//             { who: "hero", type: "walk", direction: "down" },
+//             { type: "textMessage", text: "You cant go there" },
+//           ],
+//         },
+//       ],
+//       [utils.asGridCoords(6, 11)]: [
+//         {
+//           events: [
+//             {
+//               type: "changeMap",
+//               map: "insideMap",
+//               x: utils.withGrid(6),
+//               y: utils.withGrid(6),
+//               direction: "up",
+//             },
+//           ],
+//         },
+//       ],
+//     },
+//     playersPosition: {},
+//   },
+//   insideMap: {
+//     mapName: "insideMap",
+//     lowerSrc: "src/game/assets/maps/testMap.png",
+//     upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
+//     configObjects: {
+//       hero2: {
+//         type: "NPC",
+//         x: utils.withGrid(8),
+//         y: utils.withGrid(4),
+//         offsetX: 9,
+//         shadowOffsetX: 1,
+//         behaviorLoop: [
+//           // { type: "stand", direction: "down", time: 800 },
+//           // { type: "stand", direction: "right", time: 1200 },
+//         ],
+//         talking: [
+//           {
+//             required: ["next_talk"],
+//             events: [
+//               {
+//                 type: "textMessage",
+//                 text: "Its next_talk ",
+//                 faceHero: "hero2",
+//               },
+//               { who: "hero", type: "walk", direction: "down" },
+//             ],
+//           },
+//           {
+//             required: ["something_to_do"],
+//             events: [
+//               { type: "textMessage", text: "Its working" },
+//               { type: "addStoryFlag", flag: "next_talk" },
+//             ],
+//           },
+//           {
+//             events: [
+//               { type: "textMessage", text: "hella", faceHero: "hero2" },
+//               { type: "textMessage", text: "emalla" },
+//             ],
+//           },
+//         ],
+//       },
+//     },
+//     cutsceneSpaces: {
+//       [utils.asGridCoords(3, 5)]: [
+//         {
+//           events: [
+//             {
+//               type: "changeMap",
+//               map: "outsideMap",
+//               x: utils.withGrid(6),
+//               y: utils.withGrid(12),
+//               direction: "up",
+//             },
+//           ],
+//         },
+//       ],
+//     },
+//     playersPosition: {},
+//   },
+// };

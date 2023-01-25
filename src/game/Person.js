@@ -2,7 +2,7 @@ import { GameObject } from "./GameObject.js";
 import { utils } from "./utils/utils.js";
 import { playerState } from "./PlayerState.js";
 import { Attack } from "./Attack.js";
-
+import { OverworldMaps } from "./data/OverworldMaps.js";
 export class Person extends GameObject {
   constructor(config) {
     super(config);
@@ -118,7 +118,7 @@ export class Person extends GameObject {
         });
 
         // Update position at playersPosition
-        window.OverworldMaps[playerState.currentMap].playersPosition[
+        OverworldMaps[playerState.currentMap].playersPosition[
           playerState.name
         ] = {
           direction: this.direction,
@@ -137,7 +137,7 @@ export class Person extends GameObject {
         });
 
         // Update position at configObjects
-        window.OverworldMaps[this.currentMap].configObjects[this.id] = {
+        OverworldMaps[this.currentMap].configObjects[this.id] = {
           direction: this.direction,
           x: this.intentPos[0],
           y: this.intentPos[1],

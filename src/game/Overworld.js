@@ -7,7 +7,7 @@ import { playerState } from "./PlayerState.js";
 import { utils } from "./utils/utils.js";
 import { onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 import { playersRef, monstersRef, dbRef, db } from "../config/firebase.js";
-
+import { OverworldMaps } from "./data/OverworldMaps.js";
 export class Overworld {
   constructor(config) {
     this.element = config.element;
@@ -101,7 +101,7 @@ export class Overworld {
   }
 
   startMap(object, mapInitialConfig = null) {
-    this.map = new OverworldMap(window.OverworldMaps[object.currentMap]);
+    this.map = new OverworldMap(OverworldMaps[object.currentMap]);
     this.map.overworld = this;
     this.map.loadMonsters(object.currentMap, () => {
       this.map.mountObjectsFromConfig();
@@ -173,12 +173,12 @@ export class Overworld {
           // );
           // If player change position, update his game object
           const currentPlayerState =
-            window.OverworldMaps[player.currentMap].playersPosition[
+            OverworldMaps[player.currentMap].playersPosition[
               player.name
             ];
 
           // Update position at playersPosition
-          window.OverworldMaps[player.currentMap].playersPosition[player.name] =
+          OverworldMaps[player.currentMap].playersPosition[player.name] =
             {
               direction: player.direction,
               x: utils.withGrid(player.x),
@@ -186,7 +186,7 @@ export class Overworld {
             };
 
           const newPlayerState =
-            window.OverworldMaps[player.currentMap].playersPosition[
+            OverworldMaps[player.currentMap].playersPosition[
               player.name
             ];
 
@@ -246,7 +246,7 @@ export class Overworld {
           //   "If player is online at your map and doesn't exist in game objects, add him"
           // );
 
-          window.OverworldMaps[player.currentMap].playersPosition[player.name] =
+          OverworldMaps[player.currentMap].playersPosition[player.name] =
             {
               direction: player.direction,
               x: utils.withGrid(player.x),
@@ -312,17 +312,17 @@ export class Overworld {
           monsterObj
         ) {
           const currentMonsterState =
-            window.OverworldMaps[monster.currentMap].configObjects[monster.id];
+            OverworldMaps[monster.currentMap].configObjects[monster.id];
 
           // Update position at playersPosition
-          window.OverworldMaps[monster.currentMap].configObjects[monster.id] = {
+          OverworldMaps[monster.currentMap].configObjects[monster.id] = {
             direction: monster.direction,
             x: utils.withGrid(monster.x),
             y: utils.withGrid(monster.y),
           };
 
           const newMonsterState =
-            window.OverworldMaps[monster.currentMap].configObjects[monster.id];
+            OverworldMaps[monster.currentMap].configObjects[monster.id];
 
           if (
             currentMonsterState.x !== newMonsterState.x ||

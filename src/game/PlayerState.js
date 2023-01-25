@@ -7,7 +7,7 @@ import {
 import { dbRef } from "../config/firebase.js";
 import { utils } from "./utils/utils.js";
 import { db } from "../config/firebase.js";
-
+import { OverworldMaps } from "./data/OverworldMaps.js";
 class PlayerState {
   constructor() {
     this.name = null;
@@ -37,7 +37,7 @@ class PlayerState {
             this.id = userData.id;
             this.currentMap = userData.currentMap;
             this.outfit = userData.outfit; 
-            window.OverworldMaps[userData.currentMap].playersPosition[
+           OverworldMaps[userData.currentMap].playersPosition[
               userData.name
             ] = {
               direction: userData.direction,

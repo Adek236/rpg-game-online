@@ -1,7 +1,7 @@
 import { TextMessage } from "./TextMessage.js";
 import { utils } from "./utils/utils.js";
 import { playerState } from "./PlayerState.js";
-
+import { OverworldMaps } from "./data/OverworldMaps.js";
 export class OverworldEvent {
   constructor({ map, event }) {
     this.map = map;
@@ -113,7 +113,7 @@ export class OverworldEvent {
         playerState.currentMap = this.event.map;
 
         // Add position at window playersPosition
-        window.OverworldMaps[playerState.currentMap].playersPosition[playerState.name] = {
+        OverworldMaps[playerState.currentMap].playersPosition[playerState.name] = {
           direction: this.event.direction,
           x : this.event.x,
           y : this.event.y
