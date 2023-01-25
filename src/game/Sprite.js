@@ -23,20 +23,48 @@ export class Sprite {
 
     // Slash
     this.isSlash = new Image();
-    this.useSlash = config.useSlash || {active: false, direction: "left"};
+    this.useSlash = config.useSlash || false;
     this.isSlash.src = "src/game/assets/objects/slash3.png";
-    if (this.useSlash.active) {
+    if (this.useSlash) {
       this.isSlash.onload = () => {
         this.isSlashLoaded = true;
       };
     }
 
     this.slashDirection = {
-      "up": [{frame:0, offset: 3},{frame:0, offset: 0}],
-      "down": [{frame:0, offset: 15},{frame:1, offset: 0}],
-      "left": [{frame:0, offset: 8},{frame:2, offset: -10}],
-      "right": [{frame:0, offset: 8},{frame:3, offset: 10}],
-    }
+      up: [
+        { frame: 0, offset: 3 },
+        { frame: 0, offset: 0 },
+      ],
+      down: [
+        { frame: 0, offset: 15 },
+        { frame: 1, offset: 0 },
+      ],
+      left: [
+        { frame: 0, offset: 8 },
+        { frame: 2, offset: -10 },
+      ],
+      leftUp: [
+        { frame: 0, offset: 8 },
+        { frame: 2, offset: -10 },
+      ],
+      leftDown: [
+        { frame: 0, offset: 8 },
+        { frame: 2, offset: -10 },
+      ],
+      right: [
+        { frame: 0, offset: 8 },
+        { frame: 3, offset: 10 },
+      ],
+      rightUp: [
+        { frame: 0, offset: 8 },
+        { frame: 3, offset: 10 },
+      ],
+      rightDown: [
+        { frame: 0, offset: 8 },
+        { frame: 3, offset: 10 },
+      ],
+    };
 
     // // Nickname
     // this.weapon = new Image();
@@ -49,7 +77,7 @@ export class Sprite {
 
     // Example attack animation
     // animations: {
-      // "attack-sword": [[{frame:0, offset: -15}, {frame:0, offset: -10}],{frame:1, offset: -15}, {frame:0, offset: -10}],
+    // "attack-sword": [[{frame:0, offset: -15}, {frame:0, offset: -10}],{frame:1, offset: -15}, {frame:0, offset: -10}],
     // },
 
     // Configure Animation & Initial State
@@ -138,7 +166,23 @@ export class Sprite {
         [1, 3],
         [0, 3],
       ],
+      "attack-leftUp": [
+        [1, 3],
+        [0, 3],
+      ],
+      "attack-leftDown": [
+        [1, 3],
+        [0, 3],
+      ],
       "attack-right": [
+        [1, 1],
+        [0, 1],
+      ],
+      "attack-rightUp": [
+        [1, 1],
+        [0, 1],
+      ],
+      "attack-rightDown": [
         [1, 1],
         [0, 1],
       ],
@@ -154,12 +198,11 @@ export class Sprite {
   }
 
   get frame() {
-    // console.log(this.animations[this.currentAnimation][this.currentAnimationFrame])
     return this.animations[this.currentAnimation][this.currentAnimationFrame];
   }
 
   get slashFrame() {
-    return this.slashDirection[this.useSlash.direction];
+    return this.slashDirection[this.gameObject.direction];
   }
 
   setAnimation(key) {
@@ -211,61 +254,84 @@ export class Sprite {
     // ctx.fillStyle = 'red';
     // ctx.fillText("Teddy", x+8, y+5);
 
-    const [slashY, slashX] = this.slashFrame;
+    if (!this.isAttackAnimation) {
+      // If person or monster have valid target show hp bar
+      if (
+        (this.gameObject.type === "Monster" &&
+          this.gameObject.validTargets.length > 0) ||
+        this.gameObject.type === "Person"
+      ) {
+        ctx.fillStyle = "rgb(245,245,245, 0.6)";
+        ctx.fillRect(x + 10, y + 8, 12, 3);
 
-      this.isSlashLoaded && ctx.drawImage(
-        this.isSlash,
-        slashX.frame*32,
-        slashY.frame*32,
-        32,
-        32,
-        x+slashX.offset,
-        y+slashY.offset,
-        32,
-        32
-      );
+        ctx.fillStyle = "silver";
+        ctx.fillRect(x + 11, y + 9, 10, 1);
 
-    // If person or monster have valid target show hp bar
-    if (
-      (this.gameObject.type === "Monster" && this.gameObject.validTargets.length > 0) ||
-      this.gameObject.type === "Person"
-    ) {
-      ctx.fillStyle = "rgb(245,245,245, 0.6)";
-      ctx.fillRect(x + 10, y + 8, 12, 3);
+        ctx.fillStyle = "red";
+        ctx.fillRect(x + 11, y + 9, 5, 1);
+      }
 
-      ctx.fillStyle = "silver";
-      ctx.fillRect(x + 11, y + 9, 10, 1);
+      this.isShadowLoaded &&
+        ctx.drawImage(
+          this.shadow,
+          0,
+          0,
+          32,
+          32,
+          x + this.gameObject.shadowOffsetX,
+          y + this.gameObject.shadowOffsetY,
+          32,
+          32
+        );
 
-      ctx.fillStyle = "red";
-      ctx.fillRect(x + 11, y + 9, 5, 1);
-    }
-
-    this.isShadowLoaded &&
-      ctx.drawImage(
-        this.shadow,
-        0,
-        0,
-        32,
-        32,
-        x + this.gameObject.shadowOffsetX,
-        y + this.gameObject.shadowOffsetY,
-        32,
-        32
-      );
-
-     if (!this.isAttackAnimation) {
       const [frameX, frameY] = this.frame;
 
       this.isLoaded &&
-        ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
-     } else {
-       
-       const [X, Y] = this.frame;
+        ctx.drawImage(
+          this.image,
+          frameX * 32,
+          frameY * 32,
+          32,
+          32,
+          x,
+          y,
+          32,
+          32
+        );
 
-    this.isLoaded &&
-      ctx.drawImage(this.image, X.frame * 32, Y.frame * 32, 32, 32, x + X.offset, y + Y.offset, 32, 32);
-     }
-    
+    } else {
+      
+      const [slashY, slashX] = this.slashFrame;
+
+      this.isSlashLoaded &&
+        ctx.drawImage(
+          this.isSlash,
+          slashX.frame * 32,
+          slashY.frame * 32,
+          32,
+          32,
+          x + slashX.offset,
+          y + slashY.offset,
+          32,
+          32
+        );
+
+      const [X, Y] = this.frame;
+
+      this.isLoaded &&
+        ctx.drawImage(
+          this.image,
+          X.frame * 32,
+          Y.frame * 32,
+          32,
+          32,
+          x + X.offset,
+          y + Y.offset,
+          32,
+          32
+        );
+    }
+
     this.updateAnimationProgress();
   }
 }

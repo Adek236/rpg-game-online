@@ -191,25 +191,15 @@ export class Person extends GameObject {
       this.sprite.setAnimation("idle-" + this.direction);
     }
     if (this.attacks.length > 0) {
-      if (this.direction === "leftUp" || this.direction === "leftDown")
-        this.direction = "left";
-      if (this.direction === "rightUp" || this.direction === "rightDown")
-        this.direction = "right";
-      this.sprite.setAnimation("attack-" + this.direction);
-      this.attack.sprite.setAnimation("attack-sword-" + this.direction);
+      this.sprite.setAnimation(this.attacks[0].personAnimateName + this.direction);
+      this.attack.sprite.setAnimation(this.attacks[0].animateName + this.direction);
     }
   }
 
   initAttack(attackName) {
-    if (this.direction === "leftUp" || this.direction === "leftDown")
-      this.direction = "left";
-    if (this.direction === "rightUp" || this.direction === "rightDown")
-      this.direction = "right";
-
     this.attack = new Attack({
       name: attackName,
       gameObject: this,
-      useSlash: { active: true, direction: this.direction },
     });
     this.attack.init();
   }

@@ -210,24 +210,33 @@ export class Monster extends Person {
     });
 
     // Stop if monster is in free space around player
-    let inFreeSpace = false;
+    // let inFreeSpace = false;
     for (const obj in target.aroundFreeSpace) {
       if (
         target.aroundFreeSpace[obj].position.x === this.x &&
         target.aroundFreeSpace[obj].position.y === this.y
       ) {
-        inFreeSpace = true;
+        // inFreeSpace = true;
         this.count++;
         if (this.count % 100 === 0) {
           // console.log("free space");
-          this.initAttack("swordSlash");
+          this.initAttack("autoAttack");
         }
+
+        // Turn towards the target
+        const oppositeDir = utils.oppositeDirection(obj);
+        if (this.direction !== oppositeDir) {
+          this.direction = oppositeDir;
+          // console.log(this.direction);
+        }
+
+
         return;
       }
     }
 
     //  this.initAttack()
-    if (inFreeSpace) return;
+    // if (inFreeSpace) return;
 
     // Choose nearest target free space by distance
     const freeDirection = Object.keys(target.aroundFreeSpace)
@@ -365,21 +374,10 @@ export class Monster extends Person {
   }
 
   initAttack(attackName) {
-    // TODO: if we are at free spot around target
-    // start attack him
+
     if (this.movingProgressReaming > 0) return;
+    super.initAttack(attackName);
 
-    if (this.direction === "leftUp" || this.direction === "leftDown")
-      this.direction = "left";
-    if (this.direction === "rightUp" || this.direction === "rightDown")
-      this.direction = "right";
-
-    this.attack = new Attack({
-      name: attackName,
-      gameObject: this,
-      useSlash: { active: true, direction: this.direction },
-    });
-    this.attack.init();
   }
 
   // TODO: if target die return to your behaviour (need db connection)
