@@ -221,15 +221,25 @@ export class Monster extends Person {
         if (this.count % 100 === 0) {
           // console.log("free space");
           this.initAttack("autoAttack");
+          this.dbUpdateMonster({
+            monster: {
+              isAttack: "autoAttack",
+            },
+          });
         }
 
         // Turn towards the target
         const oppositeDir = utils.oppositeDirection(obj);
         if (this.direction !== oppositeDir) {
           this.direction = oppositeDir;
+          // Update dir at db
+          this.dbUpdateMonster({
+            monster: {
+              direction: this.direction,
+            },
+          });
           // console.log(this.direction);
         }
-
 
         return;
       }
@@ -374,10 +384,8 @@ export class Monster extends Person {
   }
 
   initAttack(attackName) {
-
     if (this.movingProgressReaming > 0) return;
     super.initAttack(attackName);
-
   }
 
   // TODO: if target die return to your behaviour (need db connection)

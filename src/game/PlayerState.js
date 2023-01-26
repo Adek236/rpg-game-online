@@ -76,6 +76,15 @@ class PlayerState {
   setPlayerOffline(id = this.id) {
     update(ref(db, `players/${id}`), { online: false });
   }
+
+  // setPlayerActionOn(id = this.id) {
+  //   update(ref(db, `players/${id}`), { isAction: true });
+  // }
+
+  // setPlayerActionOff(id = this.id) {
+  //   update(ref(db, `players/${id}`), { isAction: false });
+  // }
+
 }
 
 export const playerState = new PlayerState();

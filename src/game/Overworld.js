@@ -81,6 +81,12 @@ export class Overworld {
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
       this.map.gameObjects[playerState.name].initAttack("swordSlash");
+      // Set attack at db
+      playerState.updatePlayer({
+        player: {
+          isAttack: "swordSlash",
+        },
+      });
     });
   }
 
@@ -154,6 +160,7 @@ export class Overworld {
       const players = snapshot.val().players;
       Object.values(players).forEach((player) => {
         // if (!this.isObjectsListens) return;
+
         // If player its me skip
         if (player.name === playerState.name) return;
 
@@ -168,28 +175,22 @@ export class Overworld {
           player.currentMap === playerState.currentMap &&
           playerObj
         ) {
-          // console.log(
-          //   "If player is online at your map and exist in game objects, do something"
-          // );
           // If player change position, update his game object
           const currentPlayerState =
-            OverworldMaps[player.currentMap].playersPosition[
-              player.name
-            ];
+            OverworldMaps[player.currentMap].playersPosition[player.name];
 
           // Update position at playersPosition
-          OverworldMaps[player.currentMap].playersPosition[player.name] =
-            {
-              direction: player.direction,
-              x: utils.withGrid(player.x),
-              y: utils.withGrid(player.y),
-            };
+          OverworldMaps[player.currentMap].playersPosition[player.name] = {
+            direction: player.direction,
+            x: utils.withGrid(player.x),
+            y: utils.withGrid(player.y),
+          };
 
           const newPlayerState =
-            OverworldMaps[player.currentMap].playersPosition[
-              player.name
-            ];
+            OverworldMaps[player.currentMap].playersPosition[player.name];
 
+          // If player current position is diffrent with new position,
+          // move him
           if (
             currentPlayerState.x !== newPlayerState.x ||
             currentPlayerState.y !== newPlayerState.y
@@ -200,25 +201,11 @@ export class Overworld {
               playerObj.x = currentPlayerState.x;
             if (playerObj.y !== currentPlayerState.y)
               playerObj.y = currentPlayerState.y;
-            // playerObj.startBehavior({arrow: newPlayerState.direction, map:this.map},{type: "walk", direction: newPlayerState.direction})
 
             playerObj.movingProgressReaming =
               playerObj.movingProgressReamingMax;
-            // // playerObj.sprite.animationFrameLimit = 7.2;
-            // // playerObj.updateSprite();
-            // if (this.movingProgressReaming > 0) {
-            // for (let i = 0; i < 16; i++) {
-            // const [property, change] =
-            // playerObj.directionUpdate[playerObj.direction];
-            // playerObj[property] += change;
-            // playerObj.movingProgressReaming -= 1;
-
-            // }
-            // } else {
-            // playerObj.sprite.setAnimation("walk-" + playerObj.direction);
 
             playerObj.updateSprite();
-            // }
           }
 
           // If player not moving but change direction, update his game obj
@@ -226,11 +213,16 @@ export class Overworld {
             playerObj.movingProgressReaming === 0 &&
             player.direction !== playerObj.direction
           ) {
-            // console.log(
-            //   "If player not moving but change direction, update his game obj"
-            // );
             playerObj.direction = player.direction;
-            // playerObj.sprite.setAnimation("idle-" + playerObj.direction);
+          }
+
+          // If player used skills/spells, show it
+          if (
+            playerObj.movingProgressReaming === 0 &&
+            player.isAttack
+          ) {
+            if (playerObj.movingProgressReaming > 0) return;
+            playerObj.initAttack(player.isAttack);
           }
         }
 
@@ -242,16 +234,11 @@ export class Overworld {
           !playerObj
           // && this.isObjectsListens
         ) {
-          // console.log(
-          //   "If player is online at your map and doesn't exist in game objects, add him"
-          // );
-
-          OverworldMaps[player.currentMap].playersPosition[player.name] =
-            {
-              direction: player.direction,
-              x: utils.withGrid(player.x),
-              y: utils.withGrid(player.y),
-            };
+          OverworldMaps[player.currentMap].playersPosition[player.name] = {
+            direction: player.direction,
+            x: utils.withGrid(player.x),
+            y: utils.withGrid(player.y),
+          };
 
           const object = {
             name: player.name,
@@ -275,10 +262,6 @@ export class Overworld {
           playerObj &&
           player.currentMap !== playerState.currentMap
         ) {
-          // console.log(
-          //   "If player exist and changed map, delete him from game object, and playersPosition"
-          // );
-
           this.map.unmountGameObject(player.name);
         }
 
@@ -289,10 +272,6 @@ export class Overworld {
           playerObj &&
           player.currentMap === playerState.currentMap
         ) {
-          // console.log(
-          //   "If player exist and went offline, delete him from game objects, and playersPosition"
-          // );
-
           this.map.unmountGameObject(player.name);
         }
       });
@@ -324,11 +303,13 @@ export class Overworld {
           const newMonsterState =
             OverworldMaps[monster.currentMap].configObjects[monster.id];
 
+          // If current position is diffrent with new position,
+          // walk
           if (
             currentMonsterState.x !== newMonsterState.x ||
             currentMonsterState.y !== newMonsterState.y
           ) {
-            // Deactive monster movement scripts if someone else controll
+            // Deactive monster movement scripts if someone else control
             monsterObj.isPlayerControlledMonster = false;
 
             monsterObj.direction = newMonsterState.direction;
@@ -341,6 +322,23 @@ export class Overworld {
               monsterObj.movingProgressReamingMax;
 
             monsterObj.updateSprite();
+          }
+
+          // If monster current direction is diffrent with new direction,
+          // change direction
+          if (currentMonsterState.direction !== newMonsterState.direction) {
+            // monsterObj.isPlayerControlledMonster = false;
+            monsterObj.direction = newMonsterState.direction;
+            monsterObj.updateSprite();
+          }
+
+          // If monster used skills/spells, show it
+          if (
+            monsterObj.movingProgressReaming === 0 &&
+            monster.isAttack
+          ) {
+            if (monsterObj.movingProgressReaming > 0) return;
+            monsterObj.initAttack(monster.isAttack);
           }
         }
 

@@ -1,5 +1,6 @@
 import { Sprite } from "./Sprite.js";
 import { dataAttacks } from "./data/attacks.js";
+import { playerState } from "./PlayerState.js";
 
 export class Attack {
   constructor(config) {
@@ -20,6 +21,7 @@ export class Attack {
   init() {
     // Add attack to attacks array
     this.gameObject.attacks.push(dataAttacks[this.name]);
+    
     // TODO: \/ without this is error WHY?
     if (this.gameObject.type === "Monster") {
       this.gameObject.attack.sprite.currentAnimation =
@@ -31,6 +33,25 @@ export class Attack {
       this.gameObject.attacks = this.gameObject.attacks.filter((el) => {
         return el !== dataAttacks[this.name];
       });
+      // If its a player
+      if (this.gameObject.name === playerState.name){
+        // Set attack to false at db
+        playerState.updatePlayer({
+          player: {
+            isAttack: false,
+          },
+        });
+      }
+
+      // If its a monster
+      if (this.gameObject.type === "Monster"){
+        // Set attack to false at db
+        this.gameObject.dbUpdateMonster({
+          monster: {
+            isAttack: false
+          },
+        });
+      }
     }, dataAttacks[this.name].time);
   }
 }
