@@ -77,10 +77,10 @@ export class Overworld {
   bindHotKeysInput() {
     new KeyPressListener("Digit1", () => {
       // console.log("1")
-      console.log(this);
+      console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
-      this.map.gameObjects[playerState.name].initAttack("swordSlash");
+      this.map.gameObjects[playerState.name].initAttack(this.map, "swordSlash");
       // Set attack at db
       playerState.updatePlayer({
         player: {

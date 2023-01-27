@@ -1,3 +1,4 @@
+// import { combatAreas } from "./areas.js";
 export const dataAttacks = {
   swordSlash: {
     id: "swordSlash",
@@ -7,6 +8,8 @@ export const dataAttacks = {
     src: "src/game/assets/objects/sword2.png",
     time: 300,
     useSlash: true,
+    needMarkedTarget: false,
+    combatAreaName: "3x1",
     animations: {
       "sword-slash-up": [
         [
@@ -98,11 +101,12 @@ export const dataAttacks = {
     src: "src/game/assets/objects/sword2.png",
     time: 300,
     useSlash: false,
+    needMarkedTarget: true,
     animations: {
       "auto-attack-up": [
         [
           { frame: 2, offset: 0 },
-          { frame: 0, offset: -8},
+          { frame: 0, offset: -8 },
         ],
         [
           { frame: 3, offset: 0 },
@@ -182,3 +186,4 @@ export const dataAttacks = {
     },
   },
 };
+

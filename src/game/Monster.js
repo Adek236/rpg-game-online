@@ -220,7 +220,7 @@ export class Monster extends Person {
         this.count++;
         if (this.count % 100 === 0) {
           // console.log("free space");
-          this.initAttack("autoAttack");
+          this.initAttack(state,"autoAttack");
           this.dbUpdateMonster({
             monster: {
               isAttack: "autoAttack",
@@ -383,9 +383,9 @@ export class Monster extends Person {
     resolve(currentData);
   }
 
-  initAttack(attackName) {
+  initAttack(state, attackName) {
     if (this.movingProgressReaming > 0) return;
-    super.initAttack(attackName);
+    super.initAttack(state, attackName);
   }
 
   // TODO: if target die return to your behaviour (need db connection)

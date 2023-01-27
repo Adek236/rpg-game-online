@@ -45,10 +45,17 @@ export class OverworldMap {
     );
   }
 
-  isSpaceTaken(currentX, currentY, direction) {
-    const { x, y } = utils.nextPosition(currentX, currentY, direction);
-    if (this.walls[`${x},${y}`]) {
-      return true;
+  isSpaceTaken(currentX, currentY, direction, onlyGameObject = false) {
+    let x, y;
+    if (!onlyGameObject) {
+      x = utils.nextPosition(currentX, currentY, direction).x;
+      y = utils.nextPosition(currentX, currentY, direction).y;
+      if (this.walls[`${x},${y}`]) {
+        return true;
+      }
+    } else {
+      x = currentX;
+      y = currentY;
     }
     // Check for game objecs at this position
     return Object.values(this.gameObjects).find((obj) => {
@@ -65,9 +72,9 @@ export class OverworldMap {
   mountObjectsFromConfig(objects = this.configObjects) {
     Object.keys(objects).forEach((key) => {
       let object = this.configObjects[key];
-      
+
       let instace;
-      
+
       if (object.type === "Person") {
         instace = new Person(object);
       }
@@ -86,9 +93,10 @@ export class OverworldMap {
     });
   }
 
-  mountGameObject(object
+  mountGameObject(
+    object
     // ,resolve = null
-    ) {
+  ) {
     // console.log("moungameobj ", object);
     console.log("mountGameObject", object.name);
     let instace;
@@ -168,33 +176,32 @@ export class OverworldMap {
   }
 
   async loadMonsters(mapName, resolve) {
-      await get(child(dbRef, `monsters/${mapName}`))
-        .then((snapshot) => {
-          if (!snapshot.exists()) return;
-          snapshot.forEach((monster) => {
-            const monsterData = monster.val();
+    await get(child(dbRef, `monsters/${mapName}`))
+      .then((snapshot) => {
+        if (!snapshot.exists()) return;
+        snapshot.forEach((monster) => {
+          const monsterData = monster.val();
 
-            OverworldMaps[mapName].configObjects[monsterData.id] = {
-              type: "Monster",
-              currentMap: monsterData.currentMap,
-              currentTarget: monsterData.currentTarget,
-              direction: monsterData.direction,
-              isAlive: monsterData.isAlive,
-              name: monsterData.name,
-              id: monsterData.id,
-              outfit: monsterData.outfit,
-              x: utils.withGrid(monsterData.x),
-              y: utils.withGrid(monsterData.y),
-              initialX: utils.withGrid(monsterData.initialX),
-              initialY: utils.withGrid(monsterData.initialY),
-            };
-          });
-          
-        })
-        .catch((error) => {
-          console.log("loadMonsters error:", error);
+          OverworldMaps[mapName].configObjects[monsterData.id] = {
+            type: "Monster",
+            currentMap: monsterData.currentMap,
+            currentTarget: monsterData.currentTarget,
+            direction: monsterData.direction,
+            isAlive: monsterData.isAlive,
+            name: monsterData.name,
+            id: monsterData.id,
+            outfit: monsterData.outfit,
+            x: utils.withGrid(monsterData.x),
+            y: utils.withGrid(monsterData.y),
+            initialX: utils.withGrid(monsterData.initialX),
+            initialY: utils.withGrid(monsterData.initialY),
+          };
         });
-        resolve();
+      })
+      .catch((error) => {
+        console.log("loadMonsters error:", error);
+      });
+    resolve();
   }
 }
 

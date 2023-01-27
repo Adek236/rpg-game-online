@@ -196,11 +196,11 @@ export class Person extends GameObject {
     }
   }
 
-  initAttack(attackName) {
+  initAttack(state, attackName) {
     this.attack = new Attack({
       name: attackName,
       gameObject: this,
     });
-    this.attack.init();
+    this.attack.init(state);
   }
 }
