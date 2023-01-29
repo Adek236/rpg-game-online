@@ -39,7 +39,6 @@ export class Monster extends Person {
     };
     this.initialX = config.initialX;
     this.initialY = config.initialY;
-    this.hp = config.hp;
     this.radius = 100;
     this.validTargets = [];
     this.focusedTarget = null;
@@ -220,10 +219,10 @@ export class Monster extends Person {
         this.count++;
         if (this.count % 100 === 0) {
           // console.log("free space");
-          this.initAttack(state,"autoAttack");
+          this.initAttack(state,"swordSlash");
           this.dbUpdateMonster({
             monster: {
-              isAttack: "autoAttack",
+              isAttack: "swordSlash",
             },
           });
         }

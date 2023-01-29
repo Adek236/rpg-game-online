@@ -14,7 +14,8 @@ export class Person extends GameObject {
     this.radius = config.radius || 12;
     this.attacks = [];
     this.attack = null;
-    this.hp = 100;
+    this.currentHp = config.maxHp || 100;
+    this.maxHp = config.maxHp || 100;
 
     this.isPlayerControlled = config.isPlayerControlled || false;
 

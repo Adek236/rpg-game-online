@@ -250,9 +250,9 @@ export class Sprite {
     // }
 
     // Name above hero
-    // ctx.font = '5px Arial Black';
+    // ctx.font = '1da0px Arial Black';
     // ctx.fillStyle = 'red';
-    // ctx.fillText("Teddy", x+8, y+5);
+    // ctx.fillText("-10", 208, 208);
 
     if (!this.isAttackAnimation) {
       // If person or monster have valid target show hp bar
@@ -268,7 +268,17 @@ export class Sprite {
         ctx.fillRect(x + 11, y + 9, 10, 1);
 
         ctx.fillStyle = "red";
-        ctx.fillRect(x + 11, y + 9, 5, 1);
+        ctx.fillRect(
+          x + 11,
+          y + 9,
+          // Calculate hp
+          utils.hpConverter({
+            currentHp: this.gameObject.currentHp,
+            maxHp: this.gameObject.maxHp,
+            scale: 10,
+          }),
+          1
+        );
       }
 
       this.isShadowLoaded &&
@@ -298,9 +308,7 @@ export class Sprite {
           32,
           32
         );
-
     } else {
-      
       const [slashY, slashX] = this.slashFrame;
 
       this.isSlashLoaded &&

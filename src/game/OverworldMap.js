@@ -175,6 +175,7 @@ export class OverworldMap {
     }
   }
 
+  // Load all monsters of current map
   async loadMonsters(mapName, resolve) {
     await get(child(dbRef, `monsters/${mapName}`))
       .then((snapshot) => {

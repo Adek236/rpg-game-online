@@ -65,4 +65,8 @@ export const utils = {
     });
     document.dispatchEvent(event);
   },
+  hpConverter({currentHp, maxHp, scale}){
+    const result = currentHp/maxHp*scale;
+    return result <= 0 ? 0 : result;
+  }
 };

@@ -30,48 +30,72 @@ export class Attack {
       y: this.gameObject.y,
     };
 
+    
     // If attack dont need marked target
     if (!this.selectedAttack.needMarkedTarget) {
-      // Area of selected attack
-      const scaningArea = combatAreas[this.selectedAttack.combatAreaName];
-      // Area of position change
-      const comparativeArea =
+      if (
+        this.gameObject.direction == "leftUp" ||
+        this.gameObject.direction == "leftDown"
+        )
+        this.gameObject.direction = "left";
+      if (
+        this.gameObject.direction == "rightUp" ||
+        this.gameObject.direction == "rightDown"
+        )
+        this.gameObject.direction = "right";
+        
+        // Area of selected attack
+        const scaningArea = combatAreas[this.selectedAttack.combatAreaName];
+        // Area of position change
+        const comparativeArea =
         comparativeCombatAreas[this.selectedAttack.combatAreaName];
-
-      const checkForTargetAtThisPositions = [];
-
-      // Compare both attack area,
-      // return position to check if target is there
-      comparativeArea.forEach((row, i) => {
-        Array.from(row).forEach((pos, j) => {
-          if (scaningArea[this.gameObject.direction][i][j] === 1) {
-            checkForTargetAtThisPositions.push({
-              x: attacker.x + pos.x,
-              y: attacker.y + pos.y,
-            });
-          }
+        
+        
+        const checkForTargetAtThisPositions = [];
+        
+        
+        // Compare both attack area,
+        // return position to check if target is there
+        comparativeArea.forEach((row, i) => {
+          Array.from(row).forEach((pos, j) => {
+            if (scaningArea[this.gameObject.direction][i][j] === 1) {
+              checkForTargetAtThisPositions.push({
+                x: attacker.x + pos.x,
+                y: attacker.y + pos.y,
+              });
+            }
+          });
         });
-      });
-
-      // Check for possible targets
-      checkForTargetAtThisPositions.forEach((position) => {
-        const { x, y } = position;
-        for (const possibleTarget in state.gameObjects) {
+        
+        // Check for possible targets
+        checkForTargetAtThisPositions.forEach((position) => {
+          const { x, y } = position;
+          // console.log(state)
+          for (const possibleTarget in state.gameObjects) {
           const target = state.gameObjects[possibleTarget];
-          if (target.x === x && target.y === y && target.type === "Monster") {
+          if (
+            target.x === x &&
+            target.y === y &&
+            ((target.type === "Monster" && this.gameObject.type === "Person") ||
+              (target.type === "Person" && this.gameObject.type === "Monster"))
+          ) {
             // If target is found, deal damage to it
+            target.currentHp -= 10;
             return;
           }
         }
       });
-
     }
   }
 
   init(state) {
+    // If monster change state to map
+    if (this.gameObject.type === "Monster") state = state.map;
+
     // Add attack to attacks array
     this.gameObject.attacks.push(this.selectedAttack);
     this.doDamageToTargetInAttackArea(state);
+
     // TODO: \/ without this is error WHY?
     if (this.gameObject.type === "Monster") {
       this.gameObject.attack.sprite.currentAnimation =
@@ -83,6 +107,7 @@ export class Attack {
       this.gameObject.attacks = this.gameObject.attacks.filter((el) => {
         return el !== this.selectedAttack;
       });
+
       // If its a player
       if (this.gameObject.name === playerState.name) {
         // Set attack to false at db
