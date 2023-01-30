@@ -10,6 +10,7 @@ export const dataAttacks = {
     useSlash: true,
     needMarkedTarget: false,
     combatAreaName: "3x1",
+    baseDamage: 10,
     animations: {
       "sword-slash-up": [
         [

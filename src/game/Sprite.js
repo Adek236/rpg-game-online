@@ -229,6 +229,13 @@ export class Sprite {
     }
   }
 
+  // drawExclusive(){
+  //   for(let i = 0; i < 4; i++){
+  //     console.log("this.drawExclusive")
+  //     this.updateAnimationProgress()
+  //   }
+  // }
+
   draw(ctx, cameraPerson) {
     const x =
       this.gameObject.x -
@@ -338,6 +345,20 @@ export class Sprite {
           32,
           32
         );
+
+      // Draw damage dealt above person etc
+      // TODO: change to drawImage with numbers pixels
+      if (this.gameObject.attack.hittedTargets.length > 0) {
+        this.gameObject.attack.hittedTargets.forEach((target) => {
+          ctx.font = "6px Arial Black";
+          ctx.fillStyle = "red";
+          ctx.fillText(
+            `-${target.damageDealt}`,
+            target.x + utils.withGrid(10.5) - cameraPerson.x,
+            target.y + utils.withGrid(6) - cameraPerson.y - 11
+          );
+        });
+      }
     }
 
     this.updateAnimationProgress();

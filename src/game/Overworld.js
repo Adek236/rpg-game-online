@@ -8,6 +8,7 @@ import { utils } from "./utils/utils.js";
 import { onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 import { playersRef, monstersRef, dbRef, db } from "../config/firebase.js";
 import { OverworldMaps } from "./data/OverworldMaps.js";
+
 export class Overworld {
   constructor(config) {
     this.element = config.element;
@@ -76,10 +77,9 @@ export class Overworld {
 
   bindHotKeysInput() {
     new KeyPressListener("Digit1", () => {
-      // console.log(this)
       // console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
-        return;
+      return;
       this.map.gameObjects[playerState.name].initAttack(this.map, "swordSlash");
       // Set attack at db
       playerState.updatePlayer({
@@ -87,6 +87,7 @@ export class Overworld {
           isAttack: "swordSlash",
         },
       });
+      // console.log(this)
     });
   }
 

@@ -19,6 +19,8 @@ export class Attack {
       useSlash: this.selectedAttack.useSlash,
       isAttackAnimation: true,
     });
+
+    this.hittedTargets = [];
   }
 
   doDamageToTargetInAttackArea(state) {
@@ -30,48 +32,45 @@ export class Attack {
       y: this.gameObject.y,
     };
 
-    
     // If attack dont need marked target
     if (!this.selectedAttack.needMarkedTarget) {
       if (
         this.gameObject.direction == "leftUp" ||
         this.gameObject.direction == "leftDown"
-        )
+      )
         this.gameObject.direction = "left";
       if (
         this.gameObject.direction == "rightUp" ||
         this.gameObject.direction == "rightDown"
-        )
+      )
         this.gameObject.direction = "right";
-        
-        // Area of selected attack
-        const scaningArea = combatAreas[this.selectedAttack.combatAreaName];
-        // Area of position change
-        const comparativeArea =
+
+      // Area of selected attack
+      const scaningArea = combatAreas[this.selectedAttack.combatAreaName];
+      // Area of position change
+      const comparativeArea =
         comparativeCombatAreas[this.selectedAttack.combatAreaName];
-        
-        
-        const checkForTargetAtThisPositions = [];
-        
-        
-        // Compare both attack area,
-        // return position to check if target is there
-        comparativeArea.forEach((row, i) => {
-          Array.from(row).forEach((pos, j) => {
-            if (scaningArea[this.gameObject.direction][i][j] === 1) {
-              checkForTargetAtThisPositions.push({
-                x: attacker.x + pos.x,
-                y: attacker.y + pos.y,
-              });
-            }
-          });
+
+      const checkForTargetAtThisPositions = [];
+
+      // Compare both attack area,
+      // return position to check if target is there
+      comparativeArea.forEach((row, i) => {
+        Array.from(row).forEach((pos, j) => {
+          if (scaningArea[this.gameObject.direction][i][j] === 1) {
+            checkForTargetAtThisPositions.push({
+              x: attacker.x + pos.x,
+              y: attacker.y + pos.y,
+            });
+          }
         });
-        
-        // Check for possible targets
-        checkForTargetAtThisPositions.forEach((position) => {
-          const { x, y } = position;
-          // console.log(state)
-          for (const possibleTarget in state.gameObjects) {
+      });
+
+      // Check for possible targets
+      checkForTargetAtThisPositions.forEach((position) => {
+        const { x, y } = position;
+        // console.log(state)
+        for (const possibleTarget in state.gameObjects) {
           const target = state.gameObjects[possibleTarget];
           if (
             target.x === x &&
@@ -80,7 +79,16 @@ export class Attack {
               (target.type === "Person" && this.gameObject.type === "Monster"))
           ) {
             // If target is found, deal damage to it
-            target.currentHp -= 10;
+            target.currentHp -= this.selectedAttack.baseDamage;
+
+
+            this.hittedTargets.push({
+              x: target.x,
+              y: target.y,
+              damageDealt: this.selectedAttack.baseDamage
+            });
+            // console.log(this.gameObject.attacks)
+
             return;
           }
         }
@@ -127,6 +135,7 @@ export class Attack {
           },
         });
       }
+      
     }, this.selectedAttack.time);
   }
 }

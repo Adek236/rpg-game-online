@@ -55,6 +55,18 @@ export class Monster extends Person {
   update(state) {
     super.update(state);
 
+    // If monster died
+    // TODO: die animation
+    if (this.currentHp <= 0){
+      console.log("monster died")
+        
+        // this.sprite.setAnimation("walk-up");
+
+        // this.sprite.drawExclusive();
+      
+      return;
+    }
+
     // If monster is too far away from initial position,
     // teleport him back to start
     const distanceFromInitialPosition = this.getDistanceToTarget(
