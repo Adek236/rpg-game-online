@@ -114,9 +114,17 @@ export class OverworldMap {
     // if (resolve !== null) resolve();
   }
 
-  unmountGameObject(name) {
+  unmountGameObject(name, currentMap = null) {
     delete this.gameObjects[name];
-    delete OverworldMaps[playerState.currentMap].playersPosition[name];
+
+    if (this.type === "Person") {
+      delete OverworldMaps[playerState.currentMap].playersPosition[name];
+    }
+
+    if (this.type === "Monster"){
+      delete OverworldMaps[currentMap].configObjects[name];
+    }
+    
     // console.log("delete", name);
     console.log("unmountGameObject", name);
   }

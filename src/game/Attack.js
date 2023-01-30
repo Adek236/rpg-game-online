@@ -21,6 +21,7 @@ export class Attack {
     });
 
     this.hittedTargets = [];
+    this.isAnimationEnd = false;
   }
 
   doDamageToTargetInAttackArea(state) {
@@ -81,11 +82,10 @@ export class Attack {
             // If target is found, deal damage to it
             target.currentHp -= this.selectedAttack.baseDamage;
 
-
             this.hittedTargets.push({
               x: target.x,
               y: target.y,
-              damageDealt: this.selectedAttack.baseDamage
+              damageDealt: this.selectedAttack.baseDamage,
             });
             // console.log(this.gameObject.attacks)
 
@@ -135,7 +135,6 @@ export class Attack {
           },
         });
       }
-      
     }, this.selectedAttack.time);
   }
 }

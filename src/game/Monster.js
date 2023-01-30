@@ -50,20 +50,24 @@ export class Monster extends Person {
     this.lastMoveHistoryMaxLength = 8;
 
     this.count = 0;
+    this.deathAnimationEnd = false;
   }
 
   update(state) {
     super.update(state);
 
     // If monster died
-    // TODO: die animation
-    if (this.currentHp <= 0){
-      console.log("monster died")
-        
-        // this.sprite.setAnimation("walk-up");
-
-        // this.sprite.drawExclusive();
+    if (this.currentHp <= 0) {
+      // Update monster db
+      this.dbUpdateMonster({
+        monster: { isAlive: false },
+      });
       
+      // If death animation end unmount monster
+      this.deathAnimationEnd &&
+      state.map.unmountGameObject(this.id, this.currentMap)
+
+      // Stop here
       return;
     }
 
@@ -231,7 +235,7 @@ export class Monster extends Person {
         this.count++;
         if (this.count % 100 === 0) {
           // console.log("free space");
-          this.initAttack(state,"swordSlash");
+          this.initAttack(state, "swordSlash");
           this.dbUpdateMonster({
             monster: {
               isAttack: "swordSlash",

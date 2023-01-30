@@ -30,6 +30,8 @@ export class Sprite {
         this.isSlashLoaded = true;
       };
     }
+    // this.isSlashUsed = false;
+    // this.slashTime = 0;
 
     this.slashDirection = {
       up: [
@@ -186,6 +188,14 @@ export class Sprite {
         [1, 1],
         [0, 1],
       ],
+      death: [
+        [0, 4],
+        [1, 4],
+        [2, 4],
+        [3, 4],
+        [4, 4],
+        [5, 4],
+      ],
     };
     this.currentAnimation = config.currentAnimation || "idle-down"; // "walk-down";
     this.currentAnimationFrame = 0;
@@ -229,13 +239,6 @@ export class Sprite {
     }
   }
 
-  // drawExclusive(){
-  //   for(let i = 0; i < 4; i++){
-  //     console.log("this.drawExclusive")
-  //     this.updateAnimationProgress()
-  //   }
-  // }
-
   draw(ctx, cameraPerson) {
     const x =
       this.gameObject.x -
@@ -262,10 +265,11 @@ export class Sprite {
     // ctx.fillText("-10", 208, 208);
 
     if (!this.isAttackAnimation) {
-      // If person or monster have valid target show hp bar
+      // If person, or monster have valid target show hp bar
       if (
         (this.gameObject.type === "Monster" &&
-          this.gameObject.validTargets.length > 0) ||
+          this.gameObject.validTargets.length > 0 &&
+          !this.currentAnimation.includes("death")) ||
         this.gameObject.type === "Person"
       ) {
         ctx.fillStyle = "rgb(245,245,245, 0.6)";
@@ -315,10 +319,24 @@ export class Sprite {
           32,
           32
         );
+
+      // If its monster death animation,
+      // show it once
+      if (
+        this.gameObject.type === "Monster" &&
+        this.currentAnimation === "death" &&
+        this.currentAnimationFrame === 5
+      )
+        return (this.gameObject.deathAnimationEnd = true);
     } else {
+      // TODO: like above, no timeout just max 2 frame
+
       const [slashY, slashX] = this.slashFrame;
 
-      this.isSlashLoaded &&
+      if (
+        this.isSlashLoaded 
+        // && !this.isSlashUsed
+        ) {
         ctx.drawImage(
           this.isSlash,
           slashX.frame * 32,
@@ -330,6 +348,11 @@ export class Sprite {
           32,
           32
         );
+
+      //   this.slashTime++;
+      //  console.log(this.slashTime % 10 === 0)
+      //   if (this.slashTime % 20 === 0) this.isSlashUsed = true;
+      }
 
       const [X, Y] = this.frame;
 
@@ -359,6 +382,11 @@ export class Sprite {
           );
         });
       }
+
+      // if (
+      //   this.currentAnimationFrame === 1
+      // )
+      //   return this.gameObject.attack.clearAttack();
     }
 
     this.updateAnimationProgress();

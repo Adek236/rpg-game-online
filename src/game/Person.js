@@ -188,6 +188,10 @@ export class Person extends GameObject {
       this.sprite.setAnimation("walk-" + this.direction);
       return;
     }
+    if (this.type === "Monster" && this.currentHp <= 0){
+      this.sprite.setAnimation("death");
+      return;
+    }
     if (this.attacks.length === 0) {
       this.sprite.setAnimation("idle-" + this.direction);
     }

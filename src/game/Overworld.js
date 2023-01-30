@@ -89,6 +89,10 @@ export class Overworld {
       });
       // console.log(this)
     });
+
+    new KeyPressListener("Digit2", () => {
+      console.log(this)
+    });
   }
 
   bindActionInput() {

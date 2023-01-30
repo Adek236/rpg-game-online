@@ -1,10 +1,9 @@
 TODO: 
-Monsters - one sqm way, need to change target if u cant reach player
+* Damage sprite need improve
+* Monsters - one sqm way, need to change target if u cant reach player
            (if [left, right x4] 4x left and 4x right change target if possible)
-            
-
-Other players movement sprite BROKE
-onAuthStateChanged need improve
+* Other players movement sprite BROKE
+* onAuthStateChanged need improve
 
 
 
