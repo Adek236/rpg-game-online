@@ -1,4 +1,7 @@
 TODO: 
+* Alive
+* Online monster skills broke
+* Change map mount monster is broke (not enought params)
 * Damage sprite need improve
 * Monsters - one sqm way, need to change target if u cant reach player
            (if [left, right x4] 4x left and 4x right change target if possible)

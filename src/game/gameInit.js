@@ -24,16 +24,16 @@ export function init(user) {
 
 (function () {
   // for creating game, login all time
-  const testEmail = 'z@z.pl';
-  const testPass = '123456';
-  signInWithEmailAndPassword(auth, testEmail, testPass)
-  .then((u) => {
-    init(u.user)
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-  });
+  // const testEmail = 'z@z.pl';
+  // const testPass = '123456';
+  // signInWithEmailAndPassword(auth, testEmail, testPass)
+  // .then((u) => {
+  //   init(u.user)
+  // })
+  // .catch((error) => {
+  //   const errorCode = error.code;
+  //   const errorMessage = error.message;
+  // });
 
   // --------------
 

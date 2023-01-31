@@ -65,7 +65,7 @@ export class Monster extends Person {
       
       // If death animation end unmount monster
       this.deathAnimationEnd &&
-      state.map.unmountGameObject(this.id, this.currentMap)
+      state.map.unmountGameObject(this.id, this.currentMap);
 
       // Stop here
       return;
@@ -86,10 +86,7 @@ export class Monster extends Person {
   }
 
   findTarget(state) {
-    // TODO: Stop valid targets, extend radius, add one target permamently,
-    // until he died
-    // or escape extended radius (or in future u random change target),
-    // reset all, back to position, start valid targets again.
+    // TODO: change target functionality
 
     // Mark targets that will enter your radius
     this.validTargets = Object.values(state.map.gameObjects).filter(
@@ -160,7 +157,8 @@ export class Monster extends Person {
       }
     );
 
-    // If someone else control monster, stop here
+    // If someone else control monster, 
+    // stop here (you are not a target)
     if (!this.isPlayerControlledMonster) return;
 
     this.followTarget(state);
@@ -225,16 +223,13 @@ export class Monster extends Person {
     });
 
     // Stop if monster is in free space around player
-    // let inFreeSpace = false;
     for (const obj in target.aroundFreeSpace) {
       if (
         target.aroundFreeSpace[obj].position.x === this.x &&
         target.aroundFreeSpace[obj].position.y === this.y
       ) {
-        // inFreeSpace = true;
         this.count++;
         if (this.count % 100 === 0) {
-          // console.log("free space");
           this.initAttack(state, "swordSlash");
           this.dbUpdateMonster({
             monster: {
@@ -259,9 +254,6 @@ export class Monster extends Person {
         return;
       }
     }
-
-    //  this.initAttack()
-    // if (inFreeSpace) return;
 
     // Choose nearest target free space by distance
     const freeDirection = Object.keys(target.aroundFreeSpace)
