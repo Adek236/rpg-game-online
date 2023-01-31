@@ -307,7 +307,8 @@ export class Overworld {
           monster.currentTarget !== playerState.name &&
           monsterObj
           ) {
-            console.log("here")
+            // Deactive monster movement scripts if someone else control
+           monsterObj.isPlayerControlledMonster = false;
             const currentMonsterState =
             OverworldMaps[monster.currentMap].configObjects[monster.id];
             
@@ -327,8 +328,7 @@ export class Overworld {
             currentMonsterState.x !== newMonsterState.x ||
             currentMonsterState.y !== newMonsterState.y
           ) {
-           // Deactive monster movement scripts if someone else control
-           monsterObj.isPlayerControlledMonster = false;
+           
            
            monsterObj.direction = newMonsterState.direction;
            if (monsterObj.x !== currentMonsterState.x)
@@ -345,7 +345,6 @@ export class Overworld {
           // If monster current direction is diffrent with new direction,
           // change direction
           if (currentMonsterState.direction !== newMonsterState.direction) {
-            // monsterObj.isPlayerControlledMonster = false;
             monsterObj.direction = newMonsterState.direction;
             monsterObj.updateSprite();
           }
@@ -356,24 +355,14 @@ export class Overworld {
             monsterObj.movingProgressReaming === 0 &&
             monster.isAttack
             ) {
-            // if (monsterObj.movingProgressReaming > 0) return;
-            // monsterObj.initAttack(this.map, monster.isAttack);
-            // monsterObj.attacks.push(dataAttacks[monster.isAttack]);
-            // setTimeout(()=>{
-            //   monsterObj.attacks = monsterObj.attacks.filter((el) => {
-            //     return el !== dataAttacks[monster.isAttack];
-            //   });
-
-            // }, dataAttacks[monster.isAttack].time)
-
-            // console.log("monster attack", dataAttacks[monster.isAttack])
+            monsterObj.initAttack({map: this.map}, monster.isAttack);
           }
         }
 
         // If monster is alive at your map, exist in game objects
         // and you are the current target
         if (
-          monster.isAlive &&
+          // monster.isAlive &&
           monster.currentMap === playerState.currentMap &&
           monster.currentTarget === playerState.name &&
           monsterObj
