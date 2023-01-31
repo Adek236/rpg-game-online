@@ -1,4 +1,5 @@
 TODO: 
+* Change map some error with monster (double mount?)
 * Alive - need to know target before respawn 
         or not respawn if someone is in radius area 
 * Change map mount monster is broke (not enought params)

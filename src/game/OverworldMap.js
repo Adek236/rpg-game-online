@@ -71,9 +71,11 @@ export class OverworldMap {
 
   mountObjectsFromConfig(objects = this.configObjects) {
     Object.keys(objects).forEach((key) => {
+      // If this game object exist, stop here
+      if (this.gameObjects[key]) return;
+      
       let object = this.configObjects[key];
       console.log("mountGameObjectFromConfig",key);
-      
       let instace;
 
       if (object.type === "Person") {
