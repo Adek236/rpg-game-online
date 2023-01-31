@@ -138,11 +138,15 @@ export class Person extends GameObject {
         });
 
         // Update position at configObjects
-        OverworldMaps[this.currentMap].configObjects[this.id] = {
-          direction: this.direction,
-          x: this.intentPos[0],
-          y: this.intentPos[1],
-        };
+        OverworldMaps[this.currentMap].configObjects[this.id].direction = this.direction;
+        OverworldMaps[this.currentMap].configObjects[this.id].x = this.intentPos[0];
+        OverworldMaps[this.currentMap].configObjects[this.id].y = this.intentPos[1];
+
+        // OverworldMaps[this.currentMap].configObjects[this.id] = {
+        //   direction: this.direction,
+        //   x: this.intentPos[0],
+        //   y: this.intentPos[1],
+        // };
       }
 
       this.updateSprite();

@@ -95,7 +95,7 @@ export class OverworldEvent {
       if (obj.type !== "Monster") {
         obj.isMounted = false;
       }
-      // this.isObjectsListens = false;
+      
       // Update player to new map
       if (obj.name === playerState.name) {
         console.log("change map ", obj.name);

@@ -50,6 +50,7 @@ export class Overworld {
       // Draw Game Objects Attacks
       Object.values(this.map.gameObjects).forEach((object) => {
         if (object.attacks.length > 0) {
+          // console.log("erro obj", object)
           object.attack.sprite.draw(this.ctx, cameraPerson);
         }
       });
@@ -173,8 +174,6 @@ export class Overworld {
 
         const playerObj = this.map.gameObjects[player.name];
 
-        // console.log("db up", this);
-
         // If player is online at your map and exist in game objects
         // do something
         if (
@@ -239,7 +238,6 @@ export class Overworld {
           player.online &&
           player.currentMap === playerState.currentMap &&
           !playerObj
-          // && this.isObjectsListens
         ) {
           OverworldMaps[player.currentMap].playersPosition[player.name] = {
             direction: player.direction,
@@ -288,7 +286,6 @@ export class Overworld {
       if (!monsters) return;
       Object.values(monsters).forEach((monster) => {
         const monsterObj = this.map.gameObjects[monster.id];
-
         
         // If monster is in game object but is not alive
         // if (monsterObj && !monster.isAlive) {
@@ -302,27 +299,42 @@ export class Overworld {
         // and you are not the current target
         // do something
         if (
-          // monster.isAlive &&
+          monster.isAlive &&
           monster.currentMap === playerState.currentMap &&
           monster.currentTarget !== playerState.name &&
           monsterObj
           ) {
+            console.log("monster listenere 2")
             // Deactive monster movement scripts if someone else control
            monsterObj.isPlayerControlledMonster = false;
+
             const currentMonsterState =
             OverworldMaps[monster.currentMap].configObjects[monster.id];
             
-          // Update position at playersPosition
-          OverworldMaps[monster.currentMap].configObjects[monster.id] = {
-            direction: monster.direction,
-            x: utils.withGrid(monster.x),
-            y: utils.withGrid(monster.y),
-          };
-          
-          const newMonsterState =
-            OverworldMaps[monster.currentMap].configObjects[monster.id];
-
-            // If current position is diffrent with new position,
+            // Update monster position at config objects
+            OverworldMaps[monster.currentMap].configObjects[monster.id] = {
+                currentMap: monster.currentMap,
+                currentTarget: monster.currentTarget,
+                direction: monster.direction,
+                id: monster.id,
+                initialX: utils.withGrid(monster.initialX),
+                initialY: utils.withGrid(monster.initialY),
+                isAlive: monster.isAlive,
+                name: monster.name,
+                outfit: monster.outfit,
+                type: "Monster",
+                x: utils.withGrid(monster.x),
+                y: utils.withGrid(monster.y),
+              };
+                            
+              const newMonsterState =
+              OverworldMaps[monster.currentMap].configObjects[monster.id];
+              
+              // console.log("currentMonsterState", currentMonsterState)
+              // console.log("newMonsterState", newMonsterState)
+            
+            
+              // If current position is diffrent with new position,
           // walk
           if (
             currentMonsterState.x !== newMonsterState.x ||
@@ -362,13 +374,44 @@ export class Overworld {
         // If monster is alive at your map, exist in game objects
         // and you are the current target
         if (
-          // monster.isAlive &&
+          monster.isAlive &&
           monster.currentMap === playerState.currentMap &&
           monster.currentTarget === playerState.name &&
           monsterObj
         ) {
           // Active monster movement control scrips by you
           monsterObj.isPlayerControlledMonster = true;
+        }
+
+
+        // If monster is alive at your map but not exist in game objects
+        // respawn him
+        if (
+          monster.isAlive &&
+          monster.currentMap === playerState.currentMap &&
+          !monsterObj
+        ){
+          console.log("alive!!")
+          
+          // Change isAlive at config objects 
+          // OverworldMaps[monster.currentMap].configObjects[monster.id].isAlive = true;
+          OverworldMaps[monster.currentMap].configObjects[monster.id] = {
+            currentMap: monster.currentMap,
+            currentTarget: monster.currentTarget,
+            direction: monster.direction,
+            id: monster.id,
+            initialX: utils.withGrid(monster.initialX),
+            initialY: utils.withGrid(monster.initialY),
+            isAlive: monster.isAlive,
+            name: monster.name,
+            outfit: monster.outfit,
+            type: "Monster",
+            x: utils.withGrid(monster.x),
+            y: utils.withGrid(monster.y),
+          };
+
+          // Respawn monster
+          this.map.mountObjectsFromConfig({[monster.id]:monster.id});
         }
       });
     });

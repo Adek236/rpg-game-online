@@ -104,11 +104,11 @@ export class Attack {
     this.gameObject.attacks.push(this.selectedAttack);
     this.doDamageToTargetInAttackArea(state);
 
-    // TODO: \/ without this is error WHY?
-    if (this.gameObject.type === "Monster") {
+    // TODO: \/ without this is error if online animation WHY?
+    // first load dont have animation thats why
       this.gameObject.attack.sprite.currentAnimation =
         this.selectedAttack.animateName + this.gameObject.direction;
-    }
+
 
     setTimeout(() => {
       // Remove attack from attacks array

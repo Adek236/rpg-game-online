@@ -72,7 +72,8 @@ export class OverworldMap {
   mountObjectsFromConfig(objects = this.configObjects) {
     Object.keys(objects).forEach((key) => {
       let object = this.configObjects[key];
-
+      console.log("mountGameObjectFromConfig",key);
+      
       let instace;
 
       if (object.type === "Person") {
@@ -83,6 +84,7 @@ export class OverworldMap {
         instace = new Person(object);
       }
       if (object.type === "Monster") {
+        if(!object.isAlive) return;
         instace = new Monster(object);
       }
       // object.type === monster np
