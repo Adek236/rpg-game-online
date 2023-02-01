@@ -1,5 +1,107 @@
 // import { combatAreas } from "./areas.js";
 export const dataAttacks = {
+  iceWave: {
+    id: "iceWave",
+    name: "Ice Wave",
+    animateName: "ice-wave-",
+    personAnimateName: "attack-",
+    src: "src/game/assets/objects/iceEffect.png",
+    time: 600,
+    useSlash: false,
+    needMarkedTarget: false,
+    combatAreaName: "9x1c",
+    baseDamage: 20,
+    animations: {
+      "ice-wave-up": [
+        [
+          { frame: 0, offset: 2 },
+          { frame: 0, offset: -9 },
+        ],
+        [
+          { frame: 1, offset: 2 },
+          { frame: 0, offset: -9 },
+        ],
+        [
+          { frame: 2, offset: 2 },
+          { frame: 0, offset: -9 },
+        ],
+        [
+          { frame: 3, offset: 2 },
+          { frame: 0, offset: -9 },
+        ],
+      ],
+      "ice-wave-down": [
+        [
+          { frame: 1, offset: -12 },
+          { frame: 0, offset: 9 },
+        ],
+        [
+          { frame: 0, offset: 12 },
+          { frame: 0, offset: 9 },
+        ],
+      ],
+      "ice-wave-left": [
+        [
+          { frame: 3, offset: -3 },
+          { frame: 0, offset: 17 },
+        ],
+        [
+          { frame: 2, offset: -3 },
+          { frame: 0, offset: -5 },
+        ],
+      ],
+      "ice-wave-leftUp": [
+        [
+          { frame: 3, offset: -3 },
+          { frame: 0, offset: 17 },
+        ],
+        [
+          { frame: 2, offset: -3 },
+          { frame: 0, offset: -5 },
+        ],
+      ],
+      "ice-wave-leftDown": [
+        [
+          { frame: 3, offset: -3 },
+          { frame: 0, offset: 17 },
+        ],
+        [
+          { frame: 2, offset: -3 },
+          { frame: 0, offset: -5 },
+        ],
+      ],
+      "ice-wave-right": [
+        [
+          { frame: 3, offset: 4 },
+          { frame: 0, offset: 17 },
+        ],
+        [
+          { frame: 2, offset: 4 },
+          { frame: 0, offset: -5 },
+        ],
+      ],
+      "ice-wave-rightUp": [
+        [
+          { frame: 3, offset: 4 },
+          { frame: 0, offset: 17 },
+        ],
+        [
+          { frame: 2, offset: 4 },
+          { frame: 0, offset: -5 },
+        ],
+      ],
+      "ice-wave-rightDown": [
+        [
+          { frame: 3, offset: 4 },
+          { frame: 0, offset: 17 },
+        ],
+        [
+          { frame: 2, offset: 4 },
+          { frame: 0, offset: -5 },
+        ],
+      ],
+    },
+  },
   swordSlash: {
     id: "swordSlash",
     name: "Sword Slash",
@@ -10,7 +112,7 @@ export const dataAttacks = {
     useSlash: true,
     needMarkedTarget: false,
     combatAreaName: "3x1",
-    baseDamage: 100,
+    baseDamage: 20,
     animations: {
       "sword-slash-up": [
         [

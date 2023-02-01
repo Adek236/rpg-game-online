@@ -2,7 +2,6 @@ TODO:
 * Change map some error with monster (double mount?)
 * Alive - need to know target before respawn 
         or not respawn if someone is in radius area 
-* Change map mount monster is broke (not enought params)
 * Damage sprite need improve
 * Monsters - one sqm way, need to change target if u cant reach player
            (if [left, right x4] 4x left and 4x right change target if possible)

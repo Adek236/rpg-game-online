@@ -8,7 +8,7 @@ import { utils } from "./utils/utils.js";
 import { onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 import { playersRef, monstersRef, dbRef, db } from "../config/firebase.js";
 import { OverworldMaps } from "./data/OverworldMaps.js";
-import { dataAttacks } from "./data/attack/attacks.js"
+import { dataAttacks } from "./data/attack/attacks.js";
 export class Overworld {
   constructor(config) {
     this.element = config.element;
@@ -80,22 +80,20 @@ export class Overworld {
     new KeyPressListener("Digit1", () => {
       // console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
-      return;
-      this.map.gameObjects[playerState.name].initAttack(this.map, "swordSlash");
+        return;
+      this.map.gameObjects[playerState.name].initAttack(this.map, "iceWave");
       // Set attack at db
       playerState.updatePlayer({
         player: {
-          isAttack: "swordSlash",
+          isAttack: "iceWave",
         },
       });
       // console.log(this)
     });
 
     new KeyPressListener("Digit2", () => {
-      console.log(this)
+      console.log(this);
     });
-    
-    
   }
 
   bindActionInput() {
@@ -211,7 +209,10 @@ export class Overworld {
             playerObj.movingProgressReaming =
               playerObj.movingProgressReamingMax;
 
-            playerObj.updateSprite();
+            // if (playerObj.walkAnimationEnd) {
+              // playerObj.walkAnimationEnd = false;
+              playerObj.updateSprite();
+            // }
           }
 
           // If player not moving but change direction, update his game obj
@@ -223,10 +224,7 @@ export class Overworld {
           }
 
           // If player used skills/spells, show it
-          if (
-            playerObj.movingProgressReaming === 0 &&
-            player.isAttack
-          ) {
+          if (playerObj.movingProgressReaming === 0 && player.isAttack) {
             if (playerObj.movingProgressReaming > 0) return;
             playerObj.initAttack(this.map, player.isAttack);
           }
@@ -286,15 +284,15 @@ export class Overworld {
       if (!monsters) return;
       Object.values(monsters).forEach((monster) => {
         const monsterObj = this.map.gameObjects[monster.id];
-        
+
         // If monster is in game object but is not alive
         // if (monsterObj && !monster.isAlive) {
-        //   // TODO: unmount 
+        //   // TODO: unmount
         //   monsterObj.deathAnimationEnd &&
         //   this.map.unmountGameObject(monster.id, monster.currentMap);
         //   return;
         // }
-        
+
         // If monster is alive at your map, exist in game objects
         // and you are not the current target
         // do something
@@ -303,54 +301,51 @@ export class Overworld {
           monster.currentMap === playerState.currentMap &&
           monster.currentTarget !== playerState.name &&
           monsterObj
-          ) {
-            console.log("monster listenere 2")
-            // Deactive monster movement scripts if someone else control
-           monsterObj.isPlayerControlledMonster = false;
+        ) {
+          console.log("monster listenere 2");
+          // Deactive monster movement scripts if someone else control
+          monsterObj.isPlayerControlledMonster = false;
 
-            const currentMonsterState =
+          const currentMonsterState =
             OverworldMaps[monster.currentMap].configObjects[monster.id];
-            
-            // Update monster position at config objects
-            OverworldMaps[monster.currentMap].configObjects[monster.id] = {
-                currentMap: monster.currentMap,
-                currentTarget: monster.currentTarget,
-                direction: monster.direction,
-                id: monster.id,
-                initialX: utils.withGrid(monster.initialX),
-                initialY: utils.withGrid(monster.initialY),
-                isAlive: monster.isAlive,
-                name: monster.name,
-                outfit: monster.outfit,
-                type: "Monster",
-                x: utils.withGrid(monster.x),
-                y: utils.withGrid(monster.y),
-              };
-                            
-              const newMonsterState =
-              OverworldMaps[monster.currentMap].configObjects[monster.id];
-              
-              // console.log("currentMonsterState", currentMonsterState)
-              // console.log("newMonsterState", newMonsterState)
-            
-            
-              // If current position is diffrent with new position,
+
+          // Update monster position at config objects
+          OverworldMaps[monster.currentMap].configObjects[monster.id] = {
+            currentMap: monster.currentMap,
+            currentTarget: monster.currentTarget,
+            direction: monster.direction,
+            id: monster.id,
+            initialX: utils.withGrid(monster.initialX),
+            initialY: utils.withGrid(monster.initialY),
+            isAlive: monster.isAlive,
+            name: monster.name,
+            outfit: monster.outfit,
+            type: "Monster",
+            x: utils.withGrid(monster.x),
+            y: utils.withGrid(monster.y),
+          };
+
+          const newMonsterState =
+            OverworldMaps[monster.currentMap].configObjects[monster.id];
+
+          // console.log("currentMonsterState", currentMonsterState)
+          // console.log("newMonsterState", newMonsterState)
+
+          // If current position is diffrent with new position,
           // walk
           if (
             currentMonsterState.x !== newMonsterState.x ||
             currentMonsterState.y !== newMonsterState.y
           ) {
-           
-           
-           monsterObj.direction = newMonsterState.direction;
-           if (monsterObj.x !== currentMonsterState.x)
-           monsterObj.x = currentMonsterState.x;
+            monsterObj.direction = newMonsterState.direction;
+            if (monsterObj.x !== currentMonsterState.x)
+              monsterObj.x = currentMonsterState.x;
             if (monsterObj.y !== currentMonsterState.y)
-            monsterObj.y = currentMonsterState.y;
-            
+              monsterObj.y = currentMonsterState.y;
+
             monsterObj.movingProgressReaming =
-            monsterObj.movingProgressReamingMax;
-            
+              monsterObj.movingProgressReamingMax;
+
             monsterObj.updateSprite();
           }
 
@@ -366,8 +361,8 @@ export class Overworld {
             monsterObj &&
             monsterObj.movingProgressReaming === 0 &&
             monster.isAttack
-            ) {
-            monsterObj.initAttack({map: this.map}, monster.isAttack);
+          ) {
+            monsterObj.initAttack({ map: this.map }, monster.isAttack);
           }
         }
 
@@ -383,17 +378,16 @@ export class Overworld {
           monsterObj.isPlayerControlledMonster = true;
         }
 
-
         // If monster is alive at your map but not exist in game objects
         // respawn him
         if (
           monster.isAlive &&
           monster.currentMap === playerState.currentMap &&
           !monsterObj
-        ){
-          console.log("alive!!")
-          
-          // Change isAlive at config objects 
+        ) {
+          console.log("alive!!");
+
+          // Change isAlive at config objects
           // OverworldMaps[monster.currentMap].configObjects[monster.id].isAlive = true;
           OverworldMaps[monster.currentMap].configObjects[monster.id] = {
             currentMap: monster.currentMap,
@@ -411,7 +405,7 @@ export class Overworld {
           };
 
           // Respawn monster
-          this.map.mountObjectsFromConfig({[monster.id]:monster.id});
+          this.map.mountObjectsFromConfig({ [monster.id]: monster.id });
         }
       });
     });

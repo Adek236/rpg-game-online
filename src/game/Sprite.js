@@ -321,6 +321,15 @@ export class Sprite {
           32
         );
 
+      // If its person walk animation,
+      // if (
+      //   this.gameObject.type === "Person" &&
+      //   this.currentAnimation.includes("walk") &&
+      //   this.currentAnimationFrame === 3
+      // ) {
+      //   return (this.gameObject.walkAnimationEnd = true);
+      // }
+
       // If its monster death animation,
       // show it once
       if (
@@ -335,9 +344,9 @@ export class Sprite {
       const [slashY, slashX] = this.slashFrame;
 
       if (
-        this.isSlashLoaded 
+        this.isSlashLoaded
         // && !this.isSlashUsed
-        ) {
+      ) {
         ctx.drawImage(
           this.isSlash,
           slashX.frame * 32,
@@ -350,22 +359,22 @@ export class Sprite {
           32
         );
 
-      //   this.slashTime++;
-      //  console.log(this.slashTime % 10 === 0)
-      //   if (this.slashTime % 20 === 0) this.isSlashUsed = true;
+        //   this.slashTime++;
+        //  console.log(this.slashTime % 10 === 0)
+        //   if (this.slashTime % 20 === 0) this.isSlashUsed = true;
       }
 
-      const [X, Y] = this.frame;
+      const [frameX, frameY] = this.frame;
 
       this.isLoaded &&
         ctx.drawImage(
           this.image,
-          X.frame * 32,
-          Y.frame * 32,
+          frameX.frame * 32,
+          frameY.frame * 32,
           32,
           32,
-          x + X.offset,
-          y + Y.offset,
+          x + frameX.offset,
+          y + frameY.offset,
           32,
           32
         );

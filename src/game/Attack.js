@@ -66,6 +66,11 @@ export class Attack {
           }
         });
       });
+      
+      if (this.gameObject.type === "Person"){
+
+        console.log(checkForTargetAtThisPositions)
+      }
 
       // Check for possible targets
       checkForTargetAtThisPositions.forEach((position) => {

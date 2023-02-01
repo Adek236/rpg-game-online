@@ -59,12 +59,12 @@ export class Monster extends Person {
     // If monster died
     if (this.currentHp <= 0) {
       // Update monster db
-      this.dbUpdateMonster({
-        monster: { 
-          isAlive: false,
-          currentTarget: false,
-        },
-      });
+      // this.dbUpdateMonster({
+      //   monster: { 
+      //     isAlive: false,
+      //     currentTarget: false,
+      //   },
+      // });
       
       // If death animation end unmount monster
       this.deathAnimationEnd &&

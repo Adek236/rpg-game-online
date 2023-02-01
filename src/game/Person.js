@@ -18,6 +18,7 @@ export class Person extends GameObject {
     this.maxHp = config.maxHp || 100;
 
     this.isPlayerControlled = config.isPlayerControlled || false;
+    // this.walkAnimationEnd = true;
 
     this.directionUpdate = {
       up: ["y", -1],
