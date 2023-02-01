@@ -18,6 +18,7 @@ export class Attack {
       animations: this.selectedAttack.animations,
       useSlash: this.selectedAttack.useSlash,
       isAttackAnimation: true,
+      repeatableImageAtPositions: this.selectedAttack.repeatableImageAtPositions || false,
     });
 
     this.hittedTargets = [];

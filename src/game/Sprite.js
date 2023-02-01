@@ -3,6 +3,10 @@ import { utils } from "./utils/utils.js";
 export class Sprite {
   constructor(config) {
     this.isAttackAnimation = config.isAttackAnimation || false;
+    // console.log("config.repeatableImageAtPositions", config.repeatableImageAtPositions)
+    this.repeatableImageAtPositions = config.repeatableImageAtPositions || {
+      "norepeat": [{ x: 0, y: 0 }],
+    };
 
     // Set up the image
     this.image = new Image();
@@ -365,19 +369,56 @@ export class Sprite {
       }
 
       const [frameX, frameY] = this.frame;
-
-      this.isLoaded &&
-        ctx.drawImage(
-          this.image,
-          frameX.frame * 32,
-          frameY.frame * 32,
-          32,
-          32,
-          x + frameX.offset,
-          y + frameY.offset,
-          32,
-          32
+      
+      if (this.isLoaded) {
+        // If not repeatable spell just do once loop
+        const isDir = Object.keys(this.repeatableImageAtPositions).includes("norepeat") ? "norepeat" : this.gameObject.direction;
+        
+        // If spell is reapatable repeat as much is needed
+        this.repeatableImageAtPositions[isDir].forEach(
+          (position) => {
+            const { x: shiftX, y: shiftY } = position;
+            console.log(position);
+            ctx.drawImage(
+              this.image,
+              frameX.frame * 32,
+              frameY.frame * 32,
+              32,
+              32,
+              x + frameX.offset + shiftX,
+              y + frameY.offset + shiftY,
+              32,
+              32
+            );
+          }
         );
+      }
+
+      // this.isLoaded &&
+      //   ctx.drawImage(
+      //     this.image,
+      //     frameX.frame * 32,
+      //     frameY.frame * 32,
+      //     32,
+      //     32,
+      //     x + frameX.offset,
+      //     y + frameY.offset,
+      //     32,
+      //     32
+      //   );
+
+      //   this.isLoaded &&
+      //   ctx.drawImage(
+      //     this.image,
+      //     frameX.frame * 32,
+      //     frameY.frame * 32,
+      //     32,
+      //     32,
+      //     x + frameX.offset,
+      //     y + frameY.offset-18,
+      //     32,
+      //     32
+      //   );
 
       // Draw damage dealt above person etc
       // TODO: change to drawImage with numbers pixels

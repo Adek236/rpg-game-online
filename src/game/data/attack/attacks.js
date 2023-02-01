@@ -6,17 +6,46 @@ export const dataAttacks = {
     animateName: "ice-wave-",
     personAnimateName: "attack-",
     src: "src/game/assets/objects/iceEffect.png",
-    time: 600,
+    time: 300,
     useSlash: false,
     needMarkedTarget: false,
     combatAreaName: "9x1c",
-    baseDamage: 20,
+    baseDamage: 50,
+    // repeatableImageAtPositions: {
+    //   "norepeat": [{ x: 0, y: 0 }],
+    // },
+    repeatableImageAtPositions: {
+      up: [
+        { x: 0, y: 0 },
+        { x: 0, y: -16 },
+        { x: 0, y: -32 },
+        { x: 0, y: -48 },
+      ],
+      down: [
+        { x: 0, y: 0 },
+        { x: 0, y: 16 },
+        { x: 0, y: 32 },
+        { x: 0, y: 48 },
+      ],
+      left: [
+        { x: 0, y: 0 },
+        { x: -16, y: 0 },
+        { x: -32, y: 0 },
+        { x: -48, y: 0 },
+      ],
+      right: [
+        { x: 0, y: 0 },
+        { x: 16, y: 0 },
+        { x: 32, y: 0 },
+        { x: 48, y: 0 },
+      ],
+    },
     animations: {
       "ice-wave-up": [
-        [
-          { frame: 0, offset: 2 },
-          { frame: 0, offset: -9 },
-        ],
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: -9 },
+        // ],
         [
           { frame: 1, offset: 2 },
           { frame: 0, offset: -9 },
@@ -31,73 +60,129 @@ export const dataAttacks = {
         ],
       ],
       "ice-wave-down": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 1, offset: -12 },
-          { frame: 0, offset: 9 },
+          { frame: 1, offset: 2 },
+          { frame: 0, offset: 24 },
         ],
         [
-          { frame: 0, offset: 12 },
-          { frame: 0, offset: 9 },
+          { frame: 2, offset: 2 },
+          { frame: 0, offset: 24 },
+        ],
+        [
+          { frame: 3, offset: 2 },
+          { frame: 0, offset: 24 },
         ],
       ],
       "ice-wave-left": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: -3 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: -3 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: -14 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-wave-leftUp": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: -3 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: -3 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: -14 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-wave-leftDown": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: -3 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: -3 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: -14 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-wave-right": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: 4 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: 18 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: 4 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: 18 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: 18 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-wave-rightUp": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: 4 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: 16 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: 4 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: 16 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: 16 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-wave-rightDown": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: 4 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: 16 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: 4 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: 16 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: 16 },
+          { frame: 0, offset: 8 },
         ],
       ],
     },
@@ -113,6 +198,9 @@ export const dataAttacks = {
     needMarkedTarget: false,
     combatAreaName: "3x1",
     baseDamage: 20,
+    repeatableImageAtPositions: {
+      norepeat: [{ x: 0, y: 0 }],
+    },
     animations: {
       "sword-slash-up": [
         [
@@ -289,4 +377,3 @@ export const dataAttacks = {
     },
   },
 };
-
