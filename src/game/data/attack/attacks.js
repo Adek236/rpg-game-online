@@ -197,7 +197,7 @@ export const dataAttacks = {
     useSlash: true,
     needMarkedTarget: false,
     combatAreaName: "3x1",
-    baseDamage: 20,
+    baseDamage: 50,
     repeatableImageAtPositions: {
       norepeat: [{ x: 0, y: 0 }],
     },

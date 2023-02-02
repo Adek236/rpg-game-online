@@ -81,13 +81,13 @@ export class Attack {
         for (const possibleTarget in state.gameObjects) {
           const target = state.gameObjects[possibleTarget];
           const xArray = utils.collectionNumbersBetweenNumbers(
-            x - 15,
-            x + 15,
+            x - 8,
+            x + 8,
             target.speed
           );
           const yArray = utils.collectionNumbersBetweenNumbers(
-            y - 15,
-            y + 15,
+            y - 8,
+            y + 8,
             target.speed
           );
 
@@ -95,6 +95,7 @@ export class Attack {
             // console.log(xArray);
             // console.log(yArray);
             // console.log("target", target);
+            console.log("1")
           }
 
           if (
@@ -106,10 +107,13 @@ export class Attack {
               (target.type === "Person" && this.gameObject.type === "Monster"))
           ) {
             // If target is found, deal damage to it
-            // TODO: if target moving deals 2x damage BROKE 
+            // TODO: if target moving deals 2x damage BROKE
             // if (this.gameObject.type === "Person") console.log("target TRUE", target);
             if (this.gameObject.type === "Person")
-              console.log("target TRUE", this.hittedTargetsPositions);
+              {console.log("target TRUE", this.hittedTargetsPositions);
+            console.log(target)
+            }
+
             // if (target.type === "Monster") console.log("xArray", xArray);
             target.currentHp -= this.selectedAttack.baseDamage;
 
