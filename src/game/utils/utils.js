@@ -68,5 +68,22 @@ export const utils = {
   hpConverter({currentHp, maxHp, scale}){
     const result = currentHp/maxHp*scale;
     return result <= 0 ? 0 : result;
+  },
+  collectionNumbersBetweenNumbers(startNumber, lastNumber, increaseNumber){
+    // -15
+    // 21
+    // result: 15,16,17,18,19,20,21
+    // 15-21=6
+    const resultArr = [startNumber];
+    const distanceBeetwen = Math.abs(startNumber - lastNumber);
+    
+    let num = startNumber;
+    for (let i = 0; i < (distanceBeetwen/increaseNumber); i++){
+      num += increaseNumber;
+      resultArr.push(num);
+    }
+    // console.log(resultArr);
+    
+    return resultArr;
   }
 };

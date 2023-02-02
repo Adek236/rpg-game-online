@@ -5,7 +5,7 @@ export class Sprite {
     this.isAttackAnimation = config.isAttackAnimation || false;
     // console.log("config.repeatableImageAtPositions", config.repeatableImageAtPositions)
     this.repeatableImageAtPositions = config.repeatableImageAtPositions || {
-      "norepeat": [{ x: 0, y: 0 }],
+      norepeat: [{ x: 0, y: 0 }],
     };
 
     // Set up the image
@@ -369,29 +369,30 @@ export class Sprite {
       }
 
       const [frameX, frameY] = this.frame;
-      
+
       if (this.isLoaded) {
         // If not repeatable spell just do once loop
-        const isDir = Object.keys(this.repeatableImageAtPositions).includes("norepeat") ? "norepeat" : this.gameObject.direction;
-        
+        const isDir = Object.keys(this.repeatableImageAtPositions).includes(
+          "norepeat"
+        )
+          ? "norepeat"
+          : this.gameObject.direction;
+
         // If spell is reapatable repeat as much is needed
-        this.repeatableImageAtPositions[isDir].forEach(
-          (position) => {
-            const { x: shiftX, y: shiftY } = position;
-            console.log(position);
-            ctx.drawImage(
-              this.image,
-              frameX.frame * 32,
-              frameY.frame * 32,
-              32,
-              32,
-              x + frameX.offset + shiftX,
-              y + frameY.offset + shiftY,
-              32,
-              32
-            );
-          }
-        );
+        this.repeatableImageAtPositions[isDir].forEach((position) => {
+          const { x: shiftX, y: shiftY } = position;
+          ctx.drawImage(
+            this.image,
+            frameX.frame * 32,
+            frameY.frame * 32,
+            32,
+            32,
+            x + frameX.offset + shiftX,
+            y + frameY.offset + shiftY,
+            32,
+            32
+          );
+        });
       }
 
       // this.isLoaded &&
@@ -422,8 +423,8 @@ export class Sprite {
 
       // Draw damage dealt above person etc
       // TODO: change to drawImage with numbers pixels
-      if (this.gameObject.attack.hittedTargets.length > 0) {
-        this.gameObject.attack.hittedTargets.forEach((target) => {
+      if (this.gameObject.attack.hittedTargetsPositions.length > 0) {
+        this.gameObject.attack.hittedTargetsPositions.forEach((target) => {
           ctx.font = "6px Arial Black";
           ctx.fillStyle = "red";
           ctx.fillText(
@@ -432,6 +433,10 @@ export class Sprite {
             target.y + utils.withGrid(6) - cameraPerson.y - 11
           );
         });
+        // setTimeout(()=>{
+        //   this.gameObject.attack.hittedTargetsPositions = [];
+
+        // },100)
       }
 
       // if (

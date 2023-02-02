@@ -15,6 +15,8 @@ export class Monster extends Person {
     super(config);
     // this.type = config.type || "monster";
     this.movingProgressReamingMax = 32;
+    this.speed = config.speed || 0.5;
+    
     this.directionUpdate = {
       up: ["y", -0.5],
       down: ["y", 0.5],

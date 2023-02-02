@@ -2,7 +2,7 @@ import { Sprite } from "./Sprite.js";
 import { dataAttacks } from "./data/attack/attacks.js";
 import { playerState } from "./PlayerState.js";
 import { combatAreas, comparativeCombatAreas } from "./data/attack/areas.js";
-
+import { utils } from "./utils/utils.js";
 export class Attack {
   constructor(config) {
     // Reference to selected attack
@@ -18,10 +18,11 @@ export class Attack {
       animations: this.selectedAttack.animations,
       useSlash: this.selectedAttack.useSlash,
       isAttackAnimation: true,
-      repeatableImageAtPositions: this.selectedAttack.repeatableImageAtPositions || false,
+      repeatableImageAtPositions:
+        this.selectedAttack.repeatableImageAtPositions || false,
     });
 
-    this.hittedTargets = [];
+    this.hittedTargetsPositions = [];
     this.isAnimationEnd = false;
   }
 
@@ -67,11 +68,11 @@ export class Attack {
           }
         });
       });
-      
-      if (this.gameObject.type === "Person"){
 
-        console.log(checkForTargetAtThisPositions)
-      }
+      // if (this.gameObject.type === "Person"){
+
+      //   console.log(checkForTargetAtThisPositions)
+      // }
 
       // Check for possible targets
       checkForTargetAtThisPositions.forEach((position) => {
@@ -79,16 +80,41 @@ export class Attack {
         // console.log(state)
         for (const possibleTarget in state.gameObjects) {
           const target = state.gameObjects[possibleTarget];
+          const xArray = utils.collectionNumbersBetweenNumbers(
+            x - 15,
+            x + 15,
+            target.speed
+          );
+          const yArray = utils.collectionNumbersBetweenNumbers(
+            y - 15,
+            y + 15,
+            target.speed
+          );
+
+          if (this.gameObject.type === "Person") {
+            // console.log(xArray);
+            // console.log(yArray);
+            // console.log("target", target);
+          }
+
           if (
-            target.x === x &&
-            target.y === y &&
+            xArray.includes(target.x) &&
+            yArray.includes(target.y) &&
+            // target.x === x &&
+            // target.y === y &&
             ((target.type === "Monster" && this.gameObject.type === "Person") ||
               (target.type === "Person" && this.gameObject.type === "Monster"))
           ) {
             // If target is found, deal damage to it
+            // TODO: if target moving deals 2x damage BROKE 
+            // if (this.gameObject.type === "Person") console.log("target TRUE", target);
+            if (this.gameObject.type === "Person")
+              console.log("target TRUE", this.hittedTargetsPositions);
+            // if (target.type === "Monster") console.log("xArray", xArray);
             target.currentHp -= this.selectedAttack.baseDamage;
 
-            this.hittedTargets.push({
+            // Send hittedTargetsPositions data to sprite
+            this.hittedTargetsPositions.push({
               x: target.x,
               y: target.y,
               damageDealt: this.selectedAttack.baseDamage,
@@ -112,9 +138,8 @@ export class Attack {
 
     // TODO: \/ without this is error if online animation WHY?
     // first load dont have animation thats why
-      this.gameObject.attack.sprite.currentAnimation =
-        this.selectedAttack.animateName + this.gameObject.direction;
-
+    this.gameObject.attack.sprite.currentAnimation =
+      this.selectedAttack.animateName + this.gameObject.direction;
 
     setTimeout(() => {
       // Remove attack from attacks array

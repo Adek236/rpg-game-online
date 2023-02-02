@@ -16,6 +16,7 @@ export class Person extends GameObject {
     this.attack = null;
     this.currentHp = config.maxHp || 100;
     this.maxHp = config.maxHp || 100;
+    this.speed = config.speed || 1;
 
     this.isPlayerControlled = config.isPlayerControlled || false;
     // this.walkAnimationEnd = true;
