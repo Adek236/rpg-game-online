@@ -98,6 +98,7 @@ export class Attack {
             console.log("1")
           }
 
+          // TODO: if target moving deals 2x damage at online BROKE
           if (
             xArray.includes(target.x) &&
             yArray.includes(target.y) &&
@@ -107,7 +108,6 @@ export class Attack {
               (target.type === "Person" && this.gameObject.type === "Monster"))
           ) {
             // If target is found, deal damage to it
-            // TODO: if target moving deals 2x damage BROKE
             // if (this.gameObject.type === "Person") console.log("target TRUE", target);
             if (this.gameObject.type === "Person")
               {console.log("target TRUE", this.hittedTargetsPositions);
