@@ -14,29 +14,29 @@ export class Monster extends Person {
   constructor(config) {
     super(config);
     // this.type = config.type || "monster";
-    this.movingProgressReamingMax = 32;
     this.speed = config.speed || 0.5;
+    this.movingProgressReamingMax = 16/this.speed;
     
     this.directionUpdate = {
-      up: ["y", -0.5],
-      down: ["y", 0.5],
-      left: ["x", -0.5],
-      right: ["x", 0.5],
+      up: ["y", -this.speed],
+      down: ["y", this.speed],
+      left: ["x", -this.speed],
+      right: ["x", this.speed],
       leftUp: [
         ["x", "y"],
-        [-0.5, -0.5],
+        [-this.speed, -this.speed],
       ],
       leftDown: [
         ["x", "y"],
-        [-0.5, 0.5],
+        [-this.speed, this.speed],
       ],
       rightUp: [
         ["x", "y"],
-        [0.5, -0.5],
+        [this.speed, -this.speed],
       ],
       rightDown: [
         ["x", "y"],
-        [0.5, 0.5],
+        [this.speed, this.speed],
       ],
     };
     this.initialX = config.initialX;
@@ -50,8 +50,11 @@ export class Monster extends Person {
     this.isPlayerControlledMonster = true;
     this.lastMoveHistory = [];
     this.lastMoveHistoryMaxLength = 8;
+    
+    this.isAim = false;
 
     this.count = 0;
+    this.count2 = 0;
     this.deathAnimationEnd = false;
   }
 
@@ -166,6 +169,8 @@ export class Monster extends Person {
     // stop here (you are not a target)
     if (!this.isPlayerControlledMonster) return;
 
+      
+
     this.followTarget(state);
   }
 
@@ -209,7 +214,11 @@ export class Monster extends Person {
       return;
     }
 
+    
+
     if (this.movingProgressReaming > 0) return;
+
+    
 
     // Check free spaces around target
     Object.keys(target.aroundFreeSpace).forEach((direction) => {
@@ -233,15 +242,16 @@ export class Monster extends Person {
         target.aroundFreeSpace[obj].position.x === this.x &&
         target.aroundFreeSpace[obj].position.y === this.y
       ) {
-        this.count++;
-        if (this.count % 100 === 0) {
-          this.initAttack(state, "swordSlash");
-          this.dbUpdateMonster({
-            monster: {
-              isAttack: "swordSlash",
-            },
-          });
-        }
+        // Attack
+        // this.count2++;
+        // if (this.count2 % 100 === 0) {
+        //   this.initAttack(state, "swordSlash");
+        //   this.dbUpdateMonster({
+        //     monster: {
+        //       isAttack: "swordSlash",
+        //     },
+        //   });
+        // }
 
         // Turn towards the target
         const oppositeDir = utils.oppositeDirection(obj);
@@ -283,12 +293,28 @@ export class Monster extends Person {
     // and return closest move to target
     const newDirection = this.sortPossibleMoveByDistance(possibleMove);
 
-    // Move
     if (this.movingProgressReaming === 0) {
+      // Attack while moving,
+      // only if last dir is equal to new dir (for no sprite bugs)
+      // TODO: time
+      this.count++;
+      if (this.count % 5 === 0 && this.direction === newDirection.name) {
+        this.initAttack(state, "iceWave");
+        this.dbUpdateMonster({
+          monster: {
+            isAttack: "iceWave",
+          },
+        });
+      }
+      // Move
       this.startBehavior(
         { arrow: newDirection.name, map: state.map },
         { type: "walk", direction: newDirection.name }
       );
+
+      
+        
+      
       // // Add last move to store
       // if (this.lastMoveHistory.length < this.lastMoveHistoryMaxLength)
       //   return this.lastMoveHistory.push(newDirection.name);
@@ -395,10 +421,10 @@ export class Monster extends Person {
     resolve(currentData);
   }
 
-  initAttack(state, attackName) {
-    if (this.movingProgressReaming > 0) return;
-    super.initAttack(state, attackName);
-  }
+  // initAttack(state, attackName) {
+  //   // if (this.movingProgressReaming > 0) return;dw
+  //   super.initAttack(state, attackName);
+  // }
 
   // TODO: if target die return to your behaviour (need db connection)
   // if monster die, dissaper him and put on this spot loot bag

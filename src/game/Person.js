@@ -7,8 +7,6 @@ export class Person extends GameObject {
   constructor(config) {
     super(config);
     this.type = config.type;
-    this.movingProgressReaming = 0;
-    this.movingProgressReamingMax = 16;
     this.isStanding = false;
     this.intentPos = null; // [x,y]
     this.radius = config.radius || 12;
@@ -17,30 +15,32 @@ export class Person extends GameObject {
     this.currentHp = config.maxHp || 100;
     this.maxHp = config.maxHp || 100;
     this.speed = config.speed || 1;
+    this.movingProgressReaming = 0;
+    this.movingProgressReamingMax = 16/this.speed;
 
     this.isPlayerControlled = config.isPlayerControlled || false;
     // this.walkAnimationEnd = true;
 
     this.directionUpdate = {
-      up: ["y", -1],
-      down: ["y", 1],
-      left: ["x", -1],
-      right: ["x", 1],
+      up: ["y", -this.speed],
+      down: ["y", this.speed],
+      left: ["x", -this.speed],
+      right: ["x", this.speed],
       leftUp: [
         ["x", "y"],
-        [-1, -1],
+        [-this.speed, -this.speed],
       ],
       leftDown: [
         ["x", "y"],
-        [-1, 1],
+        [-this.speed, this.speed],
       ],
       rightUp: [
         ["x", "y"],
-        [1, -1],
+        [this.speed, -this.speed],
       ],
       rightDown: [
         ["x", "y"],
-        [1, 1],
+        [this.speed, this.speed],
       ],
     };
   }
@@ -214,4 +214,5 @@ export class Person extends GameObject {
     });
     this.attack.init(state);
   }
+  
 }

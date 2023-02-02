@@ -270,6 +270,15 @@ export class Sprite {
     // ctx.fillText("-10", 208, 208);
 
     if (!this.isAttackAnimation) {
+      // If monster is selected target
+      if (this.gameObject.isAim) {
+        ctx.beginPath();
+        ctx.lineWidth = "1";
+        ctx.strokeStyle = "red";
+        ctx.rect(x + 8, y + 17, 16, 16);
+        ctx.stroke();
+      }
+
       // If person, or monster have valid target show hp bar
       if (
         (this.gameObject.type === "Monster" &&
@@ -372,11 +381,14 @@ export class Sprite {
 
       if (this.isLoaded) {
         // If not repeatable spell just do once loop
-        const isDir = Object.keys(this.repeatableImageAtPositions).includes(
+        let isDir = Object.keys(this.repeatableImageAtPositions).includes(
           "norepeat"
         )
           ? "norepeat"
           : this.gameObject.direction;
+
+        if (isDir == "leftUp" || isDir == "leftDown") isDir = "left";
+        if (isDir == "rightUp" || isDir == "rightDown") isDir = "right";
 
         // If spell is reapatable repeat as much is needed
         this.repeatableImageAtPositions[isDir].forEach((position) => {

@@ -94,6 +94,9 @@ export class Overworld {
     new KeyPressListener("Digit2", () => {
       console.log(this);
     });
+    new KeyPressListener("Space", () => {
+      this.map.selectTarget();
+    });
   }
 
   bindActionInput() {

@@ -73,9 +73,9 @@ export class OverworldMap {
     Object.keys(objects).forEach((key) => {
       // If this game object exist, stop here
       if (this.gameObjects[key]) return;
-      
+
       let object = this.configObjects[key];
-      console.log("mountGameObjectFromConfig",key);
+      console.log("mountGameObjectFromConfig", key);
       let instace;
 
       if (object.type === "Person") {
@@ -86,7 +86,7 @@ export class OverworldMap {
         instace = new Person(object);
       }
       if (object.type === "Monster") {
-        if(!object.isAlive) return;
+        if (!object.isAlive) return;
         instace = new Monster(object);
       }
       // object.type === monster np
@@ -125,10 +125,10 @@ export class OverworldMap {
       delete OverworldMaps[playerState.currentMap].playersPosition[name];
     }
 
-    if (this.type === "Monster"){
+    if (this.type === "Monster") {
       delete OverworldMaps[currentMap].configObjects[name];
     }
-    
+
     // console.log("delete", name);
     console.log("unmountGameObject", name);
   }
@@ -143,6 +143,18 @@ export class OverworldMap {
   //   });
   //   return objects;
   // }
+
+  selectTarget() {
+    const selectTarget = Object.values(this.gameObjects).find(
+      (target) => target.type === "Monster" && !target.isAim
+    );
+    const unselectTarget = Object.values(this.gameObjects).find(
+      (target) => target.type === "Monster" && target.isAim
+    );
+
+    if (selectTarget) selectTarget.isAim = true;
+    if (unselectTarget) unselectTarget.isAim = false;
+  }
 
   async startCutscene(events) {
     this.isCutscenePlaying = true;
