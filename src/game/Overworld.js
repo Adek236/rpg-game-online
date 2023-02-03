@@ -81,11 +81,11 @@ export class Overworld {
       // console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
-      this.map.gameObjects[playerState.name].initAttack(this.map, "iceWave");
+      this.map.gameObjects[playerState.name].initAttack(this.map, "swordSlash");
       // Set attack at db
       playerState.updatePlayer({
         player: {
-          isAttack: "iceWave",
+          isAttack: "swordSlash",
         },
       });
       // console.log(this)
@@ -228,7 +228,7 @@ export class Overworld {
 
           // If player used skills/spells, show it
           if (playerObj.movingProgressReaming === 0 && player.isAttack) {
-            if (playerObj.movingProgressReaming > 0) return;
+            // if (playerObj.movingProgressReaming > 0) return;
             playerObj.initAttack(this.map, player.isAttack);
           }
         }

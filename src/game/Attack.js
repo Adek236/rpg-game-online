@@ -69,16 +69,22 @@ export class Attack {
         });
       });
 
-      // if (this.gameObject.type === "Person"){
+      if (this.gameObject.type === "Person"){
+        console.log(this.gameObject.attacks.length > 0)
 
-      //   console.log(checkForTargetAtThisPositions)
-      // }
-
+        }
+        
       // Check for possible targets
       checkForTargetAtThisPositions.forEach((position) => {
         const { x, y } = position;
         // console.log(state)
+        if (this.gameObject.type === "Person") {
+          console.log("1 - check position", x, y);
+        }
         for (const possibleTarget in state.gameObjects) {
+          if (this.gameObject.type === "Person") {
+            console.log("2 - check all game objects for target");
+          }
           const target = state.gameObjects[possibleTarget];
           const xArray = utils.collectionNumbersBetweenNumbers(
             x - 8,
@@ -91,13 +97,6 @@ export class Attack {
             target.speed
           );
 
-          if (this.gameObject.type === "Person") {
-            // console.log(xArray);
-            // console.log(yArray);
-            // console.log("target", target);
-            console.log("1")
-          }
-
           // TODO: if target moving deals 2x damage at online BROKE
           if (
             xArray.includes(target.x) &&
@@ -109,14 +108,16 @@ export class Attack {
           ) {
             // If target is found, deal damage to it
             // if (this.gameObject.type === "Person") console.log("target TRUE", target);
-            if (this.gameObject.type === "Person")
-              {console.log("target TRUE", this.hittedTargetsPositions);
-            console.log(target)
+            if (this.gameObject.type === "Person") {
+              // console.log("target TRUE", this.hittedTargetsPositions);
+              console.log("3 - attack");
             }
 
             // if (target.type === "Monster") console.log("xArray", xArray);
+            // if (this.gameObject.name === playerState.name){
             target.currentHp -= this.selectedAttack.baseDamage;
-
+            // }
+            
             // Send hittedTargetsPositions data to sprite
             this.hittedTargetsPositions.push({
               x: target.x,
@@ -124,7 +125,9 @@ export class Attack {
               damageDealt: this.selectedAttack.baseDamage,
             });
             // console.log(this.gameObject.attacks)
-
+            if (this.gameObject.type === "Person") {
+              console.log("hitted target", this.hittedTargetsPositions.length);
+            }
             return;
           }
         }
