@@ -24,6 +24,7 @@ export class Attack {
 
     this.hittedTargetsPositions = [];
     this.isAnimationEnd = false;
+    this.isAttackByOtherPlayer = config.isAttackByOtherPlayer || false;
   }
 
   doDamageToTargetInAttackArea(state) {
@@ -117,6 +118,16 @@ export class Attack {
             // if (this.gameObject.name === playerState.name){
             target.currentHp -= this.selectedAttack.baseDamage;
             // }
+            if (target.type === "Monster" && 
+            target.currentHp >= 0 
+            ){
+              console.log("DBDBDBD")
+              target.dbUpdateMonster({
+                monster: {
+                  currentHp: target.currentHp
+                }
+              })
+            }
             
             // Send hittedTargetsPositions data to sprite
             this.hittedTargetsPositions.push({
@@ -141,7 +152,8 @@ export class Attack {
 
     // Add attack to attacks array
     this.gameObject.attacks.push(this.selectedAttack);
-    this.doDamageToTargetInAttackArea(state);
+    console.log("this.isAttackByOtherPlayer", this.isAttackByOtherPlayer)
+    if (!this.isAttackByOtherPlayer) this.doDamageToTargetInAttackArea(state);
 
     // TODO: \/ without this is error if online animation WHY?
     // first load dont have animation thats why

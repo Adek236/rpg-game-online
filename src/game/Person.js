@@ -12,7 +12,7 @@ export class Person extends GameObject {
     this.radius = config.radius || 12;
     this.attacks = [];
     this.attack = null;
-    this.currentHp = config.maxHp || 100;
+    this.currentHp = config.currentHp || 100;
     this.maxHp = config.maxHp || 100;
     this.speed = config.speed || 1;
     this.movingProgressReaming = 0;
@@ -207,10 +207,11 @@ export class Person extends GameObject {
     }
   }
 
-  initAttack(state, attackName) {
+  initAttack(state, attackName, isAttackByOtherPlayer = false) {
     this.attack = new Attack({
       name: attackName,
       gameObject: this,
+      isAttackByOtherPlayer: isAttackByOtherPlayer,
     });
     this.attack.init(state);
   }

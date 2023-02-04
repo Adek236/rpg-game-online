@@ -270,6 +270,24 @@ export class Sprite {
     // ctx.fillText("-10", 208, 208);
 
     if (!this.isAttackAnimation) {
+
+      // If other player hit monster, show it
+      if (
+        this.gameObject.type === "Monster" &&
+        this.gameObject.isHittedByOtherPlayer.length > 0 
+      ) {
+        this.gameObject.isHittedByOtherPlayer.forEach((obj) => {
+
+          ctx.font = "6px Arial Black";
+          ctx.fillStyle = "red";
+          ctx.fillText(
+            `-${obj.damageDealt}`,
+            obj.x + utils.withGrid(10.5) - cameraPerson.x,
+            obj.y + utils.withGrid(6) - cameraPerson.y - 11
+            );
+        });
+      }
+
       // If monster is selected target
       if (this.gameObject.isAim) {
         ctx.beginPath();
@@ -352,7 +370,6 @@ export class Sprite {
       )
         return (this.gameObject.deathAnimationEnd = true);
     } else {
-      // TODO: like above, no timeout just max 2 frame
 
       const [slashY, slashX] = this.slashFrame;
 
@@ -371,10 +388,6 @@ export class Sprite {
           32,
           32
         );
-
-        //   this.slashTime++;
-        //  console.log(this.slashTime % 10 === 0)
-        //   if (this.slashTime % 20 === 0) this.isSlashUsed = true;
       }
 
       const [frameX, frameY] = this.frame;
@@ -407,32 +420,6 @@ export class Sprite {
         });
       }
 
-      // this.isLoaded &&
-      //   ctx.drawImage(
-      //     this.image,
-      //     frameX.frame * 32,
-      //     frameY.frame * 32,
-      //     32,
-      //     32,
-      //     x + frameX.offset,
-      //     y + frameY.offset,
-      //     32,
-      //     32
-      //   );
-
-      //   this.isLoaded &&
-      //   ctx.drawImage(
-      //     this.image,
-      //     frameX.frame * 32,
-      //     frameY.frame * 32,
-      //     32,
-      //     32,
-      //     x + frameX.offset,
-      //     y + frameY.offset-18,
-      //     32,
-      //     32
-      //   );
-
       // Draw damage dealt above person etc
       // TODO: change to drawImage with numbers pixels
       if (this.gameObject.attack.hittedTargetsPositions.length > 0) {
@@ -450,11 +437,6 @@ export class Sprite {
 
         // },100)
       }
-
-      // if (
-      //   this.currentAnimationFrame === 1
-      // )
-      //   return this.gameObject.attack.clearAttack();
     }
 
     this.updateAnimationProgress();

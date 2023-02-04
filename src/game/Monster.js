@@ -52,6 +52,7 @@ export class Monster extends Person {
     this.lastMoveHistoryMaxLength = 8;
     
     this.isAim = false;
+    this.isHittedByOtherPlayer = [];
 
     this.count = 0;
     this.count2 = 0;
@@ -64,12 +65,18 @@ export class Monster extends Person {
     // If monster died
     if (this.currentHp <= 0) {
       // Update monster db
-      // this.dbUpdateMonster({
-      //   monster: { 
-      //     isAlive: false,
-      //     currentTarget: false,
-      //   },
-      // });
+      // if (this.isPlayerControlledMonster){
+
+        this.dbUpdateMonster({
+          monster: { 
+            isAlive: false,
+            currentTarget: false,
+            currentHp: this.maxHp,
+            x: utils.withGridReverse(this.initialX),
+            y: utils.withGridReverse(this.initialY),
+          },
+        });
+      // }
       
       // If death animation end unmount monster
       this.deathAnimationEnd &&
@@ -300,11 +307,13 @@ export class Monster extends Person {
       this.count++;
       if (this.count % 5 === 0 && this.direction === newDirection.name) {
         this.initAttack(state, "iceWave");
-        this.dbUpdateMonster({
-          monster: {
-            isAttack: "iceWave",
-          },
-        });
+        // if (target.isPlayerControlledMonster){
+          this.dbUpdateMonster({
+            monster: {
+              isAttack: "iceWave",
+            },
+          });
+        // }
       }
       // Move
       this.startBehavior(

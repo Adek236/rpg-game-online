@@ -212,6 +212,8 @@ export class OverworldMap {
             currentMap: monsterData.currentMap,
             currentTarget: monsterData.currentTarget,
             direction: monsterData.direction,
+            currentHp: monsterData.currentHp,
+            maxHp: monsterData.maxHp,
             isAlive: monsterData.isAlive,
             name: monsterData.name,
             id: monsterData.id,

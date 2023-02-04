@@ -81,11 +81,11 @@ export class Overworld {
       // console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
-      this.map.gameObjects[playerState.name].initAttack(this.map, "swordSlash");
+      this.map.gameObjects[playerState.name].initAttack(this.map, "iceWave");
       // Set attack at db
       playerState.updatePlayer({
         player: {
-          isAttack: "swordSlash",
+          isAttack: "iceWave",
         },
       });
       // console.log(this)
@@ -213,8 +213,8 @@ export class Overworld {
               playerObj.movingProgressReamingMax;
 
             // if (playerObj.walkAnimationEnd) {
-              // playerObj.walkAnimationEnd = false;
-              playerObj.updateSprite();
+            // playerObj.walkAnimationEnd = false;
+            playerObj.updateSprite();
             // }
           }
 
@@ -229,7 +229,7 @@ export class Overworld {
           // If player used skills/spells, show it
           if (playerObj.movingProgressReaming === 0 && player.isAttack) {
             // if (playerObj.movingProgressReaming > 0) return;
-            playerObj.initAttack(this.map, player.isAttack);
+            playerObj.initAttack(this.map, player.isAttack, true);
           }
         }
 
@@ -317,6 +317,8 @@ export class Overworld {
             currentMap: monster.currentMap,
             currentTarget: monster.currentTarget,
             direction: monster.direction,
+            currentHp: monster.currentHp,
+            maxHp: monster.maxHp,
             id: monster.id,
             initialX: utils.withGrid(monster.initialX),
             initialY: utils.withGrid(monster.initialY),
@@ -367,6 +369,28 @@ export class Overworld {
           ) {
             monsterObj.initAttack({ map: this.map }, monster.isAttack);
           }
+
+          // If monster lose hp, show it
+          if (
+            monsterObj &&
+            currentMonsterState.currentHp !== newMonsterState.currentHp &&
+            currentMonsterState.currentHp > newMonsterState.currentHp
+          ) {
+            // If someone hit monster,
+            // send positon of damage dealt (sprite needed)
+            monsterObj.isHittedByOtherPlayer.push({
+              x: newMonsterState.x,
+              y: newMonsterState.y,
+              damageDealt:
+                currentMonsterState.currentHp - newMonsterState.currentHp,
+            });
+            // Clear animation
+            // TODO: improve to clear only sended,
+            // not all damage dealt animation
+            setTimeout(() => (monsterObj.isHittedByOtherPlayer = []), 100);
+
+            monsterObj.currentHp = monster.currentHp;
+          }
         }
 
         // If monster is alive at your map, exist in game objects
@@ -379,6 +403,52 @@ export class Overworld {
         ) {
           // Active monster movement control scrips by you
           monsterObj.isPlayerControlledMonster = true;
+
+          const currentMonsterState =
+            OverworldMaps[monster.currentMap].configObjects[monster.id];
+
+          // Update monster position at config objects
+          OverworldMaps[monster.currentMap].configObjects[monster.id] = {
+            currentMap: monster.currentMap,
+            currentTarget: monster.currentTarget,
+            direction: monster.direction,
+            currentHp: monster.currentHp,
+            maxHp: monster.maxHp,
+            id: monster.id,
+            initialX: utils.withGrid(monster.initialX),
+            initialY: utils.withGrid(monster.initialY),
+            isAlive: monster.isAlive,
+            name: monster.name,
+            outfit: monster.outfit,
+            type: "Monster",
+            x: utils.withGrid(monster.x),
+            y: utils.withGrid(monster.y),
+          };
+
+          const newMonsterState =
+            OverworldMaps[monster.currentMap].configObjects[monster.id];
+
+          // If monster lose hp, show it
+          if (
+            monsterObj &&
+            currentMonsterState.currentHp !== newMonsterState.currentHp &&
+            currentMonsterState.currentHp > newMonsterState.currentHp
+          ) {
+            // If someone hit monster,
+            // send positon of damage dealt (sprite needed)
+            monsterObj.isHittedByOtherPlayer.push({
+              x: monsterObj.x,
+              y: monsterObj.y,
+              damageDealt:
+                currentMonsterState.currentHp - newMonsterState.currentHp,
+            });
+            // Clear animation
+            // TODO: improve to clear only sended,
+            // not all damage dealt animation
+            setTimeout(() => (monsterObj.isHittedByOtherPlayer = []), 100);
+
+            monsterObj.currentHp = monster.currentHp;
+          }
         }
 
         // If monster is alive at your map but not exist in game objects
@@ -390,12 +460,14 @@ export class Overworld {
         ) {
           console.log("alive!!");
 
-          // Change isAlive at config objects
+          // Change data at config objects
           // OverworldMaps[monster.currentMap].configObjects[monster.id].isAlive = true;
           OverworldMaps[monster.currentMap].configObjects[monster.id] = {
             currentMap: monster.currentMap,
             currentTarget: monster.currentTarget,
             direction: monster.direction,
+            currentHp: monster.maxHp,
+            maxHp: monster.maxHp,
             id: monster.id,
             initialX: utils.withGrid(monster.initialX),
             initialY: utils.withGrid(monster.initialY),
