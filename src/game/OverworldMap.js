@@ -11,6 +11,7 @@ import { OverworldEvent } from "./OverworldEvent.js";
 import { playerState } from "./PlayerState.js";
 import { Monster } from "./Monster.js";
 import { OverworldMaps } from "./data/OverworldMaps.js";
+import { Loot } from "./Loot.js";
 export class OverworldMap {
   constructor(config) {
     this.overworld = null;
@@ -59,6 +60,7 @@ export class OverworldMap {
     }
     // Check for game objecs at this position
     return Object.values(this.gameObjects).find((obj) => {
+      if (obj.isWalkable) return false;
       if (obj.x === x && obj.y === y) {
         return true;
       }
@@ -81,15 +83,22 @@ export class OverworldMap {
       if (object.type === "Person") {
         instace = new Person(object);
       }
+
       if (object.type === "NPC") {
         object.name = key;
         instace = new Person(object);
       }
+
       if (object.type === "Monster") {
-        if (!object.isAlive) return;
+        if (!object.isAlive) return console.log("RETURN FROM MONSTER");
         instace = new Monster(object);
       }
-      // object.type === monster np
+
+      // if(object.type === "Loot"){
+      //   instace = new Loot(object);
+      // }
+
+      console.log("its dont skip ;s")
 
       this.gameObjects[key] = instace;
       // this.gameObjects[key].name = key;
@@ -102,7 +111,10 @@ export class OverworldMap {
     // ,resolve = null
   ) {
     // console.log("moungameobj ", object);
+    // If this game object exist, stop here
+    if (this.gameObjects[object.name]) return;
     console.log("mountGameObject", object.name);
+
     let instace;
 
     if (object.type === "Person") {
@@ -111,8 +123,22 @@ export class OverworldMap {
     if (object.type === "NPC") {
       instace = new Person(object);
     }
+    if(object.type === "Loot"){
+      instace = new Loot(object);
+    }
 
     this.gameObjects[object.name] = instace;
+    
+    // Active safe mode, 
+    // monster can't attack if safe mode 
+    // this.gameObjects[object.name].isSafeMode = true;
+    // console.log("safe mode on")
+    //   setTimeout(()=>{
+    //     this.gameObjects[object.name].isSafeMode = false;
+    //     console.log("safe mode off")
+    //   },1000)
+    
+
     instace.mount(this);
 
     // if (resolve !== null) resolve();

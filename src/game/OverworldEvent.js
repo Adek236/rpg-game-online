@@ -112,7 +112,7 @@ export class OverworldEvent {
         // Player state map update
         playerState.currentMap = this.event.map;
 
-        // Add position at window playersPosition
+        // Add position at OverworldMaps playersPosition
         OverworldMaps[playerState.currentMap].playersPosition[playerState.name] = {
           direction: this.event.direction,
           x : this.event.x,

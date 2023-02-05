@@ -79,13 +79,13 @@ export class Attack {
       checkForTargetAtThisPositions.forEach((position) => {
         const { x, y } = position;
         // console.log(state)
-        if (this.gameObject.type === "Person") {
-          console.log("1 - check position", x, y);
-        }
+        // if (this.gameObject.type === "Person") {
+        //   console.log("1 - check position", x, y);
+        // }
         for (const possibleTarget in state.gameObjects) {
-          if (this.gameObject.type === "Person") {
-            console.log("2 - check all game objects for target");
-          }
+          // if (this.gameObject.type === "Person") {
+          //   console.log("2 - check all game objects for target");
+          // }
           const target = state.gameObjects[possibleTarget];
           const xArray = utils.collectionNumbersBetweenNumbers(
             x - 8,
@@ -109,10 +109,10 @@ export class Attack {
           ) {
             // If target is found, deal damage to it
             // if (this.gameObject.type === "Person") console.log("target TRUE", target);
-            if (this.gameObject.type === "Person") {
-              // console.log("target TRUE", this.hittedTargetsPositions);
-              console.log("3 - attack");
-            }
+            // if (this.gameObject.type === "Person") {
+            //   // console.log("target TRUE", this.hittedTargetsPositions);
+            //   console.log("3 - attack");
+            // }
 
             // if (target.type === "Monster") console.log("xArray", xArray);
             // if (this.gameObject.name === playerState.name){
@@ -121,7 +121,6 @@ export class Attack {
             if (target.type === "Monster" && 
             target.currentHp >= 0 
             ){
-              console.log("DBDBDBD")
               target.dbUpdateMonster({
                 monster: {
                   currentHp: target.currentHp
@@ -136,9 +135,9 @@ export class Attack {
               damageDealt: this.selectedAttack.baseDamage,
             });
             // console.log(this.gameObject.attacks)
-            if (this.gameObject.type === "Person") {
-              console.log("hitted target", this.hittedTargetsPositions.length);
-            }
+            // if (this.gameObject.type === "Person") {
+            //   console.log("hitted target", this.hittedTargetsPositions.length);
+            // }
             return;
           }
         }
@@ -152,7 +151,8 @@ export class Attack {
 
     // Add attack to attacks array
     this.gameObject.attacks.push(this.selectedAttack);
-    console.log("this.isAttackByOtherPlayer", this.isAttackByOtherPlayer)
+    
+    // If another player attacks, it does not deal damage, only animation
     if (!this.isAttackByOtherPlayer) this.doDamageToTargetInAttackArea(state);
 
     // TODO: \/ without this is error if online animation WHY?

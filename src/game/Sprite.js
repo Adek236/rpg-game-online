@@ -17,7 +17,7 @@ export class Sprite {
 
     // Shadow
     this.shadow = new Image();
-    this.useShadow = config.useShadow || true;
+    this.useShadow = config.useShadow;
     this.shadow.src = "src/game/assets/objects/shadow.png";
     if (this.useShadow) {
       this.shadow.onload = () => {
@@ -324,18 +324,19 @@ export class Sprite {
         );
       }
 
-      this.isShadowLoaded &&
-        ctx.drawImage(
-          this.shadow,
-          0,
-          0,
-          32,
-          32,
-          x + this.gameObject.shadowOffsetX,
-          y + this.gameObject.shadowOffsetY,
-          32,
-          32
-        );
+        this.isShadowLoaded &&
+          ctx.drawImage(
+            this.shadow,
+            0,
+            0,
+            32,
+            32,
+            x + this.gameObject.shadowOffsetX,
+            y + this.gameObject.shadowOffsetY,
+            32,
+            32
+          );
+      
 
       const [frameX, frameY] = this.frame;
 

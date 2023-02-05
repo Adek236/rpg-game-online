@@ -4,8 +4,10 @@ import { OverworldEvent } from "./OverworldEvent.js";
 export class GameObject {
   constructor(config) {
     this.name = config.name;
+    this.type = config.type;
     this.currentMap = config.currentMap || null;
     this.isMounted = false;
+    this.isWalkable = false;
     this.x = config.x || 0;
     this.y = config.y || 0;
     this.center = {
@@ -21,6 +23,7 @@ export class GameObject {
     this.sprite = new Sprite({
       gameObject: this,
       src: config.outfit || "src/game/assets/characters/hero.png",
+      useShadow: true,
     });
 
     this.behaviorLoop = config.behaviorLoop || [];

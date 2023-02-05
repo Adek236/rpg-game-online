@@ -6,7 +6,6 @@ import { OverworldMaps } from "./data/OverworldMaps.js";
 export class Person extends GameObject {
   constructor(config) {
     super(config);
-    this.type = config.type;
     this.isStanding = false;
     this.intentPos = null; // [x,y]
     this.radius = config.radius || 12;
@@ -16,7 +15,8 @@ export class Person extends GameObject {
     this.maxHp = config.maxHp || 100;
     this.speed = config.speed || 1;
     this.movingProgressReaming = 0;
-    this.movingProgressReamingMax = 16/this.speed;
+    this.movingProgressReamingMax = 16 / this.speed;
+    // this.isSafeMode = false;s
 
     this.isPlayerControlled = config.isPlayerControlled || false;
     // this.walkAnimationEnd = true;
@@ -140,9 +140,12 @@ export class Person extends GameObject {
         });
 
         // Update position at configObjects
-        OverworldMaps[this.currentMap].configObjects[this.id].direction = this.direction;
-        OverworldMaps[this.currentMap].configObjects[this.id].x = this.intentPos[0];
-        OverworldMaps[this.currentMap].configObjects[this.id].y = this.intentPos[1];
+        OverworldMaps[this.currentMap].configObjects[this.id].direction =
+          this.direction;
+        OverworldMaps[this.currentMap].configObjects[this.id].x =
+          this.intentPos[0];
+        OverworldMaps[this.currentMap].configObjects[this.id].y =
+          this.intentPos[1];
 
         // OverworldMaps[this.currentMap].configObjects[this.id] = {
         //   direction: this.direction,
@@ -194,7 +197,7 @@ export class Person extends GameObject {
       this.sprite.setAnimation("walk-" + this.direction);
       return;
     }
-    if (this.type === "Monster" && this.currentHp <= 0){
+    if (this.type === "Monster" && this.currentHp <= 0) {
       this.sprite.setAnimation("death");
       return;
     }
@@ -202,8 +205,12 @@ export class Person extends GameObject {
       this.sprite.setAnimation("idle-" + this.direction);
     }
     if (this.attacks.length > 0) {
-      this.sprite.setAnimation(this.attacks[0].personAnimateName + this.direction);
-      this.attack.sprite.setAnimation(this.attacks[0].animateName + this.direction);
+      this.sprite.setAnimation(
+        this.attacks[0].personAnimateName + this.direction
+      );
+      this.attack.sprite.setAnimation(
+        this.attacks[0].animateName + this.direction
+      );
     }
   }
 
@@ -215,5 +222,4 @@ export class Person extends GameObject {
     });
     this.attack.init(state);
   }
-  
 }

@@ -82,6 +82,16 @@ export class Monster extends Person {
       this.deathAnimationEnd &&
       state.map.unmountGameObject(this.id, this.currentMap);
 
+      // const loot1 = {
+      //   type: "Loot",
+      //   x: utils.withGrid(13),
+      //   y: utils.withGrid(16),
+      //   rank: 1,
+      //   name: "Common"
+      // }
+
+      // state.map.mountGameObject(loot1)
+
       // Stop here
       return;
     }
@@ -101,10 +111,19 @@ export class Monster extends Person {
   }
 
   findTarget(state) {
-    // TODO: change target functionality
+    // TODO: need to add change target functionality
 
     // Mark targets that will enter your radius
-    this.validTargets = Object.values(state.map.gameObjects).filter(
+    // Sort is needed?
+    this.validTargets = Object.values(state.map.gameObjects).sort((a,b)=>{
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    }).filter(
       (target) => {
         const targetObj = {
           x: target.x,
@@ -117,11 +136,13 @@ export class Monster extends Person {
         const distance = this.getDistanceToTarget(monsterObj, targetObj);
         return (
           target.type === "Person" &&
-          // this.isTargetReachable &&
+          // !target.isSafeMode &&
           distance < target.radius + this.radius
         );
       }
     );
+
+    // console.log(this.validTargets)
 
     // If no valid targets, and monster isn't in initial position
     // just return monster to initial position
@@ -140,6 +161,7 @@ export class Monster extends Person {
     )
       return (this.focusedTarget = null);
 
+    // If no valid targets stop here
     if (this.validTargets.length < 1) return;
 
     // Check current target at db, if it doesn't have,
@@ -159,7 +181,16 @@ export class Monster extends Person {
         // Target is in db
         else {
           // Check current valid targets
-          const isTargetHere = this.validTargets.find(
+          // Sort is needed?
+          const isTargetHere = this.validTargets.sort((a,b)=>{
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          }).find(
             (target) => target.name === currentTarget
           );
           if (isTargetHere) {

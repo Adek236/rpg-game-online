@@ -9,6 +9,7 @@ import { onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-data
 import { playersRef, monstersRef, dbRef, db } from "../config/firebase.js";
 import { OverworldMaps } from "./data/OverworldMaps.js";
 import { dataAttacks } from "./data/attack/attacks.js";
+
 export class Overworld {
   constructor(config) {
     this.element = config.element;
@@ -24,6 +25,7 @@ export class Overworld {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       // Establish the camera person
       const cameraPerson = this.map.gameObjects[playerState.name];
+
       // Update all objects
       Object.values(this.map.gameObjects).forEach((object) => {
         object.update({
@@ -31,7 +33,7 @@ export class Overworld {
           map: this.map,
         });
       });
-      // console.log(this.directionInput.heldDirections)
+
       // Draw Lower layer
       this.map.drawLowerImage(this.ctx, cameraPerson);
 
@@ -41,6 +43,11 @@ export class Overworld {
           return a.y - b.y;
         })
         .forEach((object) => {
+          // if (object.isWalkable) return;
+          // if(object.isWalkable){
+          //   object.sprite.draw(this.ctx, cameraPerson);
+          //   return;
+          // }
           // if(object.attacks.length > 0){
           //   object.attack.sprite.draw(this.ctx, cameraPerson);
           // }
@@ -49,10 +56,16 @@ export class Overworld {
 
       // Draw Game Objects Attacks
       Object.values(this.map.gameObjects).forEach((object) => {
-        if (object.attacks.length > 0) {
+        if (object.isWalkable) return;
+
+        if (object.attacks?.length > 0) {
           // console.log("erro obj", object)
           object.attack.sprite.draw(this.ctx, cameraPerson);
         }
+
+        // if(object.isWalkable){
+        //   object.sprite.draw(this.ctx, cameraPerson);
+        // }
       });
 
       // Draw Upper layer
@@ -94,6 +107,12 @@ export class Overworld {
     new KeyPressListener("Digit2", () => {
       console.log(this);
     });
+    // new KeyPressListener("Digit3", () => {
+    //   this.map.gameObjects[playerState.name].speed = 2;
+    // });
+    // new KeyPressListener("Digit4", () => {
+    //   this.map.gameObjects[playerState.name].speed = 1;
+    // });
     new KeyPressListener("Space", () => {
       this.map.selectTarget();
     });
@@ -121,12 +140,7 @@ export class Overworld {
     this.map.loadMonsters(object.currentMap, () => {
       this.map.mountObjectsFromConfig();
     });
-    this.map.mountGameObject(
-      object
-      //   , () => {
-      //   this.isObjectsListens = true;
-      // }
-    );
+    this.map.mountGameObject(object);
 
     if (mapInitialConfig) {
       this.map.gameObjects[object.name].x = mapInitialConfig.x;
@@ -479,8 +493,11 @@ export class Overworld {
             y: utils.withGrid(monster.y),
           };
 
-          // Respawn monster
-          this.map.mountObjectsFromConfig({ [monster.id]: monster.id });
+          // For now setTimeout for no issue with change map
+          setTimeout(() => {
+            // Respawn monster
+            this.map.mountObjectsFromConfig({ [monster.id]: monster.id });
+          }, 100);
         }
       });
     });

@@ -84,7 +84,9 @@ async function addPlayerDataToDB(data, resolve) {
         online: false,
         outfit: "src/game/assets/characters/hero2.png",
         direction: "down",
-        isAttack: false
+        isAttack: false,
+        currentHp: 200,
+        maxHp: 200
       });
       // console.log("data added");
     })
