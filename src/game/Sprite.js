@@ -197,8 +197,8 @@ export class Sprite {
         [1, 4],
         [2, 4],
         [3, 4],
-        [4, 4],
-        [5, 4],
+        // [4, 4],
+        // [5, 4],
       ],
     };
 
@@ -367,7 +367,7 @@ export class Sprite {
       if (
         this.gameObject.type === "Monster" &&
         this.currentAnimation === "death" &&
-        this.currentAnimationFrame === 5
+        this.currentAnimationFrame === this.animations[this.currentAnimation].length-1
       )
         return (this.gameObject.deathAnimationEnd = true);
     } else {

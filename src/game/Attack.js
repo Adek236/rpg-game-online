@@ -1,5 +1,5 @@
 import { Sprite } from "./Sprite.js";
-import { dataAttacks } from "./data/attack/attacks.js";
+import { dataAttacks } from "./data/attack/dataAttacks.js";
 import { playerState } from "./PlayerState.js";
 import { combatAreas, comparativeCombatAreas } from "./data/attack/areas.js";
 import { utils } from "./utils/utils.js";

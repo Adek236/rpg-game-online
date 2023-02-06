@@ -12,6 +12,7 @@ import { playerState } from "./PlayerState.js";
 import { Monster } from "./Monster.js";
 import { OverworldMaps } from "./data/OverworldMaps.js";
 import { Loot } from "./Loot.js";
+import { dataMonsters } from "./data/monsters/dataMonsters.js";
 export class OverworldMap {
   constructor(config) {
     this.overworld = null;
@@ -123,9 +124,9 @@ export class OverworldMap {
     if (object.type === "NPC") {
       instace = new Person(object);
     }
-    if(object.type === "Loot"){
-      instace = new Loot(object);
-    }
+    // if(object.type === "Loot"){
+    //   instace = new Loot(object);
+    // }
 
     this.gameObjects[object.name] = instace;
     
@@ -172,10 +173,10 @@ export class OverworldMap {
 
   selectTarget() {
     const selectTarget = Object.values(this.gameObjects).find(
-      (target) => target.type === "Monster" && !target.isAim
+      (target) => target.type === "Monster" && !target.isAim && !target.isWalkable
     );
     const unselectTarget = Object.values(this.gameObjects).find(
-      (target) => target.type === "Monster" && target.isAim
+      (target) => target.type === "Monster" && target.isAim && !target.isWalkable
     );
 
     if (selectTarget) selectTarget.isAim = true;
@@ -248,6 +249,7 @@ export class OverworldMap {
             y: utils.withGrid(monsterData.y),
             initialX: utils.withGrid(monsterData.initialX),
             initialY: utils.withGrid(monsterData.initialY),
+            animations: dataMonsters[monsterData.name]
           };
         });
       })

@@ -8,7 +8,7 @@ import { utils } from "./utils/utils.js";
 import { onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 import { playersRef, monstersRef, dbRef, db } from "../config/firebase.js";
 import { OverworldMaps } from "./data/OverworldMaps.js";
-import { dataAttacks } from "./data/attack/attacks.js";
+import { dataAttacks } from "./data/attack/dataAttacks.js";
 
 export class Overworld {
   constructor(config) {
@@ -40,7 +40,17 @@ export class Overworld {
       // Draw Game Objects
       Object.values(this.map.gameObjects)
         .sort((a, b) => {
-          return a.y - b.y;
+          // If game object is walkable (e.g. is dead)
+          // draw him before non walkable
+          if (a.isWalkable && !b.isWalkable){
+            return -1;
+          }
+          if (!a.isWalkable && b.isWalkable){
+            return 1;
+          }
+          if (!a.isWalkable && !b.isWalkable){
+            return a.y - b.y;
+          }
         })
         .forEach((object) => {
           // if (object.isWalkable) return;
@@ -494,6 +504,7 @@ export class Overworld {
           };
 
           // For now setTimeout for no issue with change map
+          // and need to change to this.map.mountGameObject
           setTimeout(() => {
             // Respawn monster
             this.map.mountObjectsFromConfig({ [monster.id]: monster.id });
