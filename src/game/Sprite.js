@@ -156,7 +156,23 @@ export class Sprite {
       //   [0, 7],
       //   [1, 7],
       // ],
+      // "attack-leftUp": [
+      //   [0, 7],
+      //   [1, 7],
+      // ],
+      // "attack-leftDown": [
+      //   [0, 7],
+      //   [1, 7],
+      // ],
       // "attack-right": [
+      //   [0, 5],
+      //   [1, 5],
+      // ],
+      // "attack-rightUp": [
+      //   [0, 5],
+      //   [1, 5],
+      // ],
+      // "attack-rightDown": [
       //   [0, 5],
       //   [1, 5],
       // ],

@@ -24,7 +24,7 @@ export class GameObject {
       gameObject: this,
       src: config.outfit || "src/game/assets/characters/hero.png",
       useShadow: true,
-      // animations: config.animations
+      animations: config.animations
     });
 
     this.behaviorLoop = config.behaviorLoop || [];

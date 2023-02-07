@@ -244,12 +244,12 @@ export class OverworldMap {
             isAlive: monsterData.isAlive,
             name: monsterData.name,
             id: monsterData.id,
-            outfit: monsterData.outfit,
+            outfit: dataMonsters[monsterData.name].outfit,
             x: utils.withGrid(monsterData.x),
             y: utils.withGrid(monsterData.y),
             initialX: utils.withGrid(monsterData.initialX),
             initialY: utils.withGrid(monsterData.initialY),
-            animations: dataMonsters[monsterData.name]
+            animations: dataMonsters[monsterData.name].animations
           };
         });
       })

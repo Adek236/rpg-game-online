@@ -7,13 +7,10 @@ import {
   child,
   get,
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-import { Attack } from "./Attack.js";
-// TODO: Monsters must have db connection to see all players (gameObjects)
 
 export class Monster extends Person {
   constructor(config) {
     super(config);
-    // this.type = config.type || "monster";
     this.speed = config.speed || 0.5;
     this.movingProgressReamingMax = 16/this.speed;
     
@@ -44,7 +41,6 @@ export class Monster extends Person {
     this.radius = 100;
     this.validTargets = [];
     this.focusedTarget = null;
-    // this.isTargetReachable = true;
     this.lastPosition = null;
     this.id = config.id;
     this.isPlayerControlledMonster = true;
@@ -277,15 +273,15 @@ export class Monster extends Person {
         target.aroundFreeSpace[obj].position.y === this.y
       ) {
         // Attack
-        // this.count2++;
-        // if (this.count2 % 100 === 0) {
-        //   this.initAttack(state, "swordSlash");
-        //   this.dbUpdateMonster({
-        //     monster: {
-        //       isAttack: "swordSlash",
-        //     },
-        //   });
-        // }
+        this.count2++;
+        if (this.count2 % 100 === 0) {
+          this.initAttack(state, "swordSlash");
+          this.dbUpdateMonster({
+            monster: {
+              isAttack: "swordSlash",
+            },
+          });
+        }
 
         // Turn towards the target
         const oppositeDir = utils.oppositeDirection(obj);

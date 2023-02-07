@@ -9,6 +9,7 @@ import { onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-data
 import { playersRef, monstersRef, dbRef, db } from "../config/firebase.js";
 import { OverworldMaps } from "./data/OverworldMaps.js";
 import { dataAttacks } from "./data/attack/dataAttacks.js";
+import { dataMonsters } from "./data/monsters/dataMonsters.js";
 
 export class Overworld {
   constructor(config) {
@@ -348,10 +349,11 @@ export class Overworld {
             initialY: utils.withGrid(monster.initialY),
             isAlive: monster.isAlive,
             name: monster.name,
-            outfit: monster.outfit,
+            outfit: dataMonsters[monster.name].outfit,
             type: "Monster",
             x: utils.withGrid(monster.x),
             y: utils.withGrid(monster.y),
+            animations: dataMonsters[monster.name].animations
           };
 
           const newMonsterState =
@@ -443,10 +445,11 @@ export class Overworld {
             initialY: utils.withGrid(monster.initialY),
             isAlive: monster.isAlive,
             name: monster.name,
-            outfit: monster.outfit,
+            outfit: dataMonsters[monster.name].outfit,
             type: "Monster",
             x: utils.withGrid(monster.x),
             y: utils.withGrid(monster.y),
+            animations: dataMonsters[monster.name].animations
           };
 
           const newMonsterState =
@@ -497,10 +500,11 @@ export class Overworld {
             initialY: utils.withGrid(monster.initialY),
             isAlive: monster.isAlive,
             name: monster.name,
-            outfit: monster.outfit,
+            outfit: dataMonsters[monster.name].outfit,
             type: "Monster",
             x: utils.withGrid(monster.x),
             y: utils.withGrid(monster.y),
+            animations: dataMonsters[monster.name].animations
           };
 
           // For now setTimeout for no issue with change map
