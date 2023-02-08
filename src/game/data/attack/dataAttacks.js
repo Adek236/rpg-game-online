@@ -17,83 +17,147 @@ export const dataAttacks = {
     },
     animations: {
       "ice-shot-up": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: -9 },
+        // ],
         [
-          { frame: 0, offset: 12 },
-          { frame: 0, offset: 9 },
+          { frame: 1, offset: 2 },
+          { frame: 0, offset: -9 },
         ],
         [
-          { frame: 1, offset: -12 },
-          { frame: 0, offset: 9 },
+          { frame: 2, offset: 2 },
+          { frame: 0, offset: -9 },
+        ],
+        [
+          { frame: 3, offset: 2 },
+          { frame: 0, offset: -9 },
         ],
       ],
       "ice-shot-down": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 1, offset: -12 },
-          { frame: 0, offset: 9 },
+          { frame: 1, offset: 2 },
+          { frame: 0, offset: 24 },
         ],
         [
-          { frame: 0, offset: 12 },
-          { frame: 0, offset: 9 },
+          { frame: 2, offset: 2 },
+          { frame: 0, offset: 24 },
+        ],
+        [
+          { frame: 3, offset: 2 },
+          { frame: 0, offset: 24 },
         ],
       ],
       "ice-shot-left": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: -3 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: -3 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: -14 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-shot-leftUp": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: -3 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: -3 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: -14 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-shot-leftDown": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: -3 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: -3 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: -14 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: -14 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-shot-right": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: 4 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: 18 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: 4 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: 18 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: 18 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-shot-rightUp": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: 4 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: 16 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: 4 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: 16 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: 16 },
+          { frame: 0, offset: 8 },
         ],
       ],
       "ice-shot-rightDown": [
+        // [
+        //   { frame: 0, offset: 2 },
+        //   { frame: 0, offset: 24 },
+        // ],
         [
-          { frame: 3, offset: 4 },
-          { frame: 0, offset: 17 },
+          { frame: 1, offset: 16 },
+          { frame: 0, offset: 8 },
         ],
         [
-          { frame: 2, offset: 4 },
-          { frame: 0, offset: -5 },
+          { frame: 2, offset: 16 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 3, offset: 16 },
+          { frame: 0, offset: 8 },
         ],
       ],
     },

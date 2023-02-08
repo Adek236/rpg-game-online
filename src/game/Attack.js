@@ -7,9 +7,10 @@ export class Attack {
   constructor(config) {
     // Reference to selected attack
     this.selectedAttack = dataAttacks[config.name];
-
     // Reference to game object
     this.gameObject = config.gameObject;
+    // Reference to target object
+    this.targetObject = config.object || null;
 
     this.sprite = new Sprite({
       gameObject: this.gameObject,
@@ -128,6 +129,7 @@ export class Attack {
       // Find marked target
       const target = Object.values(state.gameObjects).find(target => target.isAim);
       if (target){
+        this.targetObject = target;
         const distanceToTarget = utils.getDistanceToObject(
           { x: target.x, y: target.y },
           { x: attacker.x, y: attacker.y }

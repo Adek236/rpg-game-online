@@ -1,6 +1,5 @@
 TODO: 
-* Damage deals twice if target moving BROKE
-* Change map some error with monster (double mount?)
+* After monster died timeout still going BROKE (need to named timeout, and stop it)
 * Alive - need to know target before respawn 
         or not respawn if someone is in radius area 
 * Damage sprite need improve

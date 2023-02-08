@@ -12,6 +12,7 @@ export class Sprite {
       y: 0,
     };
     this.spriteSpeed = 3;
+    this.isSpriteDone = false;
 
     // Set up the image
     this.image = new Image();
@@ -290,8 +291,8 @@ export class Sprite {
     // ctx.fillStyle = 'red';
     // ctx.fillText("-10", 208, 208);
 
+    // If not attack animation
     if (!this.isAttackAnimation) {
-
       // If other player hit monster, show it
       if (
         this.gameObject.type === "Monster" &&
@@ -309,6 +310,7 @@ export class Sprite {
       }
 
       // If monster is selected target
+      // show it
       if (this.gameObject.isAim) {
         ctx.beginPath();
         ctx.lineWidth = "1";
@@ -344,6 +346,7 @@ export class Sprite {
         );
       }
 
+      // Shadow animation
       this.isShadowLoaded &&
         ctx.drawImage(
           this.shadow,
@@ -357,8 +360,8 @@ export class Sprite {
           32
         );
 
+      // Behavior animation
       const [frameX, frameY] = this.frame;
-
       this.isLoaded &&
         ctx.drawImage(
           this.image,
@@ -381,13 +384,12 @@ export class Sprite {
           this.animations[this.currentAnimation].length - 1
       )
         return (this.gameObject.deathAnimationEnd = true);
-    } else {
+    }
+    // If attack animation
+    else if (this.isAttackAnimation) {
+      // Slash animation
       const [slashY, slashX] = this.slashFrame;
-
-      if (
-        this.isSlashLoaded
-        // && !this.isSlashUsed
-      ) {
+      if (this.isSlashLoaded) {
         ctx.drawImage(
           this.isSlash,
           slashX.frame * 32,
@@ -401,8 +403,7 @@ export class Sprite {
         );
       }
 
-      const [frameX, frameY] = this.frame;
-
+      // Areas spells with no target needed
       if (
         this.isLoaded &&
         !this.gameObject.attack.selectedAttack.needMarkedTarget
@@ -418,6 +419,7 @@ export class Sprite {
         if (isDir == "rightUp" || isDir == "rightDown") isDir = "right";
 
         // If spell is reapatable repeat as much is needed
+        const [frameX, frameY] = this.frame;
         this.repeatableImageAtPositions[isDir].forEach((position) => {
           const { x: shiftX, y: shiftY } = position;
           ctx.drawImage(
@@ -434,27 +436,83 @@ export class Sprite {
         });
       }
 
-      // If spell need marked target, and have target, 
-      // 
+      // If spell need marked target, and have target
       if (
         this.isLoaded &&
         this.gameObject.attack.selectedAttack.needMarkedTarget &&
         this.gameObject.attack.isMarkedTarget
       ) {
-        const { x: xSpeed, y: ySpeed } =
-          this.gameObject.attack.attackAngle;
+        // Moving sprite angle direction
+        const { x: xSpeed, y: ySpeed } = this.gameObject.attack.attackAngle;
+
+        // Moving sprite speed
         this.spritePosition.x += xSpeed * this.spriteSpeed;
         this.spritePosition.y += ySpeed * this.spriteSpeed;
-        ctx.beginPath();
-        ctx.arc(
-          x + this.gameObject.center.offsetX + this.spritePosition.x,
-          y + this.gameObject.center.offsetY + this.spritePosition.y,
-          5,
-          0,
-          Math.PI * 2
+
+        // Moving sprite position
+        const movingSprite = {
+          x: x + this.gameObject.center.offsetX + this.spritePosition.x,
+          y: y + this.gameObject.center.offsetY + this.spritePosition.y,
+        };
+
+        // Target positon
+        const targetPosition = {
+          x:
+            this.gameObject.attack.targetObject.x +
+            utils.withGrid(10.5) -
+            cameraPerson.x +
+            8,
+          y:
+            this.gameObject.attack.targetObject.y +
+            utils.withGrid(6) -
+            cameraPerson.y +
+            6,
+        };
+
+        // Distance moving sprite to target
+        const distance = utils.getDistanceToObject(
+          movingSprite,
+          targetPosition
         );
-        ctx.fillStyle = "blue";
-        ctx.fill();
+
+        // Draw attack sprite on target
+        const [frameX, frameY] = this.frame;
+        ctx.drawImage(
+          this.image,
+          frameX.frame * 32,
+          frameY.frame * 32,
+          32,
+          32,
+          this.gameObject.attack.targetObject.x +
+            utils.withGrid(10.5) -
+            cameraPerson.x -
+            6,
+          this.gameObject.attack.targetObject.y +
+            utils.withGrid(6) -
+            cameraPerson.y -
+            8,
+          32,
+          32
+        );
+
+        // If distance lower than 10 (its at target),
+        // stop moving attack sprite
+        if (distance < 10) this.isSpriteDone = true;
+
+        if (this.isSpriteDone) return;
+
+        // Draw moving attack sprite
+        ctx.drawImage(
+          this.image,
+          0,
+          0,
+          32,
+          32,
+          x + this.spritePosition.x + 2,
+          y + this.spritePosition.y + 8,
+          32,
+          32
+        );
       }
 
       // Draw damage dealt above person etc
@@ -469,10 +527,6 @@ export class Sprite {
             target.y + utils.withGrid(6) - cameraPerson.y - 11
           );
         });
-        // setTimeout(()=>{
-        //   this.gameObject.attack.hittedTargetsPositions = [];
-
-        // },100)
       }
     }
 
