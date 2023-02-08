@@ -25,11 +25,15 @@ export class Attack {
     this.hittedTargetsPositions = [];
     this.isAnimationEnd = false;
     this.isAttackByOtherPlayer = config.isAttackByOtherPlayer || false;
+
+    this.attackAngle = {
+      x: 0,
+      y: 0
+    }
+    this.isMarkedTarget = false;
   }
 
   doDamageToTargetInAttackArea(state) {
-    // console.log("scaning for targets...", this.selectedAttack.combatArea.up);
-
     // Attacker position
     const attacker = {
       x: this.gameObject.x,
@@ -70,22 +74,11 @@ export class Attack {
         });
       });
 
-      if (this.gameObject.type === "Person"){
-        console.log(this.gameObject.attacks.length > 0)
-
-        }
-        
       // Check for possible targets
       checkForTargetAtThisPositions.forEach((position) => {
         const { x, y } = position;
-        // console.log(state)
-        // if (this.gameObject.type === "Person") {
-        //   console.log("1 - check position", x, y);
-        // }
+
         for (const possibleTarget in state.gameObjects) {
-          // if (this.gameObject.type === "Person") {
-          //   console.log("2 - check all game objects for target");
-          // }
           const target = state.gameObjects[possibleTarget];
           const xArray = utils.collectionNumbersBetweenNumbers(
             x - 8,
@@ -98,50 +91,82 @@ export class Attack {
             target.speed
           );
 
-          // TODO: if target moving deals 2x damage at online BROKE
           if (
             xArray.includes(target.x) &&
             yArray.includes(target.y) &&
-            // target.x === x &&
-            // target.y === y &&
             ((target.type === "Monster" && this.gameObject.type === "Person") ||
               (target.type === "Person" && this.gameObject.type === "Monster"))
           ) {
-            // If target is found, deal damage to it
-            // if (this.gameObject.type === "Person") console.log("target TRUE", target);
-            // if (this.gameObject.type === "Person") {
-            //   // console.log("target TRUE", this.hittedTargetsPositions);
-            //   console.log("3 - attack");
-            // }
-
-            // if (target.type === "Monster") console.log("xArray", xArray);
-            // if (this.gameObject.name === playerState.name){
+            // Deduct hp by value of damage
             target.currentHp -= this.selectedAttack.baseDamage;
-            // }
-            if (target.type === "Monster" && 
-            target.currentHp >= 0 
-            ){
+
+            if (target.type === "Monster" && target.currentHp >= 0) {
               target.dbUpdateMonster({
                 monster: {
-                  currentHp: target.currentHp
-                }
-              })
+                  currentHp: target.currentHp,
+                },
+              });
             }
-            
+
             // Send hittedTargetsPositions data to sprite
             this.hittedTargetsPositions.push({
               x: target.x,
               y: target.y,
               damageDealt: this.selectedAttack.baseDamage,
             });
-            // console.log(this.gameObject.attacks)
-            // if (this.gameObject.type === "Person") {
-            //   console.log("hitted target", this.hittedTargetsPositions.length);
-            // }
+
             return;
           }
         }
       });
+    }
+    // If attack need marked target
+    // TODO: delete attack sprite if colide with monster
+    // monsters target finder
+    else if (this.selectedAttack.needMarkedTarget) {
+      
+      // Find marked target
+      const target = Object.values(state.gameObjects).find(target => target.isAim);
+      if (target){
+        const distanceToTarget = utils.getDistanceToObject(
+          { x: target.x, y: target.y },
+          { x: attacker.x, y: attacker.y }
+        );
+        // If target is too far away, stop here
+        if (distanceToTarget > this.selectedAttack.distance) return console.log("target too far away");
+
+        this.isMarkedTarget = true;
+
+        // Return angle to target
+        const angle = Math.atan2(
+          target.y - attacker.y,
+          target.x - attacker.x,
+        )
+        this.attackAngle.x = Math.cos(angle); 
+        this.attackAngle.y = Math.sin(angle);
+
+        // Deduct hp by value of damage
+        target.currentHp -= this.selectedAttack.baseDamage;
+
+            if (target.type === "Monster" && target.currentHp >= 0) {
+              target.dbUpdateMonster({
+                monster: {
+                  currentHp: target.currentHp,
+                },
+              });
+            }
+
+            // Send hittedTargetsPositions data to sprite
+            this.hittedTargetsPositions.push({
+              x: target.x,
+              y: target.y,
+              damageDealt: this.selectedAttack.baseDamage,
+            });
+
+      } else {
+        this.isMarkedTarget = false;
+        console.log("no target");
+      }
     }
   }
 
@@ -151,10 +176,10 @@ export class Attack {
 
     // Add attack to attacks array
     this.gameObject.attacks.push(this.selectedAttack);
-    
+
     // If another player attacks, it does not deal damage, only animation
     if (!this.isAttackByOtherPlayer) this.doDamageToTargetInAttackArea(state);
-
+     
     // TODO: \/ without this is error if online animation WHY?
     // first load dont have animation thats why
     this.gameObject.attack.sprite.currentAnimation =

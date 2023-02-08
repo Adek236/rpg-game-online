@@ -7,6 +7,11 @@ export class Sprite {
     this.repeatableImageAtPositions = config.repeatableImageAtPositions || {
       norepeat: [{ x: 0, y: 0 }],
     };
+    this.spritePosition = {
+      x: 0,
+      y: 0,
+    };
+    this.spriteSpeed = 3;
 
     // Set up the image
     this.image = new Image();
@@ -290,17 +295,16 @@ export class Sprite {
       // If other player hit monster, show it
       if (
         this.gameObject.type === "Monster" &&
-        this.gameObject.isHittedByOtherPlayer.length > 0 
+        this.gameObject.isHittedByOtherPlayer.length > 0
       ) {
         this.gameObject.isHittedByOtherPlayer.forEach((obj) => {
-
           ctx.font = "6px Arial Black";
           ctx.fillStyle = "red";
           ctx.fillText(
             `-${obj.damageDealt}`,
             obj.x + utils.withGrid(10.5) - cameraPerson.x,
             obj.y + utils.withGrid(6) - cameraPerson.y - 11
-            );
+          );
         });
       }
 
@@ -340,19 +344,18 @@ export class Sprite {
         );
       }
 
-        this.isShadowLoaded &&
-          ctx.drawImage(
-            this.shadow,
-            0,
-            0,
-            32,
-            32,
-            x + this.gameObject.shadowOffsetX,
-            y + this.gameObject.shadowOffsetY,
-            32,
-            32
-          );
-      
+      this.isShadowLoaded &&
+        ctx.drawImage(
+          this.shadow,
+          0,
+          0,
+          32,
+          32,
+          x + this.gameObject.shadowOffsetX,
+          y + this.gameObject.shadowOffsetY,
+          32,
+          32
+        );
 
       const [frameX, frameY] = this.frame;
 
@@ -369,25 +372,16 @@ export class Sprite {
           32
         );
 
-      // If its person walk animation,
-      // if (
-      //   this.gameObject.type === "Person" &&
-      //   this.currentAnimation.includes("walk") &&
-      //   this.currentAnimationFrame === 3
-      // ) {
-      //   return (this.gameObject.walkAnimationEnd = true);
-      // }
-
       // If its monster death animation,
       // show it once
       if (
         this.gameObject.type === "Monster" &&
         this.currentAnimation === "death" &&
-        this.currentAnimationFrame === this.animations[this.currentAnimation].length-1
+        this.currentAnimationFrame ===
+          this.animations[this.currentAnimation].length - 1
       )
         return (this.gameObject.deathAnimationEnd = true);
     } else {
-
       const [slashY, slashX] = this.slashFrame;
 
       if (
@@ -409,7 +403,10 @@ export class Sprite {
 
       const [frameX, frameY] = this.frame;
 
-      if (this.isLoaded) {
+      if (
+        this.isLoaded &&
+        !this.gameObject.attack.selectedAttack.needMarkedTarget
+      ) {
         // If not repeatable spell just do once loop
         let isDir = Object.keys(this.repeatableImageAtPositions).includes(
           "norepeat"
@@ -435,6 +432,29 @@ export class Sprite {
             32
           );
         });
+      }
+
+      // If spell need marked target, and have target, 
+      // 
+      if (
+        this.isLoaded &&
+        this.gameObject.attack.selectedAttack.needMarkedTarget &&
+        this.gameObject.attack.isMarkedTarget
+      ) {
+        const { x: xSpeed, y: ySpeed } =
+          this.gameObject.attack.attackAngle;
+        this.spritePosition.x += xSpeed * this.spriteSpeed;
+        this.spritePosition.y += ySpeed * this.spriteSpeed;
+        ctx.beginPath();
+        ctx.arc(
+          x + this.gameObject.center.offsetX + this.spritePosition.x,
+          y + this.gameObject.center.offsetY + this.spritePosition.y,
+          5,
+          0,
+          Math.PI * 2
+        );
+        ctx.fillStyle = "blue";
+        ctx.fill();
       }
 
       // Draw damage dealt above person etc

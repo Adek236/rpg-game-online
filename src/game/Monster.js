@@ -38,7 +38,8 @@ export class Monster extends Person {
     };
     this.initialX = config.initialX;
     this.initialY = config.initialY;
-    this.radius = 100;
+    this.offensiveRadius = 100;
+    this.radius = config.radius || 6;
     this.validTargets = [];
     this.focusedTarget = null;
     this.lastPosition = null;
@@ -90,11 +91,11 @@ export class Monster extends Person {
 
     // If monster is too far away from initial position,
     // teleport him back to start
-    const distanceFromInitialPosition = this.getDistanceToTarget(
+    const distanceFromInitialPosition = utils.getDistanceToObject(
       { x: this.initialX, y: this.initialY },
       { x: this.x, y: this.y }
     );
-    if (distanceFromInitialPosition > this.radius * 2) {
+    if (distanceFromInitialPosition > this.offensiveRadius * 2) {
       this.teleportToInitialPosition();
       return;
     }
@@ -125,11 +126,11 @@ export class Monster extends Person {
           x: this.x,
           y: this.y,
         };
-        const distance = this.getDistanceToTarget(monsterObj, targetObj);
+        const distance = utils.getDistanceToObject(monsterObj, targetObj);
         return (
           target.type === "Person" &&
           // !target.isSafeMode &&
-          distance < target.radius + this.radius
+          distance < target.radius + this.offensiveRadius
         );
       }
     );
@@ -204,11 +205,11 @@ export class Monster extends Person {
     this.followTarget(state);
   }
 
-  getDistanceToTarget(from, to) {
-    const gapX = from.x - to.x;
-    const gapY = from.y - to.y;
-    return Math.hypot(gapX, gapY);
-  }
+  // getDistanceToTarget(from, to) {
+  //   const gapX = from.x - to.x;
+  //   const gapY = from.y - to.y;
+  //   return Math.hypot(gapX, gapY);
+  // }
 
   followTarget(state) {
     if (!this.focusedTarget) return;
@@ -260,7 +261,7 @@ export class Monster extends Person {
         target.aroundFreeSpace[direction].isFree = true;
       }
       target.aroundFreeSpace[direction].position = pos;
-      target.aroundFreeSpace[direction].distance = this.getDistanceToTarget(
+      target.aroundFreeSpace[direction].distance = utils.getDistanceToObject(
         { x: pos.x, y: pos.y },
         { x: this.x, y: this.y }
       );
@@ -273,15 +274,15 @@ export class Monster extends Person {
         target.aroundFreeSpace[obj].position.y === this.y
       ) {
         // Attack
-        this.count2++;
-        if (this.count2 % 100 === 0) {
-          this.initAttack(state, "swordSlash");
-          this.dbUpdateMonster({
-            monster: {
-              isAttack: "swordSlash",
-            },
-          });
-        }
+        // this.count2++;
+        // if (this.count2 % 100 === 0) {
+        //   this.initAttack(state, "swordSlash");
+        //   this.dbUpdateMonster({
+        //     monster: {
+        //       isAttack: "swordSlash",
+        //     },
+        //   });
+        // }
 
         // Turn towards the target
         const oppositeDir = utils.oppositeDirection(obj);
@@ -390,7 +391,7 @@ export class Monster extends Person {
       possibleMove.push({
         name: direction,
         isPossible: !state.map.isSpaceTaken(this.x, this.y, direction),
-        distanceToTarget: this.getDistanceToTarget(
+        distanceToTarget: utils.getDistanceToObject(
           targetPosition,
           utils.nextPosition(this.x, this.y, direction)
         ),

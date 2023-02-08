@@ -85,5 +85,10 @@ export const utils = {
     // console.log(resultArr);
     
     return resultArr;
+  },
+  getDistanceToObject(from, to) {
+    const gapX = from.x - to.x;
+    const gapY = from.y - to.y;
+    return Math.hypot(gapX, gapY);
   }
 };

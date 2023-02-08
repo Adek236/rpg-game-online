@@ -105,11 +105,11 @@ export class Overworld {
       // console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
-      this.map.gameObjects[playerState.name].initAttack(this.map, "iceWave");
+      this.map.gameObjects[playerState.name].initAttack(this.map, "iceShot");
       // Set attack at db
       playerState.updatePlayer({
         player: {
-          isAttack: "iceWave",
+          isAttack: "iceShot",
         },
       });
       // console.log(this)
