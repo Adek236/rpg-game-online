@@ -1,3 +1,4 @@
+import { playerState } from "./PlayerState.js";
 import { utils } from "./utils/utils.js";
 
 export class Sprite {
@@ -435,6 +436,17 @@ export class Sprite {
           );
         });
       }
+      console.log(this.gameObject.attack)
+      
+      // If spell need market target, 
+      if (
+        this.isLoaded &&
+        this.gameObject.attack.selectedAttack.needMarkedTarget &&
+        this.gameObject.name !== playerState.name
+        ){
+
+        }
+
 
       // If spell need marked target, and have target
       if (
@@ -442,6 +454,7 @@ export class Sprite {
         this.gameObject.attack.selectedAttack.needMarkedTarget &&
         this.gameObject.attack.isMarkedTarget
       ) {
+        console.log("1")
         // Moving sprite angle direction
         const { x: xSpeed, y: ySpeed } = this.gameObject.attack.attackAngle;
 

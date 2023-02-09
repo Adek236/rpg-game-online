@@ -10,7 +10,7 @@ export const dataAttacks = {
     useSlash: false,
     needMarkedTarget: true,
     combatAreaName: null,
-    baseDamage: 0,
+    baseDamage: 1,
     distance: 100,
     repeatableImageAtPositions: {
       norepeat: [{ x: 0, y: 0 }],

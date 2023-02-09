@@ -99,7 +99,7 @@ export class OverworldMap {
       //   instace = new Loot(object);
       // }
 
-      console.log("its dont skip ;s")
+      console.log("its dont skip ;s");
 
       this.gameObjects[key] = instace;
       // this.gameObjects[key].name = key;
@@ -129,16 +129,15 @@ export class OverworldMap {
     // }
 
     this.gameObjects[object.name] = instace;
-    
-    // Active safe mode, 
-    // monster can't attack if safe mode 
+
+    // Active safe mode,
+    // monster can't attack if safe mode
     // this.gameObjects[object.name].isSafeMode = true;
     // console.log("safe mode on")
     //   setTimeout(()=>{
     //     this.gameObjects[object.name].isSafeMode = false;
     //     console.log("safe mode off")
     //   },1000)
-    
 
     instace.mount(this);
 
@@ -173,14 +172,30 @@ export class OverworldMap {
 
   selectTarget() {
     const selectTarget = Object.values(this.gameObjects).find(
-      (target) => target.type === "Monster" && !target.isAim && !target.isWalkable
+      (target) =>
+        target.type === "Monster" && !target.isAim && !target.isWalkable
     );
     const unselectTarget = Object.values(this.gameObjects).find(
-      (target) => target.type === "Monster" && target.isAim && !target.isWalkable
+      (target) =>
+        target.type === "Monster" && target.isAim && !target.isWalkable
     );
 
-    if (selectTarget) selectTarget.isAim = true;
-    if (unselectTarget) unselectTarget.isAim = false;
+    if (selectTarget) {
+      selectTarget.isAim = true;
+      playerState.updatePlayer({
+        player: {
+          markedTarget: selectTarget.id,
+        },
+      });
+    }
+    if (unselectTarget) {
+      unselectTarget.isAim = false;
+      playerState.updatePlayer({
+        player: {
+          markedTarget: false,
+        },
+      });
+    }
   }
 
   async startCutscene(events) {
@@ -249,7 +264,7 @@ export class OverworldMap {
             y: utils.withGrid(monsterData.y),
             initialX: utils.withGrid(monsterData.initialX),
             initialY: utils.withGrid(monsterData.initialY),
-            animations: dataMonsters[monsterData.name].animations
+            animations: dataMonsters[monsterData.name].animations,
           };
         });
       })
