@@ -20,9 +20,9 @@ class PlayerState {
     };
   }
 
-  get playerRef() {
-    return ref(db, `players/${this.id}`);
-  }
+  // get playerRef() {
+  //   return ref(db, `players/${this.id}`);
+  // }
 
   async getPlayerData(userData, resolve) {
     let object;
@@ -36,24 +36,27 @@ class PlayerState {
             this.name = userData.name;
             this.id = userData.id;
             this.currentMap = userData.currentMap;
-            this.outfit = userData.outfit; 
-           OverworldMaps[userData.currentMap].playersPosition[
-              userData.name
-            ] = {
-              direction: userData.direction,
-              x: utils.withGrid(userData.x),
-              y: utils.withGrid(userData.y),
-            };
+            this.outfit = userData.outfit;
+            OverworldMaps[userData.currentMap].playersPosition[userData.name] =
+              {
+                direction: userData.direction,
+                x: utils.withGrid(userData.x),
+                y: utils.withGrid(userData.y),
+                currentHp: userData.currentHp
+              };
             object = {
+              id: userData.id,
               name: userData.name,
               type: "Person",
               direction: userData.direction,
               currentMap: userData.currentMap,
+              currentHp: userData.currentHp,
+              maxHp: userData.maxHp,
               isPlayerControlled: true,
               x: utils.withGrid(userData.x),
               y: utils.withGrid(userData.y),
               outfit: userData.outfit,
-            }
+            };
             this.setPlayerOnline();
           }
         });
@@ -65,8 +68,29 @@ class PlayerState {
     resolve(object);
   }
 
-  updatePlayer(state) {
-    update(this.playerRef, state.player);
+  getSpecificPlayerData(specificData, playerName = this.name) {
+    return new Promise((resolve, reject) => {
+      (async () => {
+        await get(child(dbRef, "players"))
+          .then((snapshot) => {
+            if (!snapshot.exists()) return;
+            snapshot.forEach((user) => {
+              const userData = user.val();
+              if (userData.name === playerName) {
+                resolve(userData[specificData]);
+              }
+            });
+          })
+          .catch((error) => {
+            console.log("getSpecificPlayerData error:", error);
+            reject(error);
+          });
+      })();
+    });
+  }
+
+  updatePlayer(state, id = this.id) {
+    update(ref(db, `players/${id}`), state.player);
   }
 
   setPlayerOnline(id = this.id) {
@@ -84,7 +108,6 @@ class PlayerState {
   // setPlayerActionOff(id = this.id) {
   //   update(ref(db, `players/${id}`), { isAction: false });
   // }
-
 }
 
 export const playerState = new PlayerState();

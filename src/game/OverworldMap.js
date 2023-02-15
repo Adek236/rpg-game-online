@@ -145,6 +145,9 @@ export class OverworldMap {
   }
 
   unmountGameObject(name, currentMap = null) {
+    // console.log("unmount");
+    if (!this.gameObjects[name]) return;
+
     delete this.gameObjects[name];
 
     if (this.type === "Person") {

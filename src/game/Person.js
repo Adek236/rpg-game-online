@@ -6,6 +6,7 @@ import { OverworldMaps } from "./data/OverworldMaps.js";
 export class Person extends GameObject {
   constructor(config) {
     super(config);
+    this.id = config.id || null;
     this.isStanding = false;
     this.intentPos = null; // [x,y]
     this.radius = config.radius || 12;
@@ -17,6 +18,7 @@ export class Person extends GameObject {
     this.movingProgressReaming = 0;
     this.movingProgressReamingMax = 16 / this.speed;
     // this.isSafeMode = false;s
+    this.isHittedByOtherPlayer = [];
 
     this.isPlayerControlled = config.isPlayerControlled || false;
     // this.walkAnimationEnd = true;

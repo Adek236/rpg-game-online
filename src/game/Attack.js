@@ -29,12 +29,13 @@ export class Attack {
 
     this.attackAngle = {
       x: 0,
-      y: 0
-    }
+      y: 0,
+    };
     this.isMarkedTarget = false;
   }
 
-  doDamageToTargetInAttackArea(state) {
+  doDamageToTargetInAttackArea(state, isAttackByOtherPlayer) {
+    if (isAttackByOtherPlayer) return;
 
     // Attacker position
     const attacker = {
@@ -42,158 +43,202 @@ export class Attack {
       y: this.gameObject.y,
     };
 
-    // If attack dont need marked target
-    if (!this.selectedAttack.needMarkedTarget) {
-      if (
-        this.gameObject.direction == "leftUp" ||
-        this.gameObject.direction == "leftDown"
-      )
-        this.gameObject.direction = "left";
-      if (
-        this.gameObject.direction == "rightUp" ||
-        this.gameObject.direction == "rightDown"
-      )
-        this.gameObject.direction = "right";
+    if (
+      this.gameObject.direction == "leftUp" ||
+      this.gameObject.direction == "leftDown"
+    )
+      this.gameObject.direction = "left";
+    if (
+      this.gameObject.direction == "rightUp" ||
+      this.gameObject.direction == "rightDown"
+    )
+      this.gameObject.direction = "right";
 
-      // Area of selected attack
-      const scaningArea = combatAreas[this.selectedAttack.combatAreaName];
-      // Area of position change
-      const comparativeArea =
-        comparativeCombatAreas[this.selectedAttack.combatAreaName];
+    // Area of selected attack
+    const scaningArea = combatAreas[this.selectedAttack.combatAreaName];
+    // Area of position change
+    const comparativeArea =
+      comparativeCombatAreas[this.selectedAttack.combatAreaName];
 
-      const checkForTargetAtThisPositions = [];
+    const checkForTargetAtThisPositions = [];
 
-      // Compare both attack area,
-      // return position to check if target is there
-      comparativeArea.forEach((row, i) => {
-        Array.from(row).forEach((pos, j) => {
-          if (scaningArea[this.gameObject.direction][i][j] === 1) {
-            checkForTargetAtThisPositions.push({
-              x: attacker.x + pos.x,
-              y: attacker.y + pos.y,
-            });
-          }
-        });
-      });
-
-      // Check for possible targets
-      checkForTargetAtThisPositions.forEach((position) => {
-        const { x, y } = position;
-
-        for (const possibleTarget in state.gameObjects) {
-          const target = state.gameObjects[possibleTarget];
-          const xArray = utils.collectionNumbersBetweenNumbers(
-            x - 8,
-            x + 8,
-            target.speed
-          );
-          const yArray = utils.collectionNumbersBetweenNumbers(
-            y - 8,
-            y + 8,
-            target.speed
-          );
-
-          if (
-            xArray.includes(target.x) &&
-            yArray.includes(target.y) &&
-            ((target.type === "Monster" && this.gameObject.type === "Person") ||
-              (target.type === "Person" && this.gameObject.type === "Monster"))
-              ) {
-                // Deduct hp by value of damage
-                target.currentHp -= this.selectedAttack.baseDamage;
-                
-            if (target.type === "Monster" && target.currentHp >= 0) {
-              target.dbUpdateMonster({
-                monster: {
-                  currentHp: target.currentHp,
-                },
-              });
-            }
-
-            // Send hittedTargetsPositions data to sprite
-            this.hittedTargetsPositions.push({
-              x: target.x,
-              y: target.y,
-              damageDealt: this.selectedAttack.baseDamage,
-            });
-
-            return;
-          }
+    // Compare both attack area,
+    // return position to check if target is there
+    comparativeArea.forEach((row, i) => {
+      Array.from(row).forEach((pos, j) => {
+        if (scaningArea[this.gameObject.direction][i][j] === 1) {
+          checkForTargetAtThisPositions.push({
+            x: attacker.x + pos.x,
+            y: attacker.y + pos.y,
+          });
         }
       });
-    }
-    // If attack need marked target
-    // TODO: delete attack sprite if colide with monster
-    // monsters target finder
-    else if (this.selectedAttack.needMarkedTarget) {
-      // Find marked target
-      const target = Object.values(state.gameObjects).find(target => target.isAim);
-      if (target){
-        this.targetObject = target;
-        const distanceToTarget = utils.getDistanceToObject(
-          { x: target.x, y: target.y },
-          { x: attacker.x, y: attacker.y }
-        );
-        // If target is too far away, stop here
-        if (distanceToTarget > this.selectedAttack.distance) return console.log("target too far away");
-        
-        this.isMarkedTarget = true;
-        
-        // Return angle to target
-        const angle = Math.atan2(
-          target.y - attacker.y,
-          target.x - attacker.x,
-          )
-        this.attackAngle.x = Math.cos(angle); 
-        this.attackAngle.y = Math.sin(angle);
+    });
 
-        // Deduct hp by value of damage
-        target.currentHp -= this.selectedAttack.baseDamage;
+    // Check for possible targets
+    checkForTargetAtThisPositions.forEach((position) => {
+      const { x, y } = position;
+
+      for (const possibleTarget in state.gameObjects) {
+        const target = state.gameObjects[possibleTarget];
         
-            if (target.type === "Monster" && target.currentHp >= 0) {
-              target.dbUpdateMonster({
-                monster: {
-                  currentHp: target.currentHp,
-                },
-              });
-            }
-            
-            // Send hittedTargetsPositions data to sprite
-            this.hittedTargetsPositions.push({
-              x: target.x,
-              y: target.y,
-              damageDealt: this.selectedAttack.baseDamage,
+        // If target is dead, stop here
+        if (target.deathAnimationEnd) return;
+
+        const xArray = utils.collectionNumbersBetweenNumbers(
+          x - 8,
+          x + 8,
+          target.speed
+        );
+        const yArray = utils.collectionNumbersBetweenNumbers(
+          y - 8,
+          y + 8,
+          target.speed
+        );
+
+        if (
+          xArray.includes(target.x) &&
+          yArray.includes(target.y) &&
+          ((target.type === "Monster" && this.gameObject.type === "Person") ||
+            (target.type === "Person" && this.gameObject.type === "Monster"))
+        ) {
+          // Deduct hp by value of damage
+          target.currentHp -= this.selectedAttack.baseDamage;
+
+          // Deduct monster hp by value of damage at db
+          if (target.type === "Monster" && target.currentHp >= 0) {
+            target.dbUpdateMonster({
+              monster: {
+                currentHp: target.currentHp,
+              },
             });
-            
-          } else {
-        this.isMarkedTarget = false;
-        console.log("no target");
+          }
+          
+          // Deduct player hp by value of damage at db
+          if (target.type === "Person" && target.currentHp >= 0) {
+            console.log("target", target.name)
+            playerState.updatePlayer({
+              player: {
+                currentHp: target.currentHp,
+              },
+            },
+            target.id
+            );
+          }
+          
+          // Send hittedTargetsPositions data to sprite
+          this.hittedTargetsPositions.push({
+            x: target.x,
+            y: target.y,
+            damageDealt: this.selectedAttack.baseDamage,
+          });
+
+          return;
+        }
       }
+    });
+  }
+
+  async doDamageToMarkedTargetInAttackArea(state, isAttackByOtherPlayer) {
+    // TODO: monsters target finder
+
+    // Attacker position
+    const attacker = {
+      x: this.gameObject.x,
+      y: this.gameObject.y,
+      name: this.gameObject.name,
+    };
+
+    let target = null;
+
+    // Find marked target
+    if(attacker.name === playerState.name){
+      target = Object.values(state.gameObjects).find(
+        (target) => target.isAim
+      );
+    }
+    if(attacker.name !== playerState.name){
+      const targetId = await playerState.getSpecificPlayerData("markedTarget", attacker.name)
+      console.log(targetId)
+      if (!targetId) return;
+      target = Object.values(state.gameObjects).find(
+        (target) => target.id === targetId
+      );
+    }
+
+    if (target) {
+      this.targetObject = target;
+      const distanceToTarget = utils.getDistanceToObject(
+        { x: target.x, y: target.y },
+        { x: attacker.x, y: attacker.y }
+      );
+      // If target is too far away, stop here
+      if (distanceToTarget > this.selectedAttack.distance)
+        return console.log("target too far away");
+
+      this.isMarkedTarget = true;
+
+      // Return angle to target
+      const angle = Math.atan2(target.y - attacker.y, target.x - attacker.x);
+      this.attackAngle.x = Math.cos(angle);
+      this.attackAngle.y = Math.sin(angle);
+
+      // Send hittedTargetsPositions data to sprite
+      this.hittedTargetsPositions.push({
+        x: target.x,
+        y: target.y,
+        damageDealt: this.selectedAttack.baseDamage,
+      });
+      
+      if (isAttackByOtherPlayer) return;
+
+      // Deduct hp by value of damage
+      target.currentHp -= this.selectedAttack.baseDamage;
+
+      if (target.type === "Monster" && target.currentHp >= 0) {
+        target.dbUpdateMonster({
+          monster: {
+            currentHp: target.currentHp,
+          },
+        });
+      }
+
+    } else {
+      this.isMarkedTarget = false;
+      console.log("no target");
     }
   }
-  
+
   init(state) {
     // If monster change state to map
     if (this.gameObject.type === "Monster") state = state.map;
-    
-    
+
     // Add attack to attacks array
     this.gameObject.attacks.push(this.selectedAttack);
 
     // If another player attacks, it does not deal damage, only animation
-    if (!this.isAttackByOtherPlayer) this.doDamageToTargetInAttackArea(state);
-    
+    if (!this.selectedAttack.needMarkedTarget) {
+      this.doDamageToTargetInAttackArea(state, this.isAttackByOtherPlayer);
+    }
+
+    if (this.selectedAttack.needMarkedTarget) {
+      this.doDamageToMarkedTargetInAttackArea(
+        state,
+        this.isAttackByOtherPlayer
+      );
+    }
+
     // TODO: \/ without this is error if online animation WHY?
     // first load dont have animation thats why
     this.gameObject.attack.sprite.currentAnimation =
-    this.selectedAttack.animateName + this.gameObject.direction;
-    
+      this.selectedAttack.animateName + this.gameObject.direction;
+
     setTimeout(() => {
       // Remove attack from attacks array
       this.gameObject.attacks = this.gameObject.attacks.filter((el) => {
         return el !== this.selectedAttack;
       });
-      
+
       // If its a player
       if (this.gameObject.name === playerState.name) {
         // Set attack to false at db

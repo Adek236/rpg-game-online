@@ -12,8 +12,8 @@ export class Monster extends Person {
   constructor(config) {
     super(config);
     this.speed = config.speed || 0.5;
-    this.movingProgressReamingMax = 16/this.speed;
-    
+    this.movingProgressReamingMax = 16 / this.speed;
+
     this.directionUpdate = {
       up: ["y", -this.speed],
       down: ["y", this.speed],
@@ -43,46 +43,50 @@ export class Monster extends Person {
     this.validTargets = [];
     this.focusedTarget = null;
     this.lastPosition = null;
-    this.id = config.id;
+    // this.id = config.id;
     this.isPlayerControlledMonster = true;
     this.lastMoveHistory = [];
     this.lastMoveHistoryMaxLength = 8;
-    
+
     this.isAim = false;
-    this.isHittedByOtherPlayer = [];
+    
 
     this.count = 0;
     this.count2 = 0;
     this.deathAnimationEnd = false;
+    this.isUnmountDeadBodyTimeout = false;
   }
 
   update(state) {
     super.update(state);
-    
+
     // If monster died
     // TODO: take loot after click
     if (this.currentHp <= 0) {
       // Update monster db
       // if (this.isPlayerControlledMonster){
-        this.dbUpdateMonster({
-          monster: { 
-            isAlive: false,
-            currentTarget: false,
-            currentHp: this.maxHp,
-            x: utils.withGridReverse(this.initialX),
-            y: utils.withGridReverse(this.initialY),
-          },
-        });
+      this.dbUpdateMonster({
+        monster: {
+          isAlive: false,
+          currentTarget: false,
+          currentHp: this.maxHp,
+          x: utils.withGridReverse(this.initialX),
+          y: utils.withGridReverse(this.initialY),
+        },
+      });
       // }
-      
-      // Change him to walkable object, 
+
+      // Change him to walkable object,
       // unmount him after 10 second
       if (this.deathAnimationEnd) {
         if (this.isAim) this.isAim = false;
         this.isWalkable = true;
-        setTimeout(()=>{
+
+        if (this.isUnmountDeadBodyTimeout) return;
+        this.isUnmountDeadBodyTimeout = setTimeout(() => {
+          console.log("settimeout deatd");
           state.map.unmountGameObject(this.id, this.currentMap);
-        },10000)
+        }, 10000);
       }
 
       // Stop here
@@ -108,16 +112,17 @@ export class Monster extends Person {
 
     // Mark targets that will enter your radius
     // Sort is needed?
-    this.validTargets = Object.values(state.map.gameObjects).sort((a,b)=>{
-      if (a.name < b.name) {
-        return -1;
-      }
-      if (a.name > b.name) {
-        return 1;
-      }
-      return 0;
-    }).filter(
-      (target) => {
+    this.validTargets = Object.values(state.map.gameObjects)
+      .sort((a, b) => {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      })
+      .filter((target) => {
         const targetObj = {
           x: target.x,
           y: target.y,
@@ -132,8 +137,7 @@ export class Monster extends Person {
           // !target.isSafeMode &&
           distance < target.radius + this.offensiveRadius
         );
-      }
-    );
+      });
 
     // console.log(this.validTargets)
 
@@ -175,17 +179,17 @@ export class Monster extends Person {
         else {
           // Check current valid targets
           // Sort is needed?
-          const isTargetHere = this.validTargets.sort((a,b)=>{
-            if (a.name < b.name) {
-              return -1;
-            }
-            if (a.name > b.name) {
-              return 1;
-            }
-            return 0;
-          }).find(
-            (target) => target.name === currentTarget
-          );
+          const isTargetHere = this.validTargets
+            .sort((a, b) => {
+              if (a.name < b.name) {
+                return -1;
+              }
+              if (a.name > b.name) {
+                return 1;
+              }
+              return 0;
+            })
+            .find((target) => target.name === currentTarget);
           if (isTargetHere) {
             this.focusedTarget = state.map.gameObjects[currentTarget];
           } else {
@@ -196,11 +200,9 @@ export class Monster extends Person {
       }
     );
 
-    // If someone else control monster, 
+    // If someone else control monster,
     // stop here (you are not a target)
     if (!this.isPlayerControlledMonster) return;
-
-      
 
     this.followTarget(state);
   }
@@ -245,11 +247,7 @@ export class Monster extends Person {
       return;
     }
 
-    
-
     if (this.movingProgressReaming > 0) return;
-
-    
 
     // Check free spaces around target
     Object.keys(target.aroundFreeSpace).forEach((direction) => {
@@ -330,13 +328,21 @@ export class Monster extends Person {
       // TODO: time
       this.count++;
       if (this.count % 5 === 0 && this.direction === newDirection.name) {
-        this.initAttack(state, "iceWave");
-        // if (target.isPlayerControlledMonster){
-          this.dbUpdateMonster({
-            monster: {
-              isAttack: "iceWave",
-            },
-          });
+        console.log("target.isPlayerControlledMonster", this.isPlayerControlledMonster)
+        if (this.isPlayerControlledMonster) {
+          // console.log("")
+          this.initAttack(state, "iceWave");
+        }
+
+        if (!this.isPlayerControlledMonster) {
+          this.initAttack(state, "iceWave", true);
+        }
+
+        this.dbUpdateMonster({
+          monster: {
+            isAttack: "iceWave",
+          },
+        });
         // }
       }
       // Move
@@ -345,9 +351,6 @@ export class Monster extends Person {
         { type: "walk", direction: newDirection.name }
       );
 
-      
-        
-      
       // // Add last move to store
       // if (this.lastMoveHistory.length < this.lastMoveHistoryMaxLength)
       //   return this.lastMoveHistory.push(newDirection.name);

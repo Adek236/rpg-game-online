@@ -102,9 +102,12 @@ export class OverworldEvent {
 
         // Game object player state update
         object = {
+          id: playerState.id,
           name: playerState.name,
           type: "Person",
           currentMap: this.event.map,
+          currentHp: obj.currentHp,
+          maxHp: obj.maxHp,
           isPlayerControlled: true,
           outfit: playerState.outfit,
         };

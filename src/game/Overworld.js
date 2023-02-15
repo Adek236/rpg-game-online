@@ -43,13 +43,13 @@ export class Overworld {
         .sort((a, b) => {
           // If game object is walkable (e.g. is dead)
           // draw him before non walkable
-          if (a.isWalkable && !b.isWalkable){
+          if (a.isWalkable && !b.isWalkable) {
             return -1;
           }
-          if (!a.isWalkable && b.isWalkable){
+          if (!a.isWalkable && b.isWalkable) {
             return 1;
           }
-          if (!a.isWalkable && !b.isWalkable){
+          if (!a.isWalkable && !b.isWalkable) {
             return a.y - b.y;
           }
         })
@@ -105,11 +105,11 @@ export class Overworld {
       // console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
-      this.map.gameObjects[playerState.name].initAttack(this.map, "iceShot");
+      this.map.gameObjects[playerState.name].initAttack(this.map, "iceWave");
       // Set attack at db
       playerState.updatePlayer({
         player: {
-          isAttack: "iceShot",
+          isAttack: "iceWave",
         },
       });
       // console.log(this)
@@ -194,11 +194,57 @@ export class Overworld {
       const players = snapshot.val().players;
       Object.values(players).forEach((player) => {
         // if (!this.isObjectsListens) return;
+        const playerObj = this.map.gameObjects[player.name];
 
         // If player its me skip
-        if (player.name === playerState.name) return;
+        if (player.name === playerState.name) {
+          // If player is online at your map and exist in game objects
+          // do something
+          if (
+            player.online &&
+            player.currentMap === playerState.currentMap &&
+            playerObj
+          ) {
+            console.log("object listener yourself")
+            // If player change position, update his game object
+            const currentPlayerState =
+              OverworldMaps[player.currentMap].playersPosition[player.name];
 
-        const playerObj = this.map.gameObjects[player.name];
+            // Update position at playersPosition
+            OverworldMaps[player.currentMap].playersPosition[player.name] = {
+              direction: player.direction,
+              x: utils.withGrid(player.x),
+              y: utils.withGrid(player.y),
+              currentHp: player.currentHp,
+            };
+
+            const newPlayerState =
+              OverworldMaps[player.currentMap].playersPosition[player.name];
+
+            // If player lose hp, show it
+            if (
+              playerObj &&
+              currentPlayerState.currentHp !== newPlayerState.currentHp &&
+              currentPlayerState.currentHp > newPlayerState.currentHp
+            ) {
+              // If someone hit player,
+              // send positon of damage dealt (sprite needed this)
+              playerObj.isHittedByOtherPlayer.push({
+                x: newPlayerState.x,
+                y: newPlayerState.y,
+                damageDealt:
+                  currentPlayerState.currentHp - newPlayerState.currentHp,
+              });
+              // Clear animation
+              // TODO: improve to clear only sended,
+              // not all damage dealt animation
+              setTimeout(() => (playerObj.isHittedByOtherPlayer = []), 100);
+
+              playerObj.currentHp = player.currentHp;
+            }
+          }
+          return;
+        }
 
         // If player is online at your map and exist in game objects
         // do something
@@ -216,6 +262,7 @@ export class Overworld {
             direction: player.direction,
             x: utils.withGrid(player.x),
             y: utils.withGrid(player.y),
+            currentHp: player.currentHp,
           };
 
           const newPlayerState =
@@ -256,6 +303,28 @@ export class Overworld {
             // if (playerObj.movingProgressReaming > 0) return;
             playerObj.initAttack(this.map, player.isAttack, true);
           }
+
+          // If player lose hp, show it
+          if (
+            playerObj &&
+            currentPlayerState.currentHp !== newPlayerState.currentHp &&
+            currentPlayerState.currentHp > newPlayerState.currentHp
+          ) {
+            // If someone hit player,
+            // send positon of damage dealt (sprite needed this)
+            playerObj.isHittedByOtherPlayer.push({
+              x: newPlayerState.x,
+              y: newPlayerState.y,
+              damageDealt:
+                currentPlayerState.currentHp - newPlayerState.currentHp,
+            });
+            // Clear animation
+            // TODO: improve to clear only sended,
+            // not all damage dealt animation
+            setTimeout(() => (playerObj.isHittedByOtherPlayer = []), 100);
+
+            playerObj.currentHp = player.currentHp;
+          }
         }
 
         // If player is online at your map and doesn't exist in game objects,
@@ -272,10 +341,13 @@ export class Overworld {
           };
 
           const object = {
+            id: player.id,
             name: player.name,
             type: "Person",
             direction: player.direction,
             currentMap: player.currentMap,
+            currentHp: player.currentHp,
+            maxHp: player.maxHp,
             x: utils.withGrid(player.x),
             y: utils.withGrid(player.y),
             outfit: player.outfit,
@@ -353,7 +425,7 @@ export class Overworld {
             type: "Monster",
             x: utils.withGrid(monster.x),
             y: utils.withGrid(monster.y),
-            animations: dataMonsters[monster.name].animations
+            animations: dataMonsters[monster.name].animations,
           };
 
           const newMonsterState =
@@ -393,7 +465,8 @@ export class Overworld {
             monsterObj.movingProgressReaming === 0 &&
             monster.isAttack
           ) {
-            monsterObj.initAttack({ map: this.map }, monster.isAttack);
+            // if (monster.currentTarget )
+            monsterObj.initAttack({ map: this.map }, monster.isAttack, true);
           }
 
           // If monster lose hp, show it
@@ -403,7 +476,7 @@ export class Overworld {
             currentMonsterState.currentHp > newMonsterState.currentHp
           ) {
             // If someone hit monster,
-            // send positon of damage dealt (sprite needed)
+            // send positon of damage dealt (sprite needed this)
             monsterObj.isHittedByOtherPlayer.push({
               x: newMonsterState.x,
               y: newMonsterState.y,
@@ -449,7 +522,7 @@ export class Overworld {
             type: "Monster",
             x: utils.withGrid(monster.x),
             y: utils.withGrid(monster.y),
-            animations: dataMonsters[monster.name].animations
+            animations: dataMonsters[monster.name].animations,
           };
 
           const newMonsterState =
@@ -504,7 +577,7 @@ export class Overworld {
             type: "Monster",
             x: utils.withGrid(monster.x),
             y: utils.withGrid(monster.y),
-            animations: dataMonsters[monster.name].animations
+            animations: dataMonsters[monster.name].animations,
           };
 
           // For now setTimeout for no issue with change map

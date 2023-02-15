@@ -296,7 +296,7 @@ export class Sprite {
     if (!this.isAttackAnimation) {
       // If other player hit monster, show it
       if (
-        this.gameObject.type === "Monster" &&
+        (this.gameObject.type === "Monster" || this.gameObject.type === "Person") &&
         this.gameObject.isHittedByOtherPlayer.length > 0
       ) {
         this.gameObject.isHittedByOtherPlayer.forEach((obj) => {
@@ -436,7 +436,7 @@ export class Sprite {
           );
         });
       }
-      console.log(this.gameObject.attack)
+      // console.log(this.gameObject.attack)
       
       // If spell need market target, 
       if (
