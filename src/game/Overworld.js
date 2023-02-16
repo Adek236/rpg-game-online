@@ -196,9 +196,9 @@ export class Overworld {
         // if (!this.isObjectsListens) return;
         const playerObj = this.map.gameObjects[player.name];
 
-        // If player its me skip
+        // If player its me
         if (player.name === playerState.name) {
-          // If player is online at your map and exist in game objects
+          // If you are online at your map and exist in game objects
           // do something
           if (
             player.online &&
@@ -229,7 +229,7 @@ export class Overworld {
             ) {
               // If someone hit player,
               // send positon of damage dealt (sprite needed this)
-              playerObj.isHittedByOtherPlayer.push({
+              playerObj.isHittedBySomething.push({
                 x: newPlayerState.x,
                 y: newPlayerState.y,
                 damageDealt:
@@ -238,13 +238,39 @@ export class Overworld {
               // Clear animation
               // TODO: improve to clear only sended,
               // not all damage dealt animation
-              setTimeout(() => (playerObj.isHittedByOtherPlayer = []), 100);
+              setTimeout(() => (playerObj.isHittedBySomething = []), 100);
+
+              playerObj.currentHp = player.currentHp;
+            }
+
+            // If player hp up, show it
+            if (
+              playerObj &&
+              currentPlayerState.currentHp !== newPlayerState.currentHp &&
+              currentPlayerState.currentHp < newPlayerState.currentHp
+            ) {
+              // If someone hit player,
+              // send positon of damage dealt (sprite needed this)
+              playerObj.isHealedBySomething.push({
+                x: newPlayerState.x,
+                y: newPlayerState.y,
+                healAmount:
+                newPlayerState.currentHp - currentPlayerState.currentHp,
+              });
+              // Clear animation
+              // TODO: improve to clear only sended,
+              // not all damage dealt animation
+              setTimeout(() => (playerObj.isHealedBySomething = []), 200);
 
               playerObj.currentHp = player.currentHp;
             }
           }
+          // Stop here
           return;
         }
+
+        // IF PLAYER ITS NOT ME
+        // code below
 
         // If player is online at your map and exist in game objects
         // do something
@@ -312,7 +338,7 @@ export class Overworld {
           ) {
             // If someone hit player,
             // send positon of damage dealt (sprite needed this)
-            playerObj.isHittedByOtherPlayer.push({
+            playerObj.isHittedBySomething.push({
               x: newPlayerState.x,
               y: newPlayerState.y,
               damageDealt:
@@ -321,7 +347,7 @@ export class Overworld {
             // Clear animation
             // TODO: improve to clear only sended,
             // not all damage dealt animation
-            setTimeout(() => (playerObj.isHittedByOtherPlayer = []), 100);
+            setTimeout(() => (playerObj.isHittedBySomething = []), 100);
 
             playerObj.currentHp = player.currentHp;
           }
@@ -477,7 +503,7 @@ export class Overworld {
           ) {
             // If someone hit monster,
             // send positon of damage dealt (sprite needed this)
-            monsterObj.isHittedByOtherPlayer.push({
+            monsterObj.isHittedBySomething.push({
               x: newMonsterState.x,
               y: newMonsterState.y,
               damageDealt:
@@ -486,7 +512,7 @@ export class Overworld {
             // Clear animation
             // TODO: improve to clear only sended,
             // not all damage dealt animation
-            setTimeout(() => (monsterObj.isHittedByOtherPlayer = []), 100);
+            setTimeout(() => (monsterObj.isHittedBySomething = []), 100);
 
             monsterObj.currentHp = monster.currentHp;
           }
@@ -536,7 +562,7 @@ export class Overworld {
           ) {
             // If someone hit monster,
             // send positon of damage dealt (sprite needed)
-            monsterObj.isHittedByOtherPlayer.push({
+            monsterObj.isHittedBySomething.push({
               x: monsterObj.x,
               y: monsterObj.y,
               damageDealt:
@@ -545,7 +571,7 @@ export class Overworld {
             // Clear animation
             // TODO: improve to clear only sended,
             // not all damage dealt animation
-            setTimeout(() => (monsterObj.isHittedByOtherPlayer = []), 100);
+            setTimeout(() => (monsterObj.isHittedBySomething = []), 100);
 
             monsterObj.currentHp = monster.currentHp;
           }

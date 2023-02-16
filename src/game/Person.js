@@ -12,14 +12,15 @@ export class Person extends GameObject {
     this.radius = config.radius || 12;
     this.attacks = [];
     this.attack = null;
-    this.currentHp = config.currentHp || 100;
-    this.maxHp = config.maxHp || 100;
+    this.currentHp = config.currentHp || 50;
+    this.maxHp = config.maxHp || 50;
     this.speed = config.speed || 1;
     this.movingProgressReaming = 0;
     this.movingProgressReamingMax = 16 / this.speed;
     // this.isSafeMode = false;s
-    this.isHittedByOtherPlayer = [];
-
+    this.isHittedBySomething = [];
+    this.isHealedBySomething = [];
+    
     this.isPlayerControlled = config.isPlayerControlled || false;
     // this.walkAnimationEnd = true;
 

@@ -294,16 +294,32 @@ export class Sprite {
 
     // If not attack animation
     if (!this.isAttackAnimation) {
-      // If other player hit monster, show it
+      // If someone take damage, show it
       if (
         (this.gameObject.type === "Monster" || this.gameObject.type === "Person") &&
-        this.gameObject.isHittedByOtherPlayer.length > 0
+        this.gameObject.isHittedBySomething.length > 0
       ) {
-        this.gameObject.isHittedByOtherPlayer.forEach((obj) => {
+        this.gameObject.isHittedBySomething.forEach((obj) => {
           ctx.font = "6px Arial Black";
           ctx.fillStyle = "red";
           ctx.fillText(
             `-${obj.damageDealt}`,
+            obj.x + utils.withGrid(10.5) - cameraPerson.x,
+            obj.y + utils.withGrid(6) - cameraPerson.y - 11
+          );
+        });
+      }
+
+      // If someone healed, show it
+      if (
+        (this.gameObject.type === "Monster" || this.gameObject.type === "Person") &&
+        this.gameObject.isHealedBySomething.length > 0
+      ) {
+        this.gameObject.isHealedBySomething.forEach((obj) => {
+          ctx.font = "6px Arial Black";
+          ctx.fillStyle = "green";
+          ctx.fillText(
+            `+${obj.healAmount}`,
             obj.x + utils.withGrid(10.5) - cameraPerson.x,
             obj.y + utils.withGrid(6) - cameraPerson.y - 11
           );
