@@ -55,6 +55,26 @@ export class Person extends GameObject {
     // Player auto attack
     if (this.type==="Person" && playerState.name === this.name){
       this.autoAttack(state);
+      // If player dead
+      if(this.currentHp <= 0){
+        // console.log("Here one", state.map)
+        
+        // Give player full hp
+        this.currentHp = this.maxHp;
+        playerState.updatePlayer({player: {
+          currentHp: this.maxHp
+        }})
+
+        
+        state.map.startCutscene([{
+          type: "changeMap",
+          map: "outsideMap",
+          x: utils.withGrid(6),
+          y: utils.withGrid(6),
+          direction: "up",
+        }])
+
+      }
     }
 
     // Walk features

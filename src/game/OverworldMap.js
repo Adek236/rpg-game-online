@@ -263,6 +263,14 @@ export class OverworldMap {
     const match = this.cutsceneSpaces[`${hero.x},${hero.y}`];
     if (!this.isCutscenePlaying && match) {
       this.startCutscene(match[0].events);
+      // console.log("match[0].events",match[0].events)
+      // console.log("mahd",[{
+      //   type: "changeMap",
+      //   map: "outsideMap",
+      //   x: utils.withGrid(6),
+      //   y: utils.withGrid(6),
+      //   direction: "up",
+      // }])
     }
   }
 

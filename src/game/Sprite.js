@@ -470,7 +470,6 @@ export class Sprite {
         this.gameObject.attack.selectedAttack.needMarkedTarget &&
         this.gameObject.attack.isMarkedTarget
       ) {
-        console.log("1")
         // Moving sprite angle direction
         const { x: xSpeed, y: ySpeed } = this.gameObject.attack.attackAngle;
 
