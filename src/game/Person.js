@@ -20,7 +20,10 @@ export class Person extends GameObject {
     // this.isSafeMode = false;s
     this.isHittedBySomething = [];
     this.isHealedBySomething = [];
-    
+    this.markedTarget = null;
+
+    this.count3 = null;
+
     this.isPlayerControlled = config.isPlayerControlled || false;
     // this.walkAnimationEnd = true;
 
@@ -49,6 +52,12 @@ export class Person extends GameObject {
   }
 
   update(state) {
+    // Player auto attack
+    if (this.type==="Person" && playerState.name === this.name){
+      this.autoAttack(state);
+    }
+
+    // Walk features
     if (this.movingProgressReaming > 0) {
       this.updatePosition();
     } else {
@@ -225,4 +234,20 @@ export class Person extends GameObject {
     });
     this.attack.init(state);
   }
+
+  
+  autoAttack(state) {
+    if (!this.markedTarget) return;
+
+    this.count3++;
+    if (this.count3 % 100 === 0) {
+      this.initAttack(state.map, "autoAttack");
+      playerState.updatePlayer({
+        player: {
+          isAttack: "autoAttack",
+        },
+      });
+    }
+  }
+
 }

@@ -105,18 +105,21 @@ export class Overworld {
       // console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
-      this.map.gameObjects[playerState.name].initAttack(this.map, "iceWave");
+      this.map.gameObjects[playerState.name].initAttack(this.map, "autoAttack");
       // Set attack at db
       playerState.updatePlayer({
         player: {
-          isAttack: "iceWave",
+          isAttack: "autoAttack",
         },
       });
+
+      
       // console.log(this)
     });
 
     new KeyPressListener("Digit2", () => {
       console.log(this);
+      console.log("playerstate", playerState)
     });
     // new KeyPressListener("Digit3", () => {
     //   this.map.gameObjects[playerState.name].speed = 2;
@@ -125,7 +128,7 @@ export class Overworld {
     //   this.map.gameObjects[playerState.name].speed = 1;
     // });
     new KeyPressListener("Space", () => {
-      this.map.selectTarget();
+      this.map.selectTarget(playerState.name);
     });
   }
 
@@ -205,7 +208,6 @@ export class Overworld {
             player.currentMap === playerState.currentMap &&
             playerObj
           ) {
-            console.log("object listener yourself")
             // If player change position, update his game object
             const currentPlayerState =
               OverworldMaps[player.currentMap].playersPosition[player.name];
@@ -336,6 +338,7 @@ export class Overworld {
             currentPlayerState.currentHp !== newPlayerState.currentHp &&
             currentPlayerState.currentHp > newPlayerState.currentHp
           ) {
+            console.log("HITTED")
             // If someone hit player,
             // send positon of damage dealt (sprite needed this)
             playerObj.isHittedBySomething.push({
@@ -348,6 +351,29 @@ export class Overworld {
             // TODO: improve to clear only sended,
             // not all damage dealt animation
             setTimeout(() => (playerObj.isHittedBySomething = []), 100);
+
+            playerObj.currentHp = player.currentHp;
+          }
+
+          // If player hp up, show it
+          if (
+            playerObj &&
+            currentPlayerState.currentHp !== newPlayerState.currentHp &&
+            currentPlayerState.currentHp < newPlayerState.currentHp
+          ) {
+            console.log("HEALEDD")
+            // If player healed,
+            // send positon (sprite needed this)
+            playerObj.isHealedBySomething.push({
+              x: newPlayerState.x,
+              y: newPlayerState.y,
+              healAmount:
+              newPlayerState.currentHp - currentPlayerState.currentHp,
+            });
+            // Clear animation
+            // TODO: improve to clear only sended,
+            // not all damage dealt animation
+            setTimeout(() => (playerObj.isHealedBySomething = []), 200);
 
             playerObj.currentHp = player.currentHp;
           }
@@ -428,7 +454,7 @@ export class Overworld {
           monster.currentTarget !== playerState.name &&
           monsterObj
         ) {
-          console.log("monster listenere 2");
+          // console.log("monster listenere 2");
           // Deactive monster movement scripts if someone else control
           monsterObj.isPlayerControlledMonster = false;
 
@@ -488,10 +514,12 @@ export class Overworld {
           // If monster used skills/spells, show it
           if (
             monsterObj &&
+            monsterObj.attacks.length === 0 &&
             monsterObj.movingProgressReaming === 0 &&
             monster.isAttack
           ) {
             // if (monster.currentTarget )
+            console.log("USED SKILL")
             monsterObj.initAttack({ map: this.map }, monster.isAttack, true);
           }
 

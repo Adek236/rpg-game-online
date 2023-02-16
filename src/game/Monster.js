@@ -49,7 +49,6 @@ export class Monster extends Person {
     this.lastMoveHistoryMaxLength = 8;
 
     this.isAim = false;
-    
 
     this.count = 0;
     this.count2 = 0;
@@ -81,6 +80,10 @@ export class Monster extends Person {
       if (this.deathAnimationEnd) {
         if (this.isAim) this.isAim = false;
         this.isWalkable = true;
+
+        // If someone marked this monster, 
+        // unmark
+        state.map.unselectTarget(this.id);
 
         if (this.isUnmountDeadBodyTimeout) return;
         this.isUnmountDeadBodyTimeout = setTimeout(() => {
@@ -272,6 +275,22 @@ export class Monster extends Person {
         target.aroundFreeSpace[obj].position.y === this.y
       ) {
         // Attack
+        this.count2++;
+        if (this.count2 % 100 === 0) {
+          if (this.isPlayerControlledMonster) {
+            this.initAttack(state, "autoAttack");
+          }
+
+          // if (!this.isPlayerControlledMonster) {
+          //   this.initAttack(state, "autoAttack", true);
+          // }
+
+          this.dbUpdateMonster({
+            monster: {
+              isAttack: "autoAttack",
+            },
+          });
+        }
         // this.count2++;
         // if (this.count2 % 100 === 0) {
         //   this.initAttack(state, "swordSlash");
@@ -328,19 +347,19 @@ export class Monster extends Person {
       // TODO: time
       this.count++;
       if (this.count % 5 === 0 && this.direction === newDirection.name) {
-        console.log("target.isPlayerControlledMonster", this.isPlayerControlledMonster)
+        // console.log("target.isPlayerControlledMonster", this.isPlayerControlledMonster)
         if (this.isPlayerControlledMonster) {
           // console.log("")
-          this.initAttack(state, "iceWave");
+          this.initAttack(state, "iceShot");
         }
 
-        if (!this.isPlayerControlledMonster) {
-          this.initAttack(state, "iceWave", true);
-        }
+        // if (!this.isPlayerControlledMonster) {
+        //   this.initAttack(state, "iceShot", true);
+        // }
 
         this.dbUpdateMonster({
           monster: {
-            isAttack: "iceWave",
+            isAttack: "iceShot",
           },
         });
         // }
@@ -443,6 +462,7 @@ export class Monster extends Person {
   }
 
   // Load one specific data from db
+  // TODO: NEED RE-WORK (look below at loadMonsterSpecificData)
   async loadMonsterCurrentData({ currentMap, id, findData }, resolve) {
     let currentData = null;
     await get(child(dbRef, `monsters/${currentMap}/${id}`))
@@ -455,6 +475,23 @@ export class Monster extends Person {
         console.log("loadMonsters error:", error);
       });
     resolve(currentData);
+  }
+
+  loadMonsterSpecificData({ currentMap, id, specificData }) {
+    return new Promise((resolve, reject) => {
+      (async () => {
+        await get(child(dbRef, `monsters/${currentMap}/${id}`))
+          .then((snapshot) => {
+            if (!snapshot.exists()) return;
+            const monsterData = snapshot.val();
+            resolve(monsterData[specificData]);
+          })
+          .catch((error) => {
+            console.log("loadMonsters error:", error);
+            reject(error);
+          });
+      })();
+    });
   }
 
   // initAttack(state, attackName) {

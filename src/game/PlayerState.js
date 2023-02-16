@@ -18,6 +18,7 @@ class PlayerState {
     this.storyFlags = {
       something_to_do: true,
     };
+    
   }
 
   // get playerRef() {

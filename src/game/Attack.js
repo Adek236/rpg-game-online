@@ -34,8 +34,8 @@ export class Attack {
     this.isMarkedTarget = false;
   }
 
-  doDamageToTargetInAttackArea(state, isAttackByOtherPlayer) {
-    if (isAttackByOtherPlayer) return;
+  doDamageToTargetInAttackArea(state) {
+    if (this.isAttackByOtherPlayer) return;
 
     // Attacker position
     const attacker = {
@@ -81,7 +81,7 @@ export class Attack {
 
       for (const possibleTarget in state.gameObjects) {
         const target = state.gameObjects[possibleTarget];
-        
+
         // If target is dead, stop here
         if (target.deathAnimationEnd) return;
 
@@ -113,19 +113,20 @@ export class Attack {
               },
             });
           }
-          
+
           // Deduct player hp by value of damage at db
           if (target.type === "Person" && target.currentHp >= 0) {
-            console.log("target", target.name)
-            playerState.updatePlayer({
-              player: {
-                currentHp: target.currentHp,
+            console.log("target", target.name);
+            playerState.updatePlayer(
+              {
+                player: {
+                  currentHp: target.currentHp,
+                },
               },
-            },
-            target.id
+              target.id
             );
           }
-          
+
           // Send hittedTargetsPositions data to sprite
           this.hittedTargetsPositions.push({
             x: target.x,
@@ -139,30 +140,48 @@ export class Attack {
     });
   }
 
-  async doDamageToMarkedTargetInAttackArea(state, isAttackByOtherPlayer) {
+  async doDamageToMarkedTargetInAttackArea(state) {
     // TODO: monsters target finder
-
     // Attacker position
     const attacker = {
       x: this.gameObject.x,
       y: this.gameObject.y,
       name: this.gameObject.name,
+      id: this.gameObject.id,
+      type: this.gameObject.type,
+      currentMap: this.gameObject.currentMap,
     };
 
     let target = null;
 
     // Find marked target
-    if(attacker.name === playerState.name){
-      target = Object.values(state.gameObjects).find(
-        (target) => target.isAim
-      );
+
+    // If attacker is player
+    if (attacker.name === playerState.name && attacker.type === "Person") {
+      target = Object.values(state.gameObjects).find((target) => target.isAim);
     }
-    if(attacker.name !== playerState.name){
-      const targetId = await playerState.getSpecificPlayerData("markedTarget", attacker.name)
-      console.log(targetId)
+    if (attacker.name !== playerState.name && attacker.type === "Person") {
+      const targetId = await playerState.getSpecificPlayerData(
+        "markedTarget",
+        attacker.name
+      );
       if (!targetId) return;
       target = Object.values(state.gameObjects).find(
         (target) => target.id === targetId
+      );
+    }
+
+    // If attacker is monster
+    if (attacker.type === "Monster") {
+      
+      const targetName = await this.gameObject.loadMonsterSpecificData({
+        currentMap: attacker.currentMap,
+        id: attacker.id,
+        specificData: "currentTarget",
+      });
+      if (!targetName) return;
+      target = Object.values(state.gameObjects).find(
+        (target) => target.name === targetName
       );
     }
 
@@ -189,9 +208,9 @@ export class Attack {
         y: target.y,
         damageDealt: this.selectedAttack.baseDamage,
       });
-      
-      if (isAttackByOtherPlayer) return;
 
+      if (this.isAttackByOtherPlayer) return;
+      console.log("deduct hp");
       // Deduct hp by value of damage
       target.currentHp -= this.selectedAttack.baseDamage;
 
@@ -203,6 +222,16 @@ export class Attack {
         });
       }
 
+      if (target.type === "Person" && target.currentHp >= 0) {
+        playerState.updatePlayer(
+          {
+            player: {
+              currentHp: target.currentHp,
+            },
+          },
+          target.id
+        );
+      }
     } else {
       this.isMarkedTarget = false;
       console.log("no target");
@@ -215,17 +244,14 @@ export class Attack {
 
     // Add attack to attacks array
     this.gameObject.attacks.push(this.selectedAttack);
-
+    // console.log(this)
     // If another player attacks, it does not deal damage, only animation
     if (!this.selectedAttack.needMarkedTarget) {
-      this.doDamageToTargetInAttackArea(state, this.isAttackByOtherPlayer);
+      this.doDamageToTargetInAttackArea(state);
     }
 
     if (this.selectedAttack.needMarkedTarget) {
-      this.doDamageToMarkedTargetInAttackArea(
-        state,
-        this.isAttackByOtherPlayer
-      );
+      this.doDamageToMarkedTargetInAttackArea(state);
     }
 
     // TODO: \/ without this is error if online animation WHY?

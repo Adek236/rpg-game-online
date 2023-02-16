@@ -10,7 +10,7 @@ export const dataAttacks = {
     useSlash: false,
     needMarkedTarget: true,
     combatAreaName: null,
-    baseDamage: 1,
+    baseDamage: 10,
     distance: 100,
     repeatableImageAtPositions: {
       norepeat: [{ x: 0, y: 0 }],
@@ -455,6 +455,12 @@ export const dataAttacks = {
     time: 300,
     useSlash: false,
     needMarkedTarget: true,
+    combatAreaName: null,
+    baseDamage: 50,
+    distance: 30,
+    repeatableImageAtPositions: {
+      norepeat: [{ x: 0, y: 0 }],
+    },
     animations: {
       "auto-attack-up": [
         [

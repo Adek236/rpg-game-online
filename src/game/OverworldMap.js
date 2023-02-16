@@ -173,7 +173,10 @@ export class OverworldMap {
   //   return objects;
   // }
 
-  selectTarget() {
+  selectTarget(selectorName) {
+    const selectorObj = Object.values(this.gameObjects).find(
+      (selector) => selector.type === "Person" && selector.name === selectorName
+    );
     const selectTarget = Object.values(this.gameObjects).find(
       (target) =>
         target.type === "Monster" && !target.isAim && !target.isWalkable
@@ -183,8 +186,11 @@ export class OverworldMap {
         target.type === "Monster" && target.isAim && !target.isWalkable
     );
 
+    console.log(selectorObj);
+
     if (selectTarget) {
       selectTarget.isAim = true;
+      selectorObj.markedTarget = selectTarget.id;
       playerState.updatePlayer({
         player: {
           markedTarget: selectTarget.id,
@@ -193,12 +199,27 @@ export class OverworldMap {
     }
     if (unselectTarget) {
       unselectTarget.isAim = false;
+      selectorObj.markedTarget = null;
       playerState.updatePlayer({
         player: {
           markedTarget: false,
         },
       });
     }
+  }
+
+  // TODO: find obj who kill monster
+  unselectTarget(targetId) {
+    const playersWhoSelectTarget = Object.values(this.gameObjects).find(
+      (player) => player.type === "Person" && player.markedTarget === targetId
+    );
+
+    Array.from(playersWhoSelectTarget).forEach(
+      playerObj => {
+      console.log(playerObj);
+        // this.gameObjects[playerObj].markedTarget = null
+      }
+    );
   }
 
   async startCutscene(events) {
