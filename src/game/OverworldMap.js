@@ -210,16 +210,17 @@ export class OverworldMap {
 
   // TODO: find obj who kill monster
   unselectTarget(targetId) {
-    const playersWhoSelectTarget = Object.values(this.gameObjects).find(
-      (player) => player.type === "Person" && player.markedTarget === targetId
-    );
+    // const playersWhoSelectTarget = Object.values(this.gameObjects).find(
+    //   (player) => player.type === "Person" && player.markedTarget === targetId
+    // );
+    console.log("unselectTarget", this.gameObjects);
 
-    Array.from(playersWhoSelectTarget).forEach(
-      playerObj => {
-      console.log(playerObj);
-        // this.gameObjects[playerObj].markedTarget = null
-      }
-    );
+    Object.keys(this.gameObjects).forEach((obj) => {
+      console.log(obj);
+      if (this.gameObjects[obj].type !== "Person") return;
+      if (this.gameObjects[obj].markedTarget !== targetId) return;
+      this.gameObjects[obj].markedTarget = null;
+    });
   }
 
   async startCutscene(events) {

@@ -63,7 +63,6 @@ export class Monster extends Person {
     // TODO: take loot after click
     if (this.currentHp <= 0) {
       // Update monster db
-      // if (this.isPlayerControlledMonster){
       this.dbUpdateMonster({
         monster: {
           isAlive: false,
@@ -73,21 +72,17 @@ export class Monster extends Person {
           y: utils.withGridReverse(this.initialY),
         },
       });
-      // }
 
       // Change him to walkable object,
       // unmount him after 10 second
       if (this.deathAnimationEnd) {
+        if (this.isUnmountDeadBodyTimeout) return;
         if (this.isAim) this.isAim = false;
         this.isWalkable = true;
-
-        // If someone marked this monster, 
+        // If someone marked this monster,
         // unmark
         state.map.unselectTarget(this.id);
-
-        if (this.isUnmountDeadBodyTimeout) return;
         this.isUnmountDeadBodyTimeout = setTimeout(() => {
-          console.log("settimeout deatd");
           state.map.unmountGameObject(this.id, this.currentMap);
         }, 10000);
       }

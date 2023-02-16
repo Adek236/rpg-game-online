@@ -105,11 +105,11 @@ export class Overworld {
       // console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
-      this.map.gameObjects[playerState.name].initAttack(this.map, "autoAttack");
+      this.map.gameObjects[playerState.name].initAttack(this.map, "autoAttackRange");
       // Set attack at db
       playerState.updatePlayer({
         player: {
-          isAttack: "autoAttack",
+          isAttack: "autoAttackRange",
         },
       });
 

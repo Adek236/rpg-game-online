@@ -544,4 +544,102 @@ export const dataAttacks = {
       ],
     },
   },
+  autoAttackRange: {
+    id: "autoAttackRange",
+    name: "Auto Attack Range",
+    animateName: "aa-range-",
+    personAnimateName: "attack-",
+    src: "src/game/assets/objects/assassinstar.png",
+    time: 300,
+    useSlash: false,
+    needMarkedTarget: true,
+    combatAreaName: null,
+    baseDamage: 10,
+    distance: 100,
+    repeatableImageAtPositions: {
+      norepeat: [{ x: 0, y: 0 }],
+    },
+    animations: {
+      "aa-range-up": [
+        [
+          { frame: 0, offset: 0 },
+          { frame: 0, offset: -8 },
+        ],
+        [
+          { frame: 0, offset: 0 },
+          { frame: 0, offset: -8 },
+        ],
+      ],
+      "aa-range-down": [
+        [
+          { frame: 0, offset: 0 },
+          { frame: 0, offset: 24 },
+        ],
+        [
+          { frame:0, offset: 0 },
+          { frame: 0, offset: 24 },
+        ],
+      ],
+      "aa-range-left": [
+        [
+          { frame: 0, offset: -16 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 0, offset: -16 },
+          { frame: 0, offset: 8 },
+        ],
+      ],
+      "aa-range-leftUp": [
+        [
+          { frame: 0, offset: -16 },
+          { frame: 0, offset: -8 },
+        ],
+        [
+          { frame: 0, offset: -16 },
+          { frame: 0, offset: -8 },
+        ],
+      ],
+      "aa-range-leftDown": [
+        [
+          { frame: 0, offset: -16 },
+          { frame: 0, offset: 24 },
+        ],
+        [
+          { frame: 0, offset: -16 },
+          { frame: 0, offset: 24 },
+        ],
+      ],
+      "aa-range-right": [
+        [
+          { frame: 0, offset: 16 },
+          { frame: 0, offset: 8 },
+        ],
+        [
+          { frame: 0, offset: 16 },
+          { frame: 0, offset: 8 },
+        ],
+      ],
+      "aa-range-rightUp": [
+        [
+          { frame: 0, offset: 16 },
+          { frame: 0, offset: -8 },
+        ],
+        [
+          { frame: 0, offset: 16 },
+          { frame: 0, offset: -8 },
+        ],
+      ],
+      "aa-range-rightDown": [
+        [
+          { frame: 0, offset: 16 },
+          { frame: 0, offset: 24 },
+        ],
+        [
+          { frame: 0, offset: 16 },
+          { frame: 0, offset: 24 },
+        ],
+      ],
+    },
+  },
 };

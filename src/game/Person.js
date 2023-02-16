@@ -241,10 +241,10 @@ export class Person extends GameObject {
 
     this.count3++;
     if (this.count3 % 100 === 0) {
-      this.initAttack(state.map, "autoAttack");
+      this.initAttack(state.map, "autoAttackRange");
       playerState.updatePlayer({
         player: {
-          isAttack: "autoAttack",
+          isAttack: "autoAttackRange",
         },
       });
     }
