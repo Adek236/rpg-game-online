@@ -210,7 +210,6 @@ export class Attack {
       });
 
       if (this.isAttackByOtherPlayer) return;
-      console.log("deduct hp");
       // Deduct hp by value of damage
       target.currentHp -= this.selectedAttack.baseDamage;
 
@@ -243,7 +242,7 @@ export class Attack {
     if (this.gameObject.type === "Monster") state = state.map;
 
     // Add attack to attacks array
-    this.gameObject.attacks.push(this.selectedAttack);
+    this.gameObject.attacks.unshift(this.selectedAttack);
     // console.log(this)
     // If another player attacks, it does not deal damage, only animation
     if (!this.selectedAttack.needMarkedTarget) {

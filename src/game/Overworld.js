@@ -70,7 +70,8 @@ export class Overworld {
         if (object.isWalkable) return;
 
         if (object.attacks?.length > 0) {
-          // console.log("erro obj", object)
+          console.log(object.attacks)
+          
           object.attack.sprite.draw(this.ctx, cameraPerson);
         }
 
@@ -105,11 +106,11 @@ export class Overworld {
       // console.log("x=",this.map.gameObjects[playerState.name].x,"y=",this.map.gameObjects[playerState.name].y);
       if (this.map.gameObjects[playerState.name].movingProgressReaming > 0)
         return;
-      this.map.gameObjects[playerState.name].initAttack(this.map, "autoAttackRange");
+      this.map.gameObjects[playerState.name].initAttack(this.map, "iceWave");
       // Set attack at db
       playerState.updatePlayer({
         player: {
-          isAttack: "autoAttackRange",
+          isAttack: "iceWave",
         },
       });
 

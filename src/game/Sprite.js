@@ -236,6 +236,9 @@ export class Sprite {
   }
 
   get frame() {
+    // console.log(this.animations)
+    // console.log(this.animations[this.currentAnimation])
+    // console.log(this.animations[this.currentAnimation][this.currentAnimationFrame])
     return this.animations[this.currentAnimation][this.currentAnimationFrame];
   }
 
