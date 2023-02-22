@@ -17,6 +17,10 @@ export class Overworld {
     this.canvas = this.element.querySelector(".game-canvas");
     this.ctx = this.canvas.getContext("2d");
     this.map = null;
+    this.mousePosition = {
+      x: undefined,
+      y: undefined
+    }
     // this.isObjectsListens = true;
   }
 
@@ -32,6 +36,7 @@ export class Overworld {
         object.update({
           arrow: this.directionInput.direction,
           map: this.map,
+          mouse: this.mousePosition
         });
       });
 
@@ -70,7 +75,7 @@ export class Overworld {
         if (object.isWalkable) return;
 
         if (object.attacks?.length > 0) {
-          console.log(object.attacks)
+          // console.log(object.attacks) 
           
           object.attack.sprite.draw(this.ctx, cameraPerson);
         }
@@ -149,6 +154,40 @@ export class Overworld {
     });
   }
 
+  setMousePosition(){
+    this.canvas.addEventListener("mousemove", (e)=>{
+    //   const x =
+    //   this.gameObject.x -
+    //   this.gameObject.offsetX +
+    //   utils.withGrid(10.5) -
+    //   this.map.gameObjects[playerState.name].x;
+    // const y =
+    //   this.gameObject.y -
+    //   this.gameObject.offsetY +
+    //   utils.withGrid(6) -
+    //   this.map.gameObjects[playerState.name].y;
+    const cameraPosition = {
+      x:this.map.gameObjects[playerState.name].x,
+      y:this.map.gameObjects[playerState.name].y,
+    }
+
+    const mousePosition = {
+      x:e.offsetX+104,
+      y:e.offsetY+80
+    }
+
+    const diffrentX = cameraPosition.x-mousePosition.x
+    const diffrentY = cameraPosition.y-mousePosition.y
+    this.mousePosition.x = e.offsetX+104;
+    this.mousePosition.y = e.offsetY+80;  
+    // this.mousePosition.x = diffrentX;
+    // this.mousePosition.y = diffrentY;  
+      console.log("camera",this.map.gameObjects[playerState.name].x, this.map.gameObjects[playerState.name].y)    
+      console.log("mouse", e.offsetX+104, e.offsetY+80)
+      console.log("diffrent", diffrentX, diffrentY)
+    })
+  }
+
   startMap(object, mapInitialConfig = null) {
     this.map = new OverworldMap(OverworldMaps[object.currentMap]);
     this.map.overworld = this;
@@ -174,6 +213,8 @@ export class Overworld {
     this.bindHotKeysInput();
     this.bindActionInput();
     this.bindHeroPositionCheck();
+
+    this.setMousePosition();
 
     this.directionInput = new DirectionInput();
     this.directionInput.init();

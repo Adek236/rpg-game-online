@@ -3,7 +3,7 @@ import { convertedOutisdeMapWalls } from "./testMapOutsideCollision.js";
 export const OverworldMaps = {
     outsideMap: {
       mapName: "outsideMap",
-      lowerSrc: "src/game/assets/maps/testMapOutside.png",
+      lowerSrc: "src/game/assets/maps/testMapOutsideSquare.png",
       upperSrc: "src/game/assets/maps/testMapOutsideUpper.png",
       configObjects: {
         // loot1: {

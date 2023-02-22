@@ -49,6 +49,7 @@ export class Monster extends Person {
     this.lastMoveHistoryMaxLength = 8;
 
     this.isAim = false;
+    this.isMouseover = false;
 
     this.count = 0;
     this.count2 = 0;
@@ -58,6 +59,17 @@ export class Monster extends Person {
 
   update(state) {
     super.update(state);
+
+    // If is mouse over above monster
+    if (
+      state.mouse.x > this.x && state.mouse.x < this.x + 16 &&
+      state.mouse.y > this.y && state.mouse.y < this.y + 16
+      ){
+      this.isMouseover = true;
+    } else if (this.isMouseover){
+      // if (!this.isMouseover) return;
+      this.isMouseover = false;
+    }
 
     // If monster died
     // TODO: take loot after click

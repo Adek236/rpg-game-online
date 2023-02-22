@@ -1,5 +1,5 @@
 TODO: 
-* After player died add to db "isAlive: false" and if appear in temple "isAlive: true" 
+* After player died add to db "isAlive: false" and if appear in temple "isAlive: true" to fix visiable bug
 * After monster died timeout still going BROKE (need to named timeout, and stop it)
 * Alive - need to know target before respawn 
         or not respawn if someone is in radius area 

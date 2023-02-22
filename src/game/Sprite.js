@@ -329,6 +329,16 @@ export class Sprite {
         });
       }
 
+      // If is mouse over above monster
+      // show it
+      if (this.gameObject.isMouseover) {
+        ctx.beginPath();
+        ctx.lineWidth = "1";
+        ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.rect(x + 8, y + 17, 16, 16);
+        ctx.stroke();
+      }
+
       // If monster is selected target
       // show it
       if (this.gameObject.isAim) {
