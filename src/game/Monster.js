@@ -7,6 +7,7 @@ import {
   child,
   get,
 } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+import { playerState } from "./PlayerState.js";
 
 export class Monster extends Person {
   constructor(config) {
@@ -62,11 +63,13 @@ export class Monster extends Person {
 
     // If is mouse over above monster
     if (
-      state.mouse.x > this.x && state.mouse.x < this.x + 16 &&
-      state.mouse.y > this.y && state.mouse.y < this.y + 16
-      ){
+      state.mouse.x > state.cameraPosition.x - this.x - 16 &&
+      state.mouse.x < state.cameraPosition.x - this.x &&
+      state.mouse.y > state.cameraPosition.y - this.y - 16 &&
+      state.mouse.y < state.cameraPosition.y - this.y
+    ) {
       this.isMouseover = true;
-    } else if (this.isMouseover){
+    } else if (this.isMouseover) {
       // if (!this.isMouseover) return;
       this.isMouseover = false;
     }

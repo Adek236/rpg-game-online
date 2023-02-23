@@ -19,8 +19,8 @@ export class Overworld {
     this.map = null;
     this.mousePosition = {
       x: undefined,
-      y: undefined
-    }
+      y: undefined,
+    };
     // this.isObjectsListens = true;
   }
 
@@ -36,7 +36,8 @@ export class Overworld {
         object.update({
           arrow: this.directionInput.direction,
           map: this.map,
-          mouse: this.mousePosition
+          mouse: this.mousePosition,
+          cameraPosition: { x: cameraPerson.x, y: cameraPerson.y },
         });
       });
 
@@ -75,8 +76,8 @@ export class Overworld {
         if (object.isWalkable) return;
 
         if (object.attacks?.length > 0) {
-          // console.log(object.attacks) 
-          
+          // console.log(object.attacks)
+
           object.attack.sprite.draw(this.ctx, cameraPerson);
         }
 
@@ -119,13 +120,12 @@ export class Overworld {
         },
       });
 
-      
       // console.log(this)
     });
 
     new KeyPressListener("Digit2", () => {
       console.log(this);
-      console.log("playerstate", playerState)
+      console.log("playerstate", playerState);
     });
     // new KeyPressListener("Digit3", () => {
     //   this.map.gameObjects[playerState.name].speed = 2;
@@ -154,38 +154,11 @@ export class Overworld {
     });
   }
 
-  setMousePosition(){
-    this.canvas.addEventListener("mousemove", (e)=>{
-    //   const x =
-    //   this.gameObject.x -
-    //   this.gameObject.offsetX +
-    //   utils.withGrid(10.5) -
-    //   this.map.gameObjects[playerState.name].x;
-    // const y =
-    //   this.gameObject.y -
-    //   this.gameObject.offsetY +
-    //   utils.withGrid(6) -
-    //   this.map.gameObjects[playerState.name].y;
-    const cameraPosition = {
-      x:this.map.gameObjects[playerState.name].x,
-      y:this.map.gameObjects[playerState.name].y,
-    }
-
-    const mousePosition = {
-      x:e.offsetX+104,
-      y:e.offsetY+80
-    }
-
-    const diffrentX = cameraPosition.x-mousePosition.x
-    const diffrentY = cameraPosition.y-mousePosition.y
-    this.mousePosition.x = e.offsetX+104;
-    this.mousePosition.y = e.offsetY+80;  
-    // this.mousePosition.x = diffrentX;
-    // this.mousePosition.y = diffrentY;  
-      console.log("camera",this.map.gameObjects[playerState.name].x, this.map.gameObjects[playerState.name].y)    
-      console.log("mouse", e.offsetX+104, e.offsetY+80)
-      console.log("diffrent", diffrentX, diffrentY)
-    })
+  setMousePosition() {
+    this.canvas.addEventListener("mousemove", (e) => {
+      this.mousePosition.x = utils.withGrid(10.5) - e.offsetX;
+      this.mousePosition.y = utils.withGrid(6) - e.offsetY;
+    });
   }
 
   startMap(object, mapInitialConfig = null) {
@@ -299,7 +272,7 @@ export class Overworld {
                 x: newPlayerState.x,
                 y: newPlayerState.y,
                 healAmount:
-                newPlayerState.currentHp - currentPlayerState.currentHp,
+                  newPlayerState.currentHp - currentPlayerState.currentHp,
               });
               // Clear animation
               // TODO: improve to clear only sended,
@@ -380,7 +353,7 @@ export class Overworld {
             currentPlayerState.currentHp !== newPlayerState.currentHp &&
             currentPlayerState.currentHp > newPlayerState.currentHp
           ) {
-            console.log("HITTED")
+            console.log("HITTED");
             // If someone hit player,
             // send positon of damage dealt (sprite needed this)
             playerObj.isHittedBySomething.push({
@@ -403,14 +376,14 @@ export class Overworld {
             currentPlayerState.currentHp !== newPlayerState.currentHp &&
             currentPlayerState.currentHp < newPlayerState.currentHp
           ) {
-            console.log("HEALEDD")
+            console.log("HEALEDD");
             // If player healed,
             // send positon (sprite needed this)
             playerObj.isHealedBySomething.push({
               x: newPlayerState.x,
               y: newPlayerState.y,
               healAmount:
-              newPlayerState.currentHp - currentPlayerState.currentHp,
+                newPlayerState.currentHp - currentPlayerState.currentHp,
             });
             // Clear animation
             // TODO: improve to clear only sended,
@@ -561,7 +534,7 @@ export class Overworld {
             monster.isAttack
           ) {
             // if (monster.currentTarget )
-            console.log("USED SKILL")
+            console.log("USED SKILL");
             monsterObj.initAttack({ map: this.map }, monster.isAttack, true);
           }
 
